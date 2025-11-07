@@ -30,6 +30,8 @@
     <script async custom-element="amp-twitter" src="https://cdn.ampproject.org/v0/amp-twitter-0.1.js"></script>
     <script async custom-element="amp-instagram" src="https://cdn.ampproject.org/v0/amp-instagram-0.1.js"></script>
     <script async custom-element="amp-facebook" src="https://cdn.ampproject.org/v0/amp-facebook-0.1.js"></script>
+    <script async custom-element="amp-accordion" src="https://cdn.ampproject.org/v0/amp-accordion-0.1.js"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style amp-custom>
         /* Base Reset */
@@ -571,7 +573,7 @@
             position: fixed;
             left: 0;
             top: 0;
-            width: 300px;
+            width: 100%; 
             height: 100%;
             background-color: #ffffff;
             box-shadow: 0 7px 29px rgba(0, 0, 0, 0.2);
@@ -610,36 +612,138 @@
             width: 62px;
         }
 
-        .modal_logo img {
+        .modal_logo amp-img { /* Changed from img to amp-img */
             width: 100%;
             height: auto;
         }
 
         .modalmenu {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: 24px;
-            border-top: 1px solid #cbcbcb;
-            margin-left: 0;
             list-style: none;
+            padding: 0;
+            margin: 0;
+            border-top: 1px solid #cbcbcb; /* Added from original liveBlogs */
         }
 
-        .modalmenu .modal_item {
-            width: 100%;
-            padding: 10px 0;
-            border-bottom: 1px solid #dfdfdf;
+        .modal_item {
+            margin: 0;
+            padding: 5px 14px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        /* Target direct links (items without submenus) */
+        .modal_item>a {
+            display: block;
+            padding: 12px 15px;
+            text-decoration: none;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .modal_item>a:hover {
+            background-color: #f8f8f8;
+        }
+
+        .modal_item i {
+            margin-right: 10px;
+            width: 20px;
+            /* Standardize icon width */
+            text-align: center;
+            color: #999;
+        }
+
+        /* ACCORDION CONTAINER (Removing default AMP borders/backgrounds) */
+        .modal_item amp-accordion {
+            border: none;
+        }
+
+        .modal_item amp-accordion section {
+            margin: 0;
+            border: none;
+            background-color: transparent;
+        }
+
+        .amp-menu-header {
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+            background-color: transparent;
+            font-size: 1rem;
+            font-weight: normal;
+            color: #333;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            line-height: 1.2;
+            border: none;
+        }
+
+        .amp-menu-header:hover {
+            background-color: #f8f8f8;
+        }
+
+        .amp-menu-header::after {
+            content: '\25bc';
+            font-size: 0.7em;
+            margin-right: 5px;
+            transition: transform 0.3s;
+            transform-origin: center;
+            position: absolute;
+            right: 10px;
+            color: #666;
+        }
+
+        .modal_item amp-accordion section[expanded] .amp-menu-header::after {
+            transform: rotate(180deg);
+        }
+
+        .amp-menu-submenu-content {
+            padding: 0;
+            background-color: #fcfcfc;
+        }
+
+        .amp-menu-parent-link-in-dropdown {
+            display: block;
+            padding: 10px 15px;
+            font-weight: 500;
+            text-decoration: none;
+            color: #007bff;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95rem;
+        }
+
+        .modal_submenu {
+            list-style: none;
+            padding: 5px 0 5px 0;
+            margin: 0;
+        }
+
+        .modal_submenu li a {
+            display: block;
+            padding: 8px 15px 8px 35px;
+            text-decoration: none;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .modal_submenu li a:hover {
+            background-color: #f0f0f0;
         }
 
         .modalmenu a {
             font-size: 17px;
             color: #3e3e3e;
             text-decoration: none;
+            transition: all 0.3s ease;
         }
 
         .modalmenu a i {
             margin-right: 10px;
         }
+        
+        .modalmenu a:hover {
+             color: #ff0000;
+        }
+        /* END OF UPDATED STYLES */
 
         /* Mobile Navigation */
         .main-navigation-mob {
@@ -1087,7 +1191,9 @@
                                         ✕
                                     </button>
                                     <a href="/" class="modal_logo">
-                                        <img src="https://www.newsnmf.com/frontend/images/logo.png" alt="NMF News Logo">
+                                        {{-- UPDATED: Switched to amp-img for compliance --}}
+                                        <amp-img src="https://www.newsnmf.com/frontend/images/logo.png" alt="NMF News Logo"
+                                            width="50" height="48" layout="fixed"></amp-img>
                                     </a>
                                     <span class="Headertag" style="margin-left: 0px">
                                         <span style="color: #333;">जिस पर देश</span>
@@ -1096,8 +1202,9 @@
                                 </div>
 
                                 <?php
-                                // Re-using the menu logic from detail-amp
+                                // UPDATED: More comprehensive icon list from detail-amp
                                 $categoryIcons = [
+                                    'होम' => 'fa-solid fa-house',
                                     'न्यूज' => 'fa-solid fa-newspaper',
                                     'राज्य' => 'fa-solid fa-landmark',
                                     'एक्सक्लूसिव' => 'fa-solid fa-star',
@@ -1108,8 +1215,15 @@
                                     'लाइफस्टाइल' => 'fa-solid fa-heart',
                                     'पॉडकास्ट' => 'fa-solid fa-podcast',
                                     'दुनिया' => 'fa-solid fa-globe',
-                                    'विधान सभा चुनाव' => 'fa-solid fa-vote-yea',
+                                    'विधान सभा चुनाव' => 'fa-solid fa-person-booth',
+                                    'क्राइम' => 'fa-solid fa-user-secret',
+                                    'वेब स्टोरी' => 'fa-solid fa-photo-film',
+                                    'यूटीलिटी' => 'fa-solid fa-wrench',
+                                    'करियर' => 'fa-solid fa-briefcase',
+                                    'ट्रेंडिंग न्यूज़' => 'fa-solid fa-bolt',
+                                    'ब्लॉग' => 'fa-solid fa-pen-nib',
                                 ];
+                                
                                 $toggleMenus = App\Models\Menu::whereRelation('type', 'type', 'Header')
                                     ->whereRelation('category', 'category', 'User')
                                     ->where([['status', '1'], ['menu_id', 0]])
@@ -1121,13 +1235,58 @@
 
                                 <ul class="modalmenu">
                                     @foreach ($toggleMenus as $menu)
+                                        <?php
+                                        // Submenu logic remains untouched, only used to determine structure
+                                        $subMenus = App\Models\Menu::where('menu_id', $menu->id)
+                                            ->where('status', 1)
+                                            ->where('type_id', 1)
+                                            ->where('category_id', 2)
+                                            ->orderBy('sequence_id', 'asc')
+                                            ->get();
+                                        $hasSubMenus = count($subMenus) > 0;
+                                        ?>
+
                                         <li class="modal_item">
+                                            @if ($hasSubMenus)
+                                                <!-- AMP Accordion for the collapsible section -->
+                                                <amp-accordion class="amp-menu-toggle" animate>
+                                                    <!-- The <section> defines one accordion item -->
+                                                    <section>
+                                                        <!-- H4 is the required header element and acts as the toggle button for the content below -->
+                                                        <h4 class="amp-menu-header">
+                                                            <!-- The icon and menu name remain, but the H4 is NOT a link to prevent conflict with accordion toggle -->
+                                                            <i class="{{ $categoryIcons[$menu->menu_name] ?? 'fa-solid fa-link' }}"></i>
+                                                            {{ $menu->menu_name }}
+                                                        </h4>
+                                                        
+                                                        <!-- The div is the collapsible content -->
+                                                        <div class="amp-menu-submenu-content">
+                                                            <!-- Since the H4 is the toggle, we add the main category link inside the dropdown content -->
+                                                            <a href="{{ asset($menu->menu_link) }}" class="amp-menu-parent-link-in-dropdown">
+                                                                {{ $menu->menu_name }} 
+                                                            </a>
+
+                                                            <ul class="modal_submenu">
+                                                                @foreach ($subMenus as $subMenu)
+                                                                    <li>
+                                                                        <a href="{{ asset($subMenu->menu_link) }}">
+                                                                            <!-- Simple unicode circle for maximum AMP compliance and icon consistency -->
+                                                                            <span style="font-size: 0.5em; vertical-align: middle; margin-right: 8px;">&#9679;</span>
+                                                                            {{ $subMenu->menu_name }}
+                                                                        </a>
+                                                                    </li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </div>
+                                                    </section>
+                                                </amp-accordion>
+                                            @else
+                                                <!-- Simple link if no submenus -->
                                             <a href="{{ asset($menu->menu_link) }}">
-                                                <i
-                                                    class="{{ $categoryIcons[$menu->menu_name] ?? 'fa-solid fa-link' }}"></i>
+                                                    <i class=" {{ $categoryIcons[$menu->menu_name] ?? 'fa-solid fa-link' }}"></i>
                                                 {{ $menu->menu_name }}
                                             </a>
-                                            {{-- Submenu logic removed for AMP simplicity, restore if needed --}}
+                                            @endif
                                         </li>
                                     @endforeach
                                 </ul>

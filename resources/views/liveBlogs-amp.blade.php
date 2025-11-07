@@ -15,8 +15,7 @@
     @endphp
     <meta charset="utf-8">
     <title>{{ $blogs->name }} - Live</title>
-    <meta name="description"
-        content="{{ Str::limit(strip_tags($blogs->sort_description ?? $blogs->description), 160) }}">
+    <meta name="description" content="{{ Str::limit(strip_tags($blogs->sort_description ?? $blogs->description), 160) }}">
     <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
     <link rel="canonical" href="{{ $canonicalUrl }}" />
 
@@ -74,12 +73,18 @@
             padding: 0 15px;
         }
 
-        /* Ad Container */
         .ad-container {
             text-align: center;
             margin: 20px auto;
             max-width: 300px;
         }
+
+
+        .ad-title {
+            font-size: 13px;
+            color: #666;
+        }
+
 
         amp-ad {
             display: block;
@@ -295,7 +300,61 @@
             display: block;
             width: 100%;
         }
-        
+
+        .rel_bottom a {
+            font-size: 15px;
+            line-height: 22px;
+            font-weight: 500;
+            text-align: left;
+            margin-bottom: 0;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            display: -webkit-box;
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .rel_heading {
+            font-size: 20px;
+            margin-top: 0;
+            padding-left: 10px;
+            border-left: 4px solid #ff0000;
+            color: #1a1a1a;
+            font-weight: 700;
+            margin-bottom: 15px;
+            border-radius: 3px;
+            display: block;
+        }
+
+        .rel_article {
+            display: flex;
+            background: transparent;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            margin-bottom: 4px;
+        }
+
+        .rel_top {
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            width: 125px;
+            flex-shrink: 0;
+            height: 70px;
+            margin-right: 8px;
+        }
+
+        .rel_top img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
         /* ==============================================
         NEW STYLES FOR LIVE BLOG FEED
         ==============================================
@@ -309,7 +368,8 @@
 
         .news-card {
             display: flex;
-            flex-wrap: wrap; /* Better for small screens */
+            flex-wrap: wrap;
+            /* Better for small screens */
             border-bottom: 1px solid #f0f0f0;
             padding: 15px 0;
         }
@@ -320,7 +380,8 @@
             padding-right: 15px;
             font-weight: 600;
             color: #c00;
-            margin-bottom: 5px; /* Add margin for wrap */
+            margin-bottom: 5px;
+            /* Add margin for wrap */
         }
 
         .news-time .time {
@@ -336,17 +397,22 @@
 
         .news-content {
             flex-grow: 1;
-            width: calc(100% - 100px); /* Handle wrapping */
-              border-left: 2px solid #ff1d1d9f ;
-              padding-left: 12px;
+            width: calc(100% - 100px);
+            /* Handle wrapping */
+            border-left: 2px solid #ff1d1d9f;
+            padding-left: 12px;
         }
+
         @media (max-width: 480px) {
             .news-time {
-                width: 100%; /* Stack on mobile */
+                width: 100%;
+                /* Stack on mobile */
                 padding-right: 0;
             }
+
             .news-content {
-                 width: 100%; /* Stack on mobile */
+                width: 100%;
+                /* Stack on mobile */
             }
         }
 
@@ -372,6 +438,7 @@
         .news-body p {
             margin-bottom: 10px;
         }
+
         /* ==============================================
         END OF LIVE BLOG STYLES
         ==============================================
@@ -1015,13 +1082,12 @@
                         <amp-lightbox id="ampModalMenu" layout="nodisplay">
                             <div class="modal-content">
                                 <div class="modal_top">
-                                    <button class="close_btn" on="tap:ampModalMenu.close" tabindex="0"
-                                        role="button" aria-label="Close menu">
+                                    <button class="close_btn" on="tap:ampModalMenu.close" tabindex="0" role="button"
+                                        aria-label="Close menu">
                                         ✕
                                     </button>
                                     <a href="/" class="modal_logo">
-                                        <img src="https://www.newsnmf.com/frontend/images/logo.png"
-                                            alt="NMF News Logo">
+                                        <img src="https://www.newsnmf.com/frontend/images/logo.png" alt="NMF News Logo">
                                     </a>
                                     <span class="Headertag" style="margin-left: 0px">
                                         <span style="color: #333;">जिस पर देश</span>
@@ -1111,11 +1177,12 @@
             </ol>
         </nav>
 
-         <div class="ad-container">
-                            <amp-ad layout="responsive" width="300" height="250" type="adsense"
-                                data-ad-client="ca-pub-3986924419662120" data-ad-slot="2615238860">
-                            </amp-ad>
-                        </div>
+        <div class="ad-container">
+            <p class="ad-title">Advertisement</p>
+            <amp-ad layout="responsive" width="300" height="250" type="adsense"
+                data-ad-client="ca-pub-3986924419662120" data-ad-slot="2615238860">
+            </amp-ad>
+        </div>
         <div class="article--main-grid">
             <div class="article--main-content">
                 <header class="article--header">
@@ -1133,8 +1200,7 @@
                     </div>
 
                     <div class="article--meta-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
-                            viewBox="0 0 640 640">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 640 640">
                             <path
                                 d="M96.5 160L96.5 309.5C96.5 326.5 103.2 342.8 115.2 354.8L307.2 546.8C332.2 571.8 372.7 571.8 397.7 546.8L547.2 397.3C572.2 372.3 572.2 331.8 547.2 306.8L355.2 114.8C343.2 102.7 327 96 310 96L160.5 96C125.2 96 96.5 124.7 96.5 160zM208.5 176C226.2 176 240.5 190.3 240.5 208C240.5 225.7 226.2 240 208.5 240C190.8 240 176.5 225.7 176.5 208C176.5 190.3 190.8 176 208.5 176z" />
                         </svg>
@@ -1185,8 +1251,7 @@
                                     </a>
                                 </li>
                                 <li class="article--social-link">
-                                    <a href="https://api.whatsapp.com/send?text={{ $shareUrl }}"
-                                        target="_blank">
+                                    <a href="https://api.whatsapp.com/send?text={{ $shareUrl }}" target="_blank">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20"
                                             height="20">
                                             <path fill="currentColor"
@@ -1298,11 +1363,48 @@
                     @endforeach
                 </div>
 
-                 <div class="ad-container">
-            <amp-ad layout="responsive" width="300" height="300" type="adsense"
-                data-ad-client="ca-pub-3986924419662120" data-ad-slot="3774348576">
-            </amp-ad>
-        </div>
+                <div class="ad-container">
+                    <p class="ad-title">Advertisement</p>
+                    <amp-ad layout="responsive" width="300" height="300" type="adsense"
+                        data-ad-client="ca-pub-3986924419662120" data-ad-slot="3774348576">
+                    </amp-ad>
+                </div>
+                @if (!empty($latests) && $latests->isNotEmpty())
+                    <div style="margin: 20px 0;">
+                        <h3 class="rel_heading">यह भी पढ़ें</h3>
+
+                        @foreach ($latests as $article)
+                            @php
+                                $articleImage = config('global.blog_images_everywhere')($article);
+                                $articleUrl = url(($article->category->site_url ?? '#') . '/' . $article->site_url);
+                            @endphp
+
+                            <div class="rel_article">
+                                <div class="rel_top">
+                                    <a href="{{ $articleUrl }}">
+                                        <amp-img
+                                            src="{{ !empty($articleImage) ? asset($articleImage) : asset('asset/images/NMF_BreakingNews.png') }}"
+                                            alt="{{ $article->name }}" width="125" height="70"
+                                            layout="responsive">
+                                        </amp-img>
+                                    </a>
+                                </div>
+                                <div class="rel_bottom">
+                                    <a href="{{ $articleUrl }}">
+                                        {{ $article->name }}
+                                    </a>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+
+                <div class="ad-container">
+                    <p class="ad-title">Advertisement</p>
+                    <amp-ad layout="responsive" width="300" height="300" type="adsense"
+                        data-ad-client="ca-pub-3986924419662120" data-ad-slot="3774348576">
+                    </amp-ad>
+                </div>
             </div>
             {{-- 
                 Sidebar from liveBlogs.blade.php is omitted as the controller
@@ -1367,8 +1469,7 @@
                                 <div class="footer_ct">
                                     @foreach ($chunk as $footer_menu)
                                         <li class="footer_item">
-                                            <a
-                                                href="{{ $footer_menu->menu_link }}">{{ $footer_menu->menu_name }}</a>
+                                            <a href="{{ $footer_menu->menu_link }}">{{ $footer_menu->menu_name }}</a>
                                         </li>
                                     @endforeach
                                 </div>

@@ -50,10 +50,6 @@
                 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        .ad-container {
-            max-width: 400px;
-            margin: 0 auto;
-        }
 
         /* Loading state */
         .noto-sans-loading {
@@ -129,11 +125,19 @@
             }
         }
 
+        /* Ad Container */
         .ad-container {
             text-align: center;
             margin: 20px auto;
             max-width: 300px;
         }
+
+
+        .ad-title {
+            font-size: 13px;
+            color: #666;
+        }
+
 
         /* Ensure ads don't break layout */
         amp-ad {
@@ -1707,6 +1711,7 @@
 
         <!-- Header Ad -->
         <div class="ad-container">
+            <p class="ad-title">Advertisement</p>
             <amp-ad layout="responsive" width="300" height="300" type="adsense"
                 data-ad-client="ca-pub-3986924419662120" data-ad-slot="3774348576">
             </amp-ad>
@@ -1904,11 +1909,12 @@
                 <!-- Article Content -->
                 {{-- <div class="readmore" [class]="ui.readMore ? 'readmore expanded' : 'readmore'"> --}}
                 <div class="article--content">
-                    <!-- ✅ FINAL OUTPUT -->
                     <div class="amp-content">
                         {!! config('global.sanitize_amp_content')($data['blog']->description ?? '') !!}
                     </div>
-                    @php
+                   
+                </div>
+                 @php
                         // Get full content
                         $description = $data['blog']->description ?? '';
                         // ------------------
@@ -1942,6 +1948,12 @@
                         @php $injected = true; @endphp
                     @endif
 
+                    <div class="ad-container">
+                        <p class="ad-title">Advertisement</p>
+                        <amp-ad layout="responsive" width="300" height="300" type="adsense"
+                            data-ad-client="ca-pub-3986924419662120" data-ad-slot="3774348576">
+                        </amp-ad>
+                    </div>
                     @foreach ($paragraphs as $block)
 
                         @if (preg_match('/<\/p>/i', $block))
@@ -2001,8 +2013,9 @@
                         </a>
                     </div>
                     <div class="ad-container">
-                        <amp-ad layout="responsive" width="300" height="250" type="adsense"
-                            data-ad-client="ca-pub-3986924419662120" data-ad-slot="2615238860">
+                        <p class="ad-title">Advertisement</p>
+                        <amp-ad layout="responsive" width="300" height="300" type="adsense"
+                            data-ad-client="ca-pub-3986924419662120" data-ad-slot="3774348576">
                         </amp-ad>
                     </div>
                     <!-- Tags Section -->
@@ -2020,15 +2033,14 @@
                             </div>
 
                             <!-- Middle Horizontal Ad -->
-                            <div class="article--ad-horizontal article--mt-30" style="text-align: center;">
-                                <amp-ad width="100" height="320" type="adsense"
-                                    data-ad-client="ca-pub-3986924419662120" data-ad-slot="1770830325"
-                                    data-auto-format="rspv" data-full-width-responsive="true" layout="responsive">
+                            <div class="ad-container">
+                                <p class="ad-title">Advertisement</p>
+                                <amp-ad layout="responsive" width="300" height="300" type="adsense"
+                                    data-ad-client="ca-pub-3986924419662120" data-ad-slot="3774348576">
                                 </amp-ad>
                             </div>
                         </section>
                     @endif
-                </div>
 
                 <!-- Fade effect - moved outside article--content but inside readmore -->
                 {{-- <div class="readmore__fade" [hidden]="ui.readMore"></div> --}}

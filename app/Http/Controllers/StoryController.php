@@ -703,9 +703,8 @@ public function showStoryAmp($cat_name, $name)
         ]);
     }
 
-    public function liveBlogsAmp($cat_name, $name)
+public function liveBlogsAmp($cat_name, $name)
 {
-    // --- This logic is copied from your liveBlogs method ---
     $category = Category::where('site_url', $cat_name)->first();
     if (!$category) {
         return view('error');
@@ -716,7 +715,7 @@ public function showStoryAmp($cat_name, $name)
         return view('error');
     }
     
-    $author =  User::where('id', $blog->author)->first();
+    $author = User::where('id', $blog->author)->first();
     $liveDetailAds = Ads::where('page_type', 'details')->get()->keyBy('location');
 
     $liveBlogs = collect(
@@ -725,15 +724,24 @@ public function showStoryAmp($cat_name, $name)
             ->orderBy('created_at', 'DESC')
             ->cursor()
     );
-    // --- End of copied logic ---
 
-    // Render the new AMP view
+   
+    $latests = Blog::where('status', 1)
+        ->where('categories_ids', $blog->categories_ids)
+        ->where('id', '!=', $blog->id)
+        ->whereNull('link')
+        ->with(['thumbnail', 'images'])
+        ->orderBy('created_at', 'desc')
+        ->limit(6)
+        ->get();
+
     return view('liveBlogs-amp', [
         'blogs' => $blog,
         'category' => $category,
         'liveBlogs' => $liveBlogs,
         'author' => $author,
         'liveDetailAds' => $liveDetailAds,
+        'latests' => $latests, 
     ]);
 }
     public function nmfvideos()

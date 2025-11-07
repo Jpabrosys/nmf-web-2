@@ -47,12 +47,13 @@ class SitemapController extends Controller
 
     public function newsSitemap()
     {
-        $blogs = Blog::where('status', 1)
-            ->where('created_at', '>=', now()->subDays(100))
-            ->with('category')
-            ->orderBy('created_at', 'desc')
-            ->limit(10)
-            ->get();
+       $blogs = Blog::where('status', 1)
+    ->where('created_at', '>=', now()->subDays(100))
+    ->whereHas('category') // ensure only blogs with category
+    ->with('category')
+    ->orderBy('created_at', 'desc')
+    ->take(100)
+    ->get();
 
         return response()->view('news-sitemap', compact('blogs'))
                          ->header('Content-Type', 'application/xml');
@@ -61,7 +62,11 @@ class SitemapController extends Controller
     {
        $urls = [];
 
-    $webStories = WebStories::where('status', 1)->with('category')->get();
+    $webStories = WebStories::where('status', 1)
+     ->with('category')
+     ->orderBy('created_at', 'desc') 
+     ->get();
+
     foreach ($webStories as $story) {
         if (!$story->category) continue;
 

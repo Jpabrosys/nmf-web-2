@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Api\ExportController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,6 +17,11 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+
+Route::post('/trigger-export', [ExportController::class, 'trigger'])
+    ->middleware('auth.export')
+    ->name('api.export.trigger');
+
 
 //YesAway Api Routes
 Route::controller(App\Http\Controllers\Api\YesAwayApiController::class)

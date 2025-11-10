@@ -19,41 +19,76 @@ return [
         return '';
     }
 
-    // 1. Decode HTML entities first (e.g., &lt;blockquote&gt; -> <blockquote>)
+    // 1. Decode HTML entities first
     $html = html_entity_decode($html);
 
-    // 2. ⭐ Convert Facebook <iframe> embeds FIRST
-    // We must run this *before* the generic iframe stripper in step 3
+    // 2. ⭐ Convert Facebook <iframe> embeds (No change)
     $html = preg_replace_callback(
-        // This regex looks for the specific Facebook plugin iframe
         '/<iframe[^>]*src="https?:\/\/www\.facebook\.com\/plugins\/(?:post|video)\.php\?href=([^"&]+)[^"]*"[^>]*><\/iframe>/i',
         function ($m) {
-            // $m[1] is the URL-encoded href (e.g., "https%3A%2F%2F...")
-            // We must decode it to get the clean URL.
             $decoded_href = urldecode($m[1]);
             return '<amp-facebook width="552" height="310" layout="responsive" data-href="'.$decoded_href.'"></amp-facebook>';
         },
         $html
     );
 
-    // 2b. ⭐ NEW: Convert YouTube <iframe> embeds
-    // This must also run before the stripper in Step 3
+    // 2b. ⭐ Convert YouTube <iframe> embeds (No change)
     $html = preg_replace_callback(
-        // This regex looks for the specific YouTube embed iframe
         '/<iframe[^>]*src="https?:\/\/(?:www\.)?youtube\.com\/embed\/([a-zA-Z0-9_-]+)[^"]*"[^>]*><\/iframe>/i',
         function ($m) {
-            // $m[1] is the YouTube Video ID
             return '<amp-youtube data-videoid="'.$m[1].'" layout="responsive" width="480" height="270"></amp-youtube>';
         },
         $html
     );
 
+    // ===================================================================
+    // ⭐ MODIFIED STEP 3: Clean invalid tags and attributes
+    // ===================================================================
 
-    // 3. Clean ALL OTHER invalid tags (style, script, and any remaining iframes)
+    // 3. Clean forbidden tag *blocks*
+    // This removes the entire tag and its content (e.g., <script>...</script>)
     $html = preg_replace('/<(script|style|iframe|video|source|embed|object)[^>]*>.*?<\/\1>/si', '', $html);
-    $html = preg_replace('/\sstyle=(\'|")(.*?)\1/i', '', $html);
 
-    // 4. Convert <img> to <amp-img>
+    // 3a. Clean forbidden *attributes* from ALL tags
+    // This removes inline styles and event handlers (onclick, etc.) from any tag.
+    $html = preg_replace('/\s(style|on[a-z]+)=("|\')(.*?)(\2)/i', '', $html);
+
+    // 3b. ⭐ NEW: Deep sanitize <p> and <span> tags
+    // This fixes your exact error. It rebuilds the <p> and <span> tags
+    // keeping ONLY 'class' and 'id' attributes, stripping all other
+    // valid, invalid, or malformed attributes.
+    $tag_sanitizer_callback = function ($matches) {
+        $tag = $matches[1]; // 'p' or 'span'
+        $attributes_string = $matches[2]; // The full attribute string
+        
+        $whitelisted_attributes = [];
+
+        // Whitelist 'class'
+        if (preg_match('/\sclass=["\']([^"\']+)["\']/', $attributes_string, $classMatch)) {
+            $whitelisted_attributes[] = 'class="' . $classMatch[1] . '"';
+        }
+
+        // Whitelist 'id'
+        if (preg_match('/\sid=["\']([^"\']+)["\']/', $attributes_string, $idMatch)) {
+            $whitelisted_attributes[] = 'id="' . $idMatch[1] . '"';
+        }
+
+        // Rebuild the tag with only whitelisted attributes
+        $new_attrs_string = empty($whitelisted_attributes) ? '' : ' ' . implode(' ', $whitelisted_attributes);
+        return '<' . $tag . $new_attrs_string . '>';
+    };
+
+    $html = preg_replace_callback(
+        '/<(p|span)([^>]*)>/i', // Matches <p ...> or <span ...>
+        $tag_sanitizer_callback,
+        $html
+    );
+    
+    // ===================================================================
+    // (Rest of your function continues as normal)
+    // ===================================================================
+
+    // 4. Convert <img> to <amp-img> (No change)
     $html = preg_replace_callback(
         '/<img[^>]+>/i',
         function ($match) {
@@ -69,15 +104,14 @@ return [
         $html
     );
 
-    // 5. Convert YouTube (RAW LINKS)
-    // This will now only catch raw text links, as iframes were handled in 2b
+    // 5. Convert YouTube (RAW LINKS) (No change)
     $html = preg_replace_callback(
         '/https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/i',
         fn($m) => '<amp-youtube data-videoid="'.$m[1].'" layout="responsive" width="480" height="270"></amp-youtube>',
         $html
     );
 
-    // 6. Convert Twitter (Blockquotes FIRST, then raw links)
+    // 6. Convert Twitter (Blockquotes FIRST, then raw links) (No change)
     $html = preg_replace_callback(
         '/<blockquote[^>]*twitter[^>]*>.*?twitter\.com\/[^\/]+\/status\/(\d+).*?<\/blockquote>/is',
         fn($m) => '<amp-twitter width="375" height="472" layout="responsive" data-tweetid="'.$m[1].'"></amp-twitter>',
@@ -89,7 +123,7 @@ return [
         $html
     );
 
-    // 7. Convert Instagram (Blockquotes FIRST, then raw links)
+    // 7. Convert Instagram (Blockquotes FIRST, then raw links) (No change)
     $html = preg_replace_callback(
         '/<blockquote[^>]*instagram-media[^>]*>.*?\/(?:p|reel)\/([a-zA-Z0-9_-]+)\/.*?(<\/blockquote>)/is',
         fn($m) => '<amp-instagram data-shortcode="'.$m[1].'" width="400" height="400" layout="responsive"></amp-instagram>',
@@ -103,7 +137,7 @@ return [
         $html
     );
     
-    // 8. Convert Facebook (Embedded Divs and Raw Links)
+    // 8. Convert Facebook (Embedded Divs and Raw Links) (No change)
     $html = preg_replace_callback(
         '/<div class="fb-post"[^>]*data-href="([^"]+)"[^>]*><\/div>/i',
         fn($m) => '<amp-facebook width="552" height="310" layout="responsive" data-href="'.$m[1].'"></amp-facebook>',

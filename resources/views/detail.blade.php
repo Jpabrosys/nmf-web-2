@@ -5,7 +5,7 @@
 @section('content')
     <?php
     //$ff = config('global.blog_images_everywhere')($data['blog'] ?? null);
-    $ff  = cached_blog_image($data['blog']); 
+    $ff = cached_blog_image($data['blog']);
     $imageToUse = $ff;
     $customImageUrl = "{{config('global.base_url_asset')}}asset/images/NMF_BreakingNews.png";
     ?>
@@ -141,7 +141,7 @@
                         <section class="news_main_section">
                             <div class="cm-container">
                                 <div class="news_main_row">
-                                    <div class="col_left">             
+                                    <div class="col_left">
                                         <div class="main_article_wrap">
                                             <div class="main_article">
                                                 <h1 class="rt_main">
@@ -239,8 +239,8 @@
                                                                     </ul>
                                                                 </div>
                                                             </div>
-                                                            <a href="#comments-section" class="comment-button" id="commentToggle"
-                                                                title="Comment">
+                                                            <a href="#comments-section" class="comment-button"
+                                                                id="commentToggle" title="Comment">
                                                                 <svg stroke-linejoin="round" stroke-linecap="round"
                                                                     stroke="currentColor" stroke-width="2"
                                                                     viewBox="0 0 24 24" height="30" width="41"
@@ -257,7 +257,7 @@
                                                                 </svg>
 
                                                             </a>
-                                                      
+
                                                         </div>
                                                     </div>
 
@@ -281,8 +281,8 @@
                                                             @endif
                                                         @else
                                                             @php
-                                                            
-                                                             $ff  = cached_blog_image( $data['blog']); 
+
+                                                                $ff = cached_blog_image($data['blog']);
                                                             @endphp
                                                             <img @if (!empty($ff)) src="{{ $ff }}" @endif
                                                                 alt="{{ $data['blog']->name }}">
@@ -463,63 +463,71 @@
                                                         </section>
                                                     @endif
                                                 </div>
-                                                 <div id="comments-section">
+                                                <div id="comments-section">
                                                     @include('components.comment-section', [
                                                         'model' => $data['blog'],
                                                         'comments' => $data['comments'] ?? [],
                                                         'isLoggedIn' => $data['isLoggedIn'] ?? false,
-                                                        'currentViewer' => ($data['isLoggedIn'] ?? false) ? $data['currentViewer'] : null,
+                                                        'currentViewer' =>
+                                                            $data['isLoggedIn'] ?? false
+                                                                ? $data['currentViewer']
+                                                                : null,
                                                     ])
                                                 </div>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    {{-- Sidebar --}}
-                                    <div class="col_right">
-                                        {{-- - 10 latest articles displayed - --}}
+                                        {{-- Sidebar --}}
+                                        <div class="col_right">
+                                            {{-- - 10 latest articles displayed - --}}
                                         @include('components.latestStories')
 
                                         {{-- Vertical-Small-1 Advertise --}}
                                         <x-vertical-sm-ad :ad="$data['detailsAds']['detail_sidebar_vertical_ad1'] ?? null" />
 
-                                        @php
-                                            $categories = [
-                                                ['name' => 'ट्रेंडिंग न्यूज़', 'limit' => 5],
-                                                ['name' => 'पॉडकास्ट', 'limit' => 1],
-                                                ['name' => 'टेक्नोलॉजी', 'limit' => 5],
-                                                ['name' => 'स्पेशल्स', 'limit' => 5],
-                                            ];
-                                        @endphp
-
-                                        @foreach ($categories as $cat)
                                             @php
-                                                $category = App\Models\Category::where('name', $cat['name'])->first();
-                                                $blogs = App\Models\Blog::where('status', 1)
-                                                    ->where('categories_ids', $category->id ?? 0)
-                                                    ->orderBy('updated_at', 'desc')
-                                                    ->limit($cat['limit'])
-                                                    ->get();
+                                                $categories = [
+                                                    ['name' => 'ट्रेंडिंग न्यूज़', 'limit' => 5],
+                                                    ['name' => 'पॉडकास्ट', 'limit' => 1],
+                                                    ['name' => 'टेक्नोलॉजी', 'limit' => 5],
+                                                    ['name' => 'स्पेशल्स', 'limit' => 5],
+                                                ];
                                             @endphp
 
-                                            @if ($blogs->isNotEmpty())
-                                                @include('components.side-widgets', [
-                                                    'categoryName' => $cat['name'],
-                                                    'category' => $category,
-                                                    'blogs' => $blogs,
-                                                ])
-                                            @endif
-                                        @endforeach
+                                            @foreach ($categories as $cat)
+                                                @php
+                                                    $category = App\Models\Category::where(
+                                                        'name',
+                                                        $cat['name'],
+                                                    )->first();
 
-                                        {{-- Vertical-Small-2 Advertise --}}
-                                        <x-vertical-sm-ad :ad="$data['detailsAds']['detail_sidebar_vertical_ad2'] ?? null" />
+                                                    $blogs = App\Models\Blog::where('status', 1)
+                                                        ->where('categories_ids', $category->id ?? 0)
+                                                        ->where('id', '!=', $data['blog']->id) //  EXCLUDE CURRENT BLOG
+                                                        ->orderBy('updated_at', 'desc')
+                                                        ->limit($cat['limit'])
+                                                        ->get();
+                                                @endphp
 
+                                                @if ($blogs->isNotEmpty())
+                                                    @include('components.side-widgets', [
+                                                        'categoryName' => $cat['name'],
+                                                        'category' => $category,
+                                                        'blogs' => $blogs,
+                                                    ])
+                                                @endif
+                                            @endforeach
+
+                                            {{-- Vertical-Small-2 Advertise --}}
+                                            <x-vertical-sm-ad :ad="$data['detailsAds']['detail_sidebar_vertical_ad2'] ?? null" />
+
+                                        </div>
                                     </div>
+
+                                    {{-- Horizontal-2 Advertise --}}
+                                    <x-horizontal-ad :ad="$data['detailsAds']['detail_bottom_ad'] ?? null" />
+
                                 </div>
-
-                                {{-- Horizontal-2 Advertise --}}
-                                <x-horizontal-ad :ad="$data['detailsAds']['detail_bottom_ad'] ?? null" />
-
-                            </div>
                         </section>
                     </div>
 
@@ -527,7 +535,7 @@
             </div>
         </div>
     </div>
-    
+
     {{-- ---Web Hit Count Increment-- --}}
     <script>
         document.addEventListener("DOMContentLoaded", function() {

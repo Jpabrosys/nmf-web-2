@@ -30,7 +30,7 @@ $status = HomeSection::where('title', 'ElectionLiveSection')->value('status') ??
                 </div>
 
                 <div class="live-el-left">
-                    <h3 class="live-el-title">बिहार चुनाव एग्जिट पोल 2025</h3>
+                    <h3 class="live-el-title exit-tittle">बिहार चुनाव एग्जिट पोल 2025</h3>
                     <div class="live-el-img">
                         <img src="{{ asset('asset/images/bihar-map.png') }}" alt="Bihar exit poll">
                     </div>

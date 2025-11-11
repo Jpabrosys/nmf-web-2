@@ -7591,9 +7591,7 @@ swiper-slide img {
     z-index: 2;
 }
 
-.phase-date {
-    /* width: 50%; */
-}
+
 
 .phs-1 {
     padding: 12px 20px 8px;
@@ -7690,6 +7688,10 @@ swiper-slide img {
 /* ========================================= */
 /* Election live*/
 /* ========================================= */
+.exit-tittle {
+    font-size: 32px;
+    line-height: 37px;
+}
 .election-section-live {
     margin-bottom: 15px;
 }

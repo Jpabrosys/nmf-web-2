@@ -410,7 +410,7 @@
                                                               <div class="win-t"></div>
                                                               <div class="win-l"></div>
                                                           </div>
-                                                          <canvas id="semiCircleChart"></canvas>
+                                                          <canvas id="semiCircleChartNew"></canvas>
                                                           <!-- <div class="legend" id="chartLegend"></div> -->
                                                           <div class="total-seats">
                                                               <p>Total Seats</p>
@@ -671,41 +671,90 @@
               // Example datasets
               const results1 = [{
                       party_name: "NDA",
-                      seats_won: 87
+                      seats_won: 87,
+                      abbreviation: "nda"
                   },
                   {
                       party_name: "RJD+",
-                      seats_won: 53
+                      seats_won: 53,
+                      abbreviation: "rjd"
                   },
                   {
                       party_name: "LJP",
-                      seats_won: 5
+                      seats_won: 5,
+                      abbreviation: "ljp"
                   },
                   {
                       party_name: "OTH",
-                      seats_won: 9
+                      seats_won: 9,
+                      abbreviation: "oth"
                   }
               ];
 
               const results2 = [{
                       party_name: "NDA",
-                      seats_won: 87
+                      seats_won: 87,
+                      abbreviation: "nda"
                   },
                   {
                       party_name: "RJD+",
-                      seats_won: 53
+                      seats_won: 53,
+                      abbreviation: "rjd"
                   },
                   {
                       party_name: "LJP",
-                      seats_won: 5
+                      seats_won: 5,
+                      abbreviation: "ljp"
                   },
                   {
                       party_name: "OTH",
-                      seats_won: 9
+                      seats_won: 9,
+                      abbreviation: "oth"
                   }
               ];
 
-              createSemiCircleChart('semiCircleChart3', results3, {
+              const results3 = [{
+                      party_name: "NDA",
+                      seats_won: 90,
+                      abbreviation: "nda"
+                  },
+                  {
+                      party_name: "RJD+",
+                      seats_won: 50,
+                      abbreviation: "rjd"
+                  },
+                  {
+                      party_name: "LJP",
+                      seats_won: 3,
+                      abbreviation: "ljp"
+                  },
+                  {
+                      party_name: "OTH",
+                      seats_won: 10,
+                      abbreviation: "oth"
+                  }
+              ];
+
+              // ✅ New dataset for the new chart
+              const resultsNew = [{
+                      party_name: "NDA",
+                      seats_won: 95,
+                      abbreviation: "nda"
+                  },
+                  {
+                      party_name: "RJD+",
+                      seats_won: 70,
+                      abbreviation: "rjd"
+                  },
+                  {
+                      party_name: "OTH",
+                      seats_won: 20,
+                      abbreviation: "oth"
+                  }
+              ];
+
+              // init charts
+              createSemiCircleChart('semiCircleChartNew', resultsNew, {
                   duration: 500
               });
 
@@ -726,6 +775,7 @@
               window.addEventListener('resize', function() {
                   clearTimeout(resizeTimer);
                   resizeTimer = setTimeout(function() {
+                      createSemiCircleChart('semiCircleChartNew', resultsNew);
                       createSemiCircleChart('semiCircleChart', results1);
                       createSemiCircleChart('semiCircleChart2', results2);
                       createSemiCircleChart('semiCircleChart3', results3);

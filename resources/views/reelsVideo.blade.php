@@ -357,24 +357,24 @@ $nextCat = $next ? optional($next->category)->site_url ?? 'category' : '#';
             $randomNumber = mt_rand(3, 5);
         @endphp
         @if (($currentIndex + 1) % $randomNumber == 0)
-            <div class="ad-slot-vertical"
-                style=" min-height: 100px; border: 1px dashed #eee; box-sizing: border-box;">
-
+            <div class="ad-slot-vertical">
                 <div class="ad-fallback-text"
                     style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #888; font-family: Arial, sans-serif;">
                     Advertisement
                 </div>
 
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3986924419662120"
-                    data-ad-slot="3792065060" data-ad-format="auto" data-full-width-responsive="true">
+                <ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px"
+                    data-ad-client="ca-pub-3986924419662120" data-ad-slot="3792065060">
                 </ins>
+
                 <script>
                     (adsbygoogle = window.adsbygoogle || []).push({});
                 </script>
 
             </div>
+
             {{-- Navigation buttons for AD page --}}
-            <div class="act-wrap">
+            <div class="act-wrap" id="ad-navigation" style="display: none;">
                 <a href="/">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ffff" width="34"
                         height="34">
@@ -403,6 +403,16 @@ $nextCat = $next ? optional($next->category)->site_url ?? 'category' : '#';
                     </button>
                 </div>
             </div>
+
+            <script>
+                setTimeout(function() {
+                    var adNav = document.getElementById('ad-navigation');
+                    if (adNav) {
+                        // Use 'flex' because your .act-wrap class uses flexbox
+                        adNav.style.display = 'flex';
+                    }
+                }, 5000); // 5000 milliseconds = 5 seconds
+            </script>
         @else
             {{-- Video Box --}}
             <div class="video-container">

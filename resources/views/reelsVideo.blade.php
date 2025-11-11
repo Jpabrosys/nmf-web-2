@@ -353,15 +353,26 @@ $nextCat = $next ? optional($next->category)->site_url ?? 'category' : '#';
 
     <div class="shorts-wrapper">
         {{-- Show Ad instead of Video every 3rd video --}}
-        @if (($currentIndex + 1) % 3 == 0)
-            <div class="ad-slot-vertical">
+        @php
+            $randomNumber = mt_rand(3, 5);
+        @endphp
+        @if (($currentIndex + 1) % $randomNumber == 0)
+            <div class="ad-slot-vertical"
+                style=" min-height: 100px; border: 1px dashed #eee; box-sizing: border-box;">
+
+                <div class="ad-fallback-text"
+                    style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #888; font-family: Arial, sans-serif;">
+                    Advertisement
+                </div>
+
                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3986924419662120"
-                    data-ad-slot="3792065060" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                    data-ad-slot="3792065060" data-ad-format="auto" data-full-width-responsive="true">
+                </ins>
                 <script>
                     (adsbygoogle = window.adsbygoogle || []).push({});
                 </script>
-            </div>
 
+            </div>
             {{-- Navigation buttons for AD page --}}
             <div class="act-wrap">
                 <a href="/">
@@ -429,8 +440,8 @@ $nextCat = $next ? optional($next->category)->site_url ?? 'category' : '#';
 
                         <!-- X (Twitter) Share -->
                         <button class="action-btn" onclick="shareOnX()" aria-label="Share on X">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 512 512"
-                                fill="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                viewBox="0 0 512 512" fill="currentColor">
                                 <path
                                     d="M389.2 48H466l-163 187.4L480 464h-123.7l-97.6-127.1L142.3 464H66l173.8-199.9L32 48h127.9l88.1 116.6L389.2 48zm-21.4 368h34.1L163.3 96h-36.6l241.1 320z" />
                             </svg>

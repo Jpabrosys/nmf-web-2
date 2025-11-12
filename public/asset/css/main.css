@@ -5543,13 +5543,12 @@ iframe[src*="facebook.com"] {
     -ms-transition: all 0.3s ease;
     width: auto !important;
     flex: 0 0 auto !important;
-    padding: 4px 9px;
+    padding: 4px 9px 0;
     margin: 0 5px;
     height: 40px;
     font-size: 12px !important;
     font-weight: 700;
     line-height: 19px;
-    border: 1px solid #cfcfcf;
     min-width: auto;
     flex-shrink: 0;
     overflow: hidden;
@@ -5610,32 +5609,6 @@ iframe[src*="facebook.com"] {
     display: none;
 }
 
-@media (max-width: 600px) {
-    .news--grid {
-        grid-template-columns: repeat(1, 1fr);
-    }
-
-    .news--col:last-of-type {
-        padding-left: 0;
-        padding-top: 0;
-    }
-
-    .news--col:first-of-type {
-        padding-right: 0px;
-    }
-
-    .swiper-tags-container {
-        padding: 0 11px;
-    }
-
-    .swiper-tags-button-prev {
-        left: 1px;
-    }
-
-    .swiper-tags-button-next {
-        right: 1px;
-    }
-}
 
 .spl-banner {
     margin-top: 10px;
@@ -5679,7 +5652,6 @@ iframe[src*="facebook.com"] {
 }
 
 .swiper-slide {
-    background-color: #ddd;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8960,7 +8932,6 @@ swiper-slide img {
     width: 100%;
     text-align: center;
     font-size: 18px;
-    background: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11388,7 +11359,34 @@ footer p {
 
 
 @media (max-width: 600px) {
+    /* ----------------- topstory */
+      .news--grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
 
+    .news--col:last-of-type {
+        padding-left: 0;
+        padding-top: 0;
+    }
+
+    .news--col:first-of-type {
+        padding-right: 0px;
+    }
+
+    .swiper-tags-container {
+        padding: 0 11px;
+    }
+
+    .swiper-tags-button-prev {
+        left: 1px;
+    }
+
+    .swiper-tags-button-next {
+        right: 1px;
+    }
+    .gradient-left, .gradient-right {
+    width: 10px;
+    }
     /* ----------------------------- */
     /* Election live vote count */
     /* ----------------------------- */
@@ -12071,7 +12069,10 @@ footer p {
     .swiper-tags-container {
         height: 35px;
     }
-
+    .swiper-tags-button-prev,
+    .swiper-tags-button-next {
+        display: none !important;
+    }
     .--ct_img {
         display: inline-block;
         overflow: hidden;

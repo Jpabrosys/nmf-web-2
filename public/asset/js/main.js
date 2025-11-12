@@ -1,3 +1,22 @@
+// Tag==================================
+document.addEventListener("DOMContentLoaded", function() {
+    const swiperTags = new Swiper(".swiper-tags-main", {
+        slidesPerView: "auto",
+        spaceBetween: 10,
+        freeMode: true,
+        grabCursor: true,
+        navigation: {
+            nextEl: ".swiper-tags-button-next",
+            prevEl: ".swiper-tags-button-prev",
+        },
+        breakpoints: {
+            320: { spaceBetween: 8 },
+            768: { spaceBetween: 10 },
+            1024: { spaceBetween: 12 }
+        }
+    });
+});
+// ==============================
 window.onscroll = function() {
   myFunction();
 };

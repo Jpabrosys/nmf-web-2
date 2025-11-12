@@ -138,35 +138,34 @@
 ?>
 
     @if (!empty($data['uniqueTags']) && count(array_filter($data['uniqueTags'])))
-        <div class="swiper-tags-container">
-            <div class="swiper swiper-tags-main">
-                <div class="gradient-left"></div>
-                <div class="gradient-right"></div>
-                <div class="swiper-wrapper swiper-tags-wrapper">
-                    @php
-                        $baseUrl = config('global.base_url'); // e.g. https://www.newsnmf.com
-                    @endphp
+<div class="swiper-tags-container">
+    <div class="swiper swiper-tags-main">
+        <div class="gradient-left"></div>
+        <div class="gradient-right"></div>
 
-                    <div class="swiper-wrapper swiper-tags-wrapper">
-                        @foreach ($data['uniqueTags'] as $tag)
-                            @if (trim($tag) !== '')
-                                <a href="{{ rtrim($baseUrl, '/') }}/search?search={{ urlencode($tag) }}"
-                                class="swiper-slide swiper-tag">{{ $tag }}</a>
-                            @endif
-                        @endforeach
-                    </div>
-                </div>
+        <div class="swiper-wrapper swiper-tags-wrapper">
+            @php
+                $baseUrl = config('global.base_url');
+            @endphp
 
-
-                <!-- Navigation buttons -->
-                <div class="swiper-tags-button-prev">
-                    <i class="fas fa-chevron-left"></i>
-                </div>
-                <div class="swiper-tags-button-next">
-                    <i class="fas fa-chevron-right"></i>
-                </div>
-            </div>
+            @foreach ($data['uniqueTags'] as $tag)
+                @if (trim($tag) !== '')
+                    <a href="{{ rtrim($baseUrl, '/') }}/search?search={{ urlencode($tag) }}"
+                       class="swiper-slide swiper-tag">{{ $tag }}</a>
+                @endif
+            @endforeach
         </div>
+
+        <!-- Navigation buttons -->
+        <div class="swiper-tags-button-prev">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="swiper-tags-button-next">
+            <i class="fas fa-chevron-right"></i>
+        </div>
+    </div>
+</div>
+
     @endif
 
 

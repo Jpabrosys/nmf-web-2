@@ -33,13 +33,13 @@ $metaDescription = preg_replace('/\s+/', ' ', $metaDescription);
     <meta name="googlebot" content="notranslate">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-@if (request()->is('video/*'))
+<!-- @if (request()->is('video/*'))
     <meta http-equiv="refresh" content="1200" /> 
 @elseif (request()->is('podcast/*'))
     <meta http-equiv="refresh" content="1200" />
 @else
     <meta http-equiv="refresh" content="300" />
-@endif
+@endif -->
     
   <!-- Google Tag Manager -->
     @if (config('global.gtm_enabled'))

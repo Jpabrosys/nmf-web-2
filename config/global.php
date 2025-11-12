@@ -459,7 +459,7 @@ return [
 
      /* NL1031:20Sept:2025:Added:base path for asset and frontend */
 
-    'base_url_asset' => 'https://stgn.newsnmf.com/',
+    'base_url_asset' => 'http://nmf.test/',
     'base_url_frontend' => 'https://www.newsnmf.com/',
     'base_url' => 'http://127.0.0.1:8000/',
 

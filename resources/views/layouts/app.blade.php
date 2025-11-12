@@ -60,12 +60,16 @@ $metaDescription = preg_replace('/\s+/', ' ', $metaDescription);
         })(window, document, 'script', 'dataLayer', '{{ config('global.gtm_id') }}');
     </script>
     @endif
-    <!-- End Google Tag Manager -->
-     <!-- Canonical -->
-     @php
-        $canonicalUrl = str_replace('/amp', '/', url()->current());
-    @endphp
-    <link rel="canonical" href="{{ $canonicalUrl }}" />
+    <?php
+    $current = rtrim(url()->current(), '/');
+    $home = rtrim(config('global.base_url_frontend'), '/');
+    $canonicalUrl = str_replace('/amp', '/', url()->current());
+    ?>
+    @if ($current == $home)
+        <link rel="canonical" href="{{ config('global.base_url_frontend') }}">
+    @else
+        <link rel="canonical" href="{{ $canonicalUrl }}">
+    @endif
     @yield('head')
     <!-- NL1025:20Sept:2025:Added config path -->
     <link href="{{config('global.base_url_frontend')}}frontend/images/logo.png" rel="shortcut icon" type="image/x-icon">
@@ -601,7 +605,7 @@ window.addEventListener('load', function () {
                 <i class="fas fa-home"></i>
                 <span>होम</span>
             </a>
-            <a href="{{ config('global.base_url') . '/nmfvideos' }}" class="nav-item">
+            <a href="{{ config('global.base_url') . 'nmfvideos' }}" class="nav-item">
                 <i class="fa-solid fa-video"></i> 
                 <span>वीडियो</span>
             </a>

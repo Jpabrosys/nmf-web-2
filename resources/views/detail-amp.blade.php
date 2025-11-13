@@ -50,7 +50,7 @@
 
 
         /* ---------------------------
-       WIDGET BOX (categories-canoon)
+       categories-canoon
        --------------------------- */
         #categories-canoon {
             background-color: #fff;
@@ -70,7 +70,7 @@
 
 
         /* ---------------------------
-       MORE BUTTON (अधिक →)
+       MORE BUTTON
        --------------------------- */
         .more_btn {
             display: inline-block;
@@ -93,7 +93,7 @@
             box-sizing: border-box;
         }
 
-        /* Devanagari font with proper fallback stack */
+        /* Devanagari font */
         body {
             font-family: "Noto Sans Devanagari", "Nirmala UI", "Mangal", "Utsaah",
                 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -102,7 +102,6 @@
             color: #333;
         }
 
-        /* Apply font when loaded */
         .noto-sans-loaded body {
             font-family: "Noto Sans Devanagari", "Nirmala UI", "Mangal", "Utsaah",
                 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -1092,6 +1091,7 @@
         }
 
         /* Just In Widget */
+
         .just_in {
             padding: 1px 14px 0;
             border-radius: 10px;
@@ -1107,7 +1107,7 @@
             font-size: 17px;
             line-height: 25px;
             font-weight: 600;
-            margin-left: 29px;
+            margin-left: 28px;
             margin-bottom: 12px;
             margin-top: 10px;
         }
@@ -1116,8 +1116,8 @@
         .js_t::after {
             position: absolute;
             content: "";
-            height: 14px;
-            width: 14px;
+            height: 15px;
+            width: 15px;
             border-radius: 50%;
             left: -29px;
             background-color: #ff1a1a;
@@ -1132,7 +1132,7 @@
 
         @keyframes pulse {
             from {
-                transform: scale(0.9);
+                transform: scale(0.8);
                 opacity: 1;
             }
 
@@ -1144,7 +1144,7 @@
 
         .js_block {
             padding: 0 6px 0 0;
-            height: 150px;
+            height: 230px;
             overflow-y: auto;
             list-style: none;
             padding-left: 0;
@@ -1183,9 +1183,16 @@
         .js_right {
             margin-bottom: 4px;
         }
+        
+        .js_right p {
+            margin-bottom: 3px;
+            font-size: 14px;
+            color: #5f5f5f;
+            font-weight: 600;
 
+        }
         .js_right a {
-            font-size: 16px;
+            font-size: 15px;
             color: #666;
             font-weight: 400;
             line-height: 22px;
@@ -1199,6 +1206,25 @@
 
         .js_right a:hover {
             color: red;
+        }
+
+        .js_left {
+            width: 2px;
+            height: 55px;
+            background: #d2cdcd;
+            position: relative;
+            margin-top: 19px;
+        }
+
+        .js_left::after {
+            position: absolute;
+            content: "";
+            height: 8px;
+            width: 8px;
+            border-radius: 50%;
+            left: -3px;
+            background-color: #ff1a1a;
+            top: -14px;
         }
 
         /* Footer Mobile */

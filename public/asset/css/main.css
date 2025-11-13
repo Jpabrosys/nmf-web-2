@@ -5552,14 +5552,6 @@ iframe[src*="facebook.com"] {
     min-width: auto;
     flex-shrink: 0;
     overflow: hidden;
-
-    &:hover {
-        color: #000000;
-        background: #e1e1e1;
-        border: 1px solid #e7e7e7;
-    }
-
-
 }
 
 .swiper-tag.active {

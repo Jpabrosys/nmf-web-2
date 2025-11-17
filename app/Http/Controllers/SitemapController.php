@@ -135,13 +135,22 @@ public function videoSitemap()
         ->get();
 
     foreach ($videos as $video) {
+
         if (!$video->category) continue;
 
         $urls[] = [
             'loc' => url('/videos/' . $video->category->site_url . '/' . $video->site_url),
             'lastmod' => $video->updated_at,
-            'priority' => '0.5',
-            'thumbnail' => url($video->thumbnail_path), 
+
+            // VIDEO FIELDS
+            'thumbnail' => url($video->thumbnail_path),
+            'title' => $video->title,
+            'description' => strip_tags($video->description),
+            'content' => url($video->video_path),
+            'duration' => $video->duration ?? null,
+            'publication_date' => ($video->published_at ?? $video->created_at)->toAtomString(),
+            'category' => $video->category->name,
+            'uploader' => 'newsnmf.com',
         ];
     }
 
@@ -149,6 +158,7 @@ public function videoSitemap()
         ->view('video-sitemap', compact('urls'))
         ->header('Content-Type', 'application/xml');
 }
+
 
 
 public function reelVideoSitemap()
@@ -162,13 +172,19 @@ public function reelVideoSitemap()
         ->get();
 
     foreach ($clips as $clip) {
+
         if (!$clip->category) continue;
 
         $urls[] = [
-            'loc' => url('/reels/' . $clip->category->site_url . '/' . $clip->site_url),
-            'lastmod' => $clip->updated_at,
-            'priority' => '0.5',
-            'thumbnail' => url($clip->thumb_image), 
+            'loc'        => url('/reels/' . $clip->category->site_url . '/' . $clip->site_url),
+            'lastmod'    => $clip->updated_at,
+            'priority'   => '0.5',
+            'thumbnail'  => url($clip->thumb_image),
+            'title'       => $clip->title,
+            'description' => strip_tags($clip->description),
+            'category'    => $clip->category->name,
+            'published_at'=> $clip->created_at->toAtomString(),
+            'uploader'    => "newsnmf.com"
         ];
     }
 
@@ -176,6 +192,7 @@ public function reelVideoSitemap()
         ->view('reel-sitemap', compact('urls'))
         ->header('Content-Type', 'application/xml');
 }
+
 
 
 

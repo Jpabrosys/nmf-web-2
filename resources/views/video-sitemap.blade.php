@@ -11,6 +11,10 @@
         <video:thumbnail_loc><![CDATA[ {{ $url['thumbnail'] }} ]]></video:thumbnail_loc>
         <video:title><![CDATA[ {{ $url['title'] }} ]]></video:title>
         <video:description><![CDATA[ {{ $url['description'] }} ]]></video:description>
+        
+        @if(!empty($url['content']))
+        <video:content_loc><![CDATA[ {{ $url['content'] }} ]]></video:content_loc>
+        @endif
 
         @if(!empty($url['duration']))
         <video:duration>{{ $url['duration'] }}</video:duration>
@@ -20,6 +24,9 @@
 
         <video:category><![CDATA[ {{ $url['category'] }} ]]></video:category>
         <video:uploader><![CDATA[ {{ $url['uploader'] }} ]]></video:uploader>
+        
+        <video:family_friendly>yes</video:family_friendly>
+        
     </video:video>
 
 </url>

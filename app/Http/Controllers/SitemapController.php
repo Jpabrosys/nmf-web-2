@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Video;
 use App\Models\Clip;
+use Illuminate\Support\Str;
 
 class SitemapController extends Controller
 {
@@ -125,73 +126,132 @@ class SitemapController extends Controller
                         ->header('Content-Type', 'application/xml');
     }
 public function videoSitemap()
-{
-    $urls = [];
+    {
+        $urls = [];
 
-    $videos = Video::where('is_active', 1)
-        ->with('category')
-        ->orderBy('created_at', 'desc')
-        ->take(100)
-        ->get();
+        $videos = Video::where('is_active', 1)
+            ->with('category')
+            ->orderBy('created_at', 'desc')
+            ->take(100)
+            ->get();
 
-    foreach ($videos as $video) {
+        foreach ($videos as $video) {
 
-        if (!$video->category) continue;
+            if (!$video->category) continue;
 
-        $urls[] = [
-            'loc' => url('/videos/' . $video->category->site_url . '/' . $video->site_url),
-            'lastmod' => $video->updated_at,
+            // Convert "12:42" or "1:05:30" to total seconds
+            $durationInSeconds = $this->parseDurationToSeconds($video->duration);
 
-            // VIDEO FIELDS
-            'thumbnail' => url($video->thumbnail_path),
-            'title' => $video->title,
-            'description' => strip_tags($video->description),
-            'content' => url($video->video_path),
-            'duration' => $video->duration ?? null,
-            'publication_date' => ($video->published_at ?? $video->created_at)->toAtomString(),
-            'category' => $video->category->name,
-            'uploader' => 'newsnmf.com',
-        ];
+            $urls[] = [
+                // --- THIS LINE IS NOW FIXED ---
+                'loc' => url('/videos/' . $video->category->site_url . '/' . $video->site_url),
+                'lastmod' => $video->updated_at,
+
+                // VIDEO FIELDS
+                'thumbnail' => url($video->thumbnail_path),
+                'title' => $video->title,
+                'description' => strip_tags($video->description),
+                'content' => url($video->video_path),
+                'duration' => $durationInSeconds, // Use the new converted value
+                'publication_date' => ($video->published_at ?? $video->created_at)->toAtomString(),
+                'category' => $video->category->name,
+                'uploader' => 'newsnmf.com',
+            ];
+        }
+
+        return response()
+            ->view('video-sitemap', compact('urls'))
+            ->header('Content-Type', 'application/xml');
     }
-
-    return response()
-        ->view('video-sitemap', compact('urls'))
-        ->header('Content-Type', 'application/xml');
-}
-
-
 
 public function reelVideoSitemap()
-{
-    $urls = [];
+    {
+        $urls = [];
 
-    $clips = Clip::where('status', 1)
-        ->with('category')
-        ->orderBy('created_at', 'desc')
-        ->take(100)
-        ->get();
+        $clips = Clip::where('status', 1)
+            ->with('category')
+            ->orderBy('created_at', 'desc')
+            ->take(100)
+            ->get();
 
-    foreach ($clips as $clip) {
+        // --- THIS IS THE EXACT PATH TO REMOVE ---
+        $path_to_remove = "/var/www/html/newsnmf.com/public";
 
-        if (!$clip->category) continue;
+        foreach ($clips as $clip) {
 
-        $urls[] = [
-            'loc'        => url('/reels/' . $clip->category->site_url . '/' . $clip->site_url),
-            'lastmod'    => $clip->updated_at,
-            'priority'   => '0.5',
-            'thumbnail'  => url($clip->thumb_image),
-            'title'       => $clip->title,
-            'description' => strip_tags($clip->description),
-            'category'    => $clip->category->name,
-            'published_at'=> $clip->created_at->toAtomString(),
-            'uploader'    => "newsnmf.com"
-        ];
+            if (!$clip->category) continue;
+
+            // 1. Fixes the DURATION
+            $durationInSeconds = $this->parseDurationToSeconds($clip->duration); 
+
+            // 2. Fix the THUMBNAIL URL
+            // $clip->thumb_image is "http://nmf.test/var/www/.../image.jpg"
+            $correct_thumb_url = str_replace($path_to_remove, '', $clip->thumb_image);
+            // $correct_thumb_url is now "http://nmf.test/image.jpg"
+            
+            // 3. Fix the VIDEO URL
+            // A) Combine the path and filename
+            $broken_video_url = rtrim($clip->video_path, '/') . '/' . $clip->clip_file_name;
+            // $broken_video_url is "http://nmf.test/var/www/.../video.mp4"
+            
+            // B) Remove the server path
+            $correct_video_url = str_replace($path_to_remove, '', $broken_video_url);
+            // $correct_video_url is now "http://nmf.test/file/shortvideos/.../video.mp4"
+
+            $urls[] = [
+                'loc'         => url('/reels/' . $clip->category->site_url . '/' . $clip->site_url),
+                'lastmod'     => $clip->updated_at,
+                
+                // VIDEO FIELDS
+                'thumbnail'   => $correct_thumb_url, // Use the fixed URL
+                'title'       => $clip->title,
+                'description' => strip_tags($clip->description),
+                'content'     => $correct_video_url, // Use the fixed URL
+                'duration'    => $durationInSeconds,
+                'publication_date' => $clip->created_at->toAtomString(),
+                'category'    => $clip->category->name,
+                'uploader'    => "newsnmf.com"
+            ];
+        }
+
+        // Make sure you are using the correct "video-sitemap" blade file
+        return response()
+            ->view('video-sitemap', compact('urls'))
+            ->header('Content-Type', 'application/xml');
     }
+    /**
+     * HELPER FUNCTION
+     * Parses a duration string (e.g., "MM:SS" or "HH:MM:SS") into total seconds.
+     *
+     * @param string|null $duration
+     * @return int|null
+     */
+    private function parseDurationToSeconds($duration)
+    {
+        if (empty($duration) || !is_string($duration)) {
+            return null;
+        }
 
-    return response()
-        ->view('reel-sitemap', compact('urls'))
-        ->header('Content-Type', 'application/xml');
-}
+        $parts = explode(':', $duration);
+        $seconds = 0;
+
+        try {
+            if (count($parts) === 3) { // HH:MM:SS
+                $seconds = ((int)$parts[0] * 3600) + ((int)$parts[1] * 60) + (int)$parts[2];
+            } elseif (count($parts) === 2) { // MM:SS
+                $seconds = ((int)$parts[0] * 60) + (int)$parts[1];
+            } elseif (count($parts) === 1 && is_numeric($parts[0])) { // Already in seconds (SS)
+                $seconds = (int)$parts[0];
+            } else {
+                return null; // Invalid or unhandled format
+            }
+        } catch (\Exception $e) {
+            // In case $parts[n] is not a valid number, etc.
+            return null;
+        }
+        
+        return $seconds > 0 ? $seconds : null;
+    }
 
 
 

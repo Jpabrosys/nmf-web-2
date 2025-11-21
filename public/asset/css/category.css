@@ -131,6 +131,7 @@
     color: #797979;
   }
 }
+
 /* NL1021- 16sep 2025 - poppins removed */
 .editedby {
   font-size: 12px;
@@ -237,7 +238,8 @@
   }
 
   a {
-    font-weight: 500; color: blue;
+    font-weight: 500;
+    color: blue;
     text-decoration: underline;
   }
 }
@@ -259,20 +261,20 @@
 a.trendingtopic_container {
   display: block;
   margin-right: 10px;
-  border: 1px solid #666;
   padding-inline: 10px;
-  padding-block: 3px 0px;
+  padding-block: 1px 0px;
   color: #333;
   text-decoration: none;
   font-weight: 500;
-  font-size: 15px;
-  border-radius: 4px;
-  background: #fff;
+  font-size: 13px;
+  border-radius: 54px;
+  background: #f2f2f2;
 }
 
 a.trendingtopic_container {
   width: fit-content;
 }
+
 /* NL1021- 16sep 2025 - added */
 /* election */
 .election-image {
@@ -498,14 +500,46 @@ a.trendingtopic_container {
 
   .nws_article_strip {
     position: absolute;
-    bottom: 5px;
-    left: 5px;
+    top: 6px;
+    right: 7px;
     font-size: 13px;
     line-height: 20px;
     color: #ff0000;
     text-decoration: none;
   }
 
+}
+
+.playBtn-wrap3 {
+  left: -1px;
+  max-width: 74px;
+  position: absolute;
+  bottom: 0px;
+  padding: 1px 8px 0px 8px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #0e0e0e52;
+  gap: 0px;
+  z-index: 2;
+  backdrop-filter: blur(1px);
+  margin-bottom: 0 !important;
+}
+
+.play-btn3 i {
+  color: #ffff;
+}
+
+.v-duration3 {
+  margin: 0;
+  color: #fff;
+  font-size: 12px;
+  margin-left: 6px;
+  padding-left: 6px;
+  border-left: 1px solid #ffffff52;
+  padding-top: 1px;
+  margin-top: -1px;
 }
 
 .rel_top img {
@@ -742,13 +776,12 @@ a.trendingtopic_container {
   z-index: 1;
   color: #ffffff !important;
   text-decoration: none !important;
-  padding: 0.7em 3.3em 0.7em 1.7em;
+  padding: 0.7em 3.3em 0.5em 1.7em;
   font-size: 18px;
-  border-radius: 0.5em;
+  border-radius: 5.5em;
   border: #009087;
   background-color: #009087;
-  box-shadow: 6px 6px 12px #c5c5c5,
-    -6px -6px 12px #ffffff;
+  box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
 }
 
 .button2:hover {
@@ -1026,6 +1059,7 @@ a.trendingtopic_container {
   display: flex;
   gap: 5px;
 }
+
 /* NL1021- 16sep 2025 - poppins removed */
 .publish_dt,
 .publish_tm {
@@ -1139,7 +1173,7 @@ a.trendingtopic_container {
 .nws_article_strip {
   display: inline-block;
   cursor: pointer;
-  background-color: #fde6e6;
+  background-color: #ffffffed;
   /* background: transparent; */
   color: red;
   border-radius: 5px;
@@ -1618,7 +1652,8 @@ a.trendingtopic_container {
 /* For mobile phones: */
 /* ========================== */
 @media (max-width: 600px) {
-/* NL1021- 16sep 2025 - addeed */
+
+  /* NL1021- 16sep 2025 - addeed */
   .election-image {
     max-width: 100%;
   }
@@ -1906,7 +1941,8 @@ a.trendingtopic_container {
       margin-bottom: 10px;
       font-size: 20px;
     }
-     a {
+
+    a {
       font-weight: 500;
     }
   }

@@ -69,6 +69,59 @@
             padding-right: 15px;
         }
 
+        .rel_artcle_wrap {
+            margin-bottom: 10px
+        }
+
+        .playBtn-wrap2 {
+            left: -1px;
+            max-width: 74px;
+            position: absolute;
+            bottom: 0px;
+            padding: 1px 7px 1px 7px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #0e0e0e52;
+            gap: 3px;
+            z-index: 2;
+            backdrop-filter: blur(1px);
+        }
+
+        .video-items-right .custom-tab-card .playBtn-wrap2 .play-btn {
+            color: #fffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .play-btn i {
+            color: #ffff;
+        }
+
+        .video-items-right .custom-tab-card .playBtn-wrap2 .play-btn i {
+            color: #fff;
+            transition: all 0.3s ease-in-out 0s;
+            -webkit-transition: all 0.3s ease-in-out 0s;
+            -moz-transition: all 0.3s ease-in-out 0s;
+            -ms-transition: all 0.3s ease-in-out 0s;
+            -o-transition: all 0.3s ease-in-out 0s;
+        }
+
+        .v-duration2 {
+            margin: 0;
+            color: #fff;
+            font-size: 12px;
+            margin-left: 6px;
+            padding-left: 6px;
+            border-left: 1px solid #ffffffe1;
+            padding-top: 1px;
+            margin-top: -1px;
+        }
+
         /* ---------------------------
        categories-canoon
        --------------------------- */
@@ -254,6 +307,7 @@
             flex-shrink: 0;
             height: 70px;
             margin-right: 8px;
+            position: relative;
         }
 
         .rel_top img {
@@ -1922,6 +1976,13 @@
                                                 <li>
                                                     <article class="rel_article">
                                                         <div class="rel_top">
+                                                            <div class="playBtn-wrap2">
+                                                                <div class="play-btn"><i class="fa-solid fa-play"></i>
+                                                                </div>
+                                                                <p class="v-duration2">
+                                                                    10:39
+                                                                </p>
+                                                            </div>
                                                             <a
                                                                 href="{{ url('/video/' . ($latest->category->site_url ?? '-') . '/' . $latest->site_url) }}">
                                                                 {{-- Replaced <img> with <amp-img> --}}

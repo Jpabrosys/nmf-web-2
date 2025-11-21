@@ -75,15 +75,15 @@
                         <section class="news_main_section">
                             <div class="cm-container">
                                 <div class="news_main_row">
-                                    
+
                                     {{-- Left Column --}}
                                     <div class="col_left">
                                         <div class="main_article_wrap">
                                             <div class="main_article">
                                                 <h1 class="rt_main">{{ $video->title }}</h1>
                                                 <!-- <p class="rt_sub">
-                                                    {!! $video->description !!}
-                                                </p> -->
+                                                        {!! $video->description !!}
+                                                    </p> -->
                                                 {{-- Metadata --}}
                                                 <div class="artcle_tab">
                                                     <div class="at_left">
@@ -143,7 +143,7 @@
                                                                 </button>
                                                                 <div class="shr_content" id="shr_content">
 
-                                                                     <ul class="social_lnk">
+                                                                    <ul class="social_lnk">
                                                                         <li><a href="http://www.facebook.com/sharer.php?u={{ $videoUrl }}"
                                                                                 target="_blank"><i
                                                                                     class="fab fa-facebook"></i></a></li>
@@ -186,11 +186,11 @@
 
                                                             </a> --}}
                                                         </div>
-                                                     
+
                                                     </div>
                                                 </div>
                                                 {{-- Video / Thumbnail --}}
- <div class="at_img">
+                                                <div class="at_img">
                                                     <figure>
                                                         @if ($video->video_path)
                                                             {{-- <video id="custom_video"
@@ -203,8 +203,11 @@
                                                                 Your browser does not support HTML5 video.
                                                             </video> --}}
 
-                                                                <video controls autoplay muted class="--video-detail respnsive_iframe">
-                                                                <source src="{{ config('global.base_url_videos') . $video->video_path }}" type="video/mp4">
+                                                            <video controls autoplay muted
+                                                                class="--video-detail respnsive_iframe">
+                                                                <source
+                                                                    src="{{ config('global.base_url_videos') . $video->video_path }}"
+                                                                    type="video/mp4">
                                                                 Your browser does not support the video tag.
 
                                                             </video>
@@ -220,8 +223,8 @@
                                                 {{-- Description --}}
                                                 <div class="at_content">
                                                     {{-- {!! $video->description !!} --}}
-                                                     <p class="rt_sub2 mt-1">
-                                                    {!! $video->description !!}
+                                                    <p class="rt_sub2 mt-1">
+                                                        {!! $video->description !!}
                                                     </p>
 
                                                     {{-- Google Ad --}}
@@ -238,6 +241,11 @@
                                                                         <li>
                                                                             <article class="rel_article">
                                                                                 <div class="rel_top">
+                                                                                    <div class="playBtn-wrap3">
+                                                                                        <span class="play-btn3"><i
+                                                                                                class="fa-solid fa-play"></i></span>
+                                                                                        <span class="v-duration3">08:06</span>
+                                                                                    </div>
                                                                                     <a
                                                                                         href="{{ url('/video/' . ($latest->category->site_url ?? '-') . '/' . $latest->site_url) }}">
                                                                                         <img src="{{ config('global.base_url_videos') . $latest->thumbnail_path }}"

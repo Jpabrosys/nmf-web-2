@@ -244,7 +244,7 @@
                                                                                     <div class="playBtn-wrap3">
                                                                                         <span class="play-btn3"><i
                                                                                                 class="fa-solid fa-play"></i></span>
-                                                                                        <span class="v-duration3">08:06</span>
+                                                                                        <span class="v-duration3"> {{ $latest->duration }} </span>
                                                                                     </div>
                                                                                     <a
                                                                                         href="{{ url('/video/' . ($latest->category->site_url ?? '-') . '/' . $latest->site_url) }}">

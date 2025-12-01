@@ -69,10 +69,12 @@ class VideoController extends Controller
         $detailsAds = Ads::where('page_type', 'details')->get()->keyBy('location');
 
         $latests = Video::with('category')
-            ->where('is_active', 1)
-            ->latest()
-            ->limit(6)
-            ->get();
+        ->where('is_active', 1)
+        ->where('id', '!=', $video->id)
+        ->latest()
+        ->limit(6)
+        ->get();
+
 
         // Define widget categories
         $widgetCategoryNames = ['ट्रेंडिंग न्यूज़', 'पॉडकास्ट', 'टेक्नोलॉजी', 'स्पेशल्स'];
@@ -134,10 +136,12 @@ class VideoController extends Controller
 
         // Latest videos (for sidebar)
         $latests = Video::with('category')
-            ->where('is_active', 1)
-            ->latest()
-            ->limit(6)
-            ->get();
+        ->where('is_active', 1)
+        ->where('id', '!=', $video->id)
+        ->latest()
+        ->limit(6)
+        ->get();
+
 
         // SIDE WIDGETS (same logic as normal)
         $widgetCategoryNames = ['ट्रेंडिंग न्यूज़', 'पॉडकास्ट', 'टेक्नोलॉजी', 'स्पेशल्स'];

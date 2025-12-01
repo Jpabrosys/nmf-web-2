@@ -374,7 +374,29 @@
             background-color: #ffffff;
             box-shadow: 3px 9px 16px rgb(0 0 0 / 13%), -3px -3px 10px rgb(255 255 255 / 0%), inset 14px 14px 26px rgb(182 182 182 / 30%), inset -3px -3px 15px rgba(255, 255, 255, 0.05);
         }
+                .follow_us_socials .socials-item:hover {
+            box-shadow: 0 0px 14px rgb(255, 176, 176);
+        }
 
+        .follow_us_socials .socials-item .facebook {
+            color: #1877f2;
+        }
+
+        .follow_us_socials .socials-item .fa-x-twitter {
+            color: #333;
+        }
+
+        .follow_us_socials .socials-item .instagram {
+            color: #e4405f;
+        }
+
+        .follow_us_socials .socials-item .youtube {
+            color: #ff0000;
+        }
+
+        .follow_us_socials .socials-item .whatsapp {
+            color: #25d366;
+        }
         /* Article Content */
         .article--content {
             color: #242424;
@@ -1305,169 +1327,8 @@
         ->take(11)
         ->toArray();
     ?>
-    <header class="--header-amp">
-        <div class="cm-container">
-            <div class="--header-container">
-                <div class="--header-left">
-                    <a href="/" class="--nmf-logo-amp">
-                        <img src="https://www.newsnmf.com/frontend/images/logo.png" alt="Logo" class="--logo" />
-                    </a>
-                </div>
-                <div class="--header-right">
-                    <div class="--header-right-top">
-                        <div class="--hdr-top">
-                            <div class="--hdr-t-l">
-
-                                <button class="--toggle-box" on="tap:ampModalMenu.open" id="toggle-btn">
-                                    <label class="burger" for="burger">
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </label>
-                                </button>
-                            </div>
-                            <small class="Headertag m-0 htag" style="margin-left: 0px;white-space: nowrap;"> <span
-                                    class="" style="color: #fff;">जिस पर देश</span><span
-                                    class="HeadertagHalf">करता है भरोसा</span> </small>
-                        </div>
-
-                        <amp-lightbox id="ampModalMenu" layout="nodisplay">
-                            <div class="modal-content">
-                                <div class="modal_top">
-                                    <button class="close_btn" on="tap:ampModalMenu.close" tabindex="0" role="button"
-                                        aria-label="Close menu">
-                                        ✕
-                                    </button>
-                                    <a href="/" class="modal_logo">
-                                        {{-- UPDATED: Switched to amp-img for compliance --}}
-                                        <amp-img src="https://www.newsnmf.com/frontend/images/logo.png"
-                                            alt="NMF News Logo" width="50" height="48" layout="fixed"></amp-img>
-                                    </a>
-                                    <span class="Headertag" style="margin-left: 0px">
-                                        <span style="color: #333;">जिस पर देश</span>
-                                        <span class="HeadertagHalf">करता है भरोसा</span>
-                                    </span>
-                                </div>
-
-                                <?php
-                                // UPDATED: More comprehensive icon list from detail-amp
-                                $categoryIcons = [
-                                    'होम' => 'fa-solid fa-house',
-                                    'न्यूज' => 'fa-solid fa-newspaper',
-                                    'राज्य' => 'fa-solid fa-landmark',
-                                    'एक्सक्लूसिव' => 'fa-solid fa-star',
-                                    'खेल' => 'fa-solid fa-futbol',
-                                    'मनोरंजन' => 'fa-solid fa-film',
-                                    'धर्म ज्ञान' => 'fa-solid fa-om',
-                                    'टेक्नोलॉजी' => 'fa-solid fa-microchip',
-                                    'लाइफस्टाइल' => 'fa-solid fa-heart',
-                                    'पॉडकास्ट' => 'fa-solid fa-podcast',
-                                    'दुनिया' => 'fa-solid fa-globe',
-                                    'विधान सभा चुनाव' => 'fa-solid fa-person-booth',
-                                    'क्राइम' => 'fa-solid fa-user-secret',
-                                    'वेब स्टोरी' => 'fa-solid fa-photo-film',
-                                    'यूटीलिटी' => 'fa-solid fa-wrench',
-                                    'करियर' => 'fa-solid fa-briefcase',
-                                    'ट्रेंडिंग न्यूज़' => 'fa-solid fa-bolt',
-                                    'ब्लॉग' => 'fa-solid fa-pen-nib',
-                                ];
-                                
-                                $toggleMenus = App\Models\Menu::whereRelation('type', 'type', 'Header')
-                                    ->whereRelation('category', 'category', 'User')
-                                    ->where([['status', '1'], ['menu_id', 0]])
-                                    ->whereNotNull('sequence_id')
-                                    ->where('sequence_id', '!=', 0)
-                                    ->orderBy('sequence_id', 'asc')
-                                    ->get();
-                                ?>
-
-                                <ul class="modalmenu">
-                                    @foreach ($toggleMenus as $menu)
-                                        <?php
-                                        // Submenu logic remains untouched, only used to determine structure
-                                        $subMenus = App\Models\Menu::where('menu_id', $menu->id)->where('status', 1)->where('type_id', 1)->where('category_id', 2)->orderBy('sequence_id', 'asc')->get();
-                                        $hasSubMenus = count($subMenus) > 0;
-                                        ?>
-
-                                        <li class="modal_item">
-                                            @if ($hasSubMenus)
-                                                <!-- AMP Accordion for the collapsible section -->
-                                                <amp-accordion class="amp-menu-toggle" animate>
-                                                    <!-- The <section> defines one accordion item -->
-                                                    <section>
-                                                        <!-- H4 is the required header element and acts as the toggle button for the content below -->
-                                                        <h4 class="amp-menu-header">
-                                                            <!-- The icon and menu name remain, but the H4 is NOT a link to prevent conflict with accordion toggle -->
-                                                            <i
-                                                                class="{{ $categoryIcons[$menu->menu_name] ?? 'fa-solid fa-link' }}"></i>
-                                                            {{ $menu->menu_name }}
-                                                        </h4>
-
-                                                        <!-- The div is the collapsible content -->
-                                                        <div class="amp-menu-submenu-content">
-                                                            <!-- Since the H4 is the toggle, we add the main category link inside the dropdown content -->
-                                                            <a href="{{ asset($menu->menu_link) }}"
-                                                                class="amp-menu-parent-link-in-dropdown">
-                                                                {{ $menu->menu_name }}
-                                                            </a>
-
-                                                            <ul class="modal_submenu">
-                                                                @foreach ($subMenus as $subMenu)
-                                                                    <li>
-                                                                        <a href="{{ asset($subMenu->menu_link) }}">
-                                                                            <!-- Simple unicode circle for maximum AMP compliance and icon consistency -->
-                                                                            <span
-                                                                                style="font-size: 0.5em; vertical-align: middle; margin-right: 8px;">&#9679;</span>
-                                                                            {{ $subMenu->menu_name }}
-                                                                        </a>
-                                                                    </li>
-                                                                @endforeach
-                                                            </ul>
-                                                        </div>
-                                                    </section>
-                                                </amp-accordion>
-                                            @else
-                                                <!-- Simple link if no submenus -->
-                                                <a href="{{ asset($menu->menu_link) }}">
-                                                    <i
-                                                        class=" {{ $categoryIcons[$menu->menu_name] ?? 'fa-solid fa-link' }}"></i>
-                                                    {{ $menu->menu_name }}
-                                                </a>
-                                            @endif
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </amp-lightbox>
-                    </div>
-                </div>
-            </div>
-    </header>
-    <nav class="main-navigation-mob" id="mainMenu">
-        <div class="menu-container">
-            <ul class="menu-list">
-                @php
-                    $baseUrl = config('global.base_url'); // your configured base URL
-                @endphp
-
-                @foreach ($menus as $item)
-                    @php
-                        if (substr($item['menu_link'], 0, 1) !== '/') {
-                            $item['menu_link'] = '/' . $item['menu_link'];
-                        }
-                        $fullUrl =
-                            (substr($baseUrl, -1) === '/' ? substr($baseUrl, 0, -1) : $baseUrl) . $item['menu_link'];
-                    @endphp
-                    <li class="menu-item">
-                        <a href="{{ $fullUrl }}" class="menu-link">{{ $item['menu_name'] }}
-                        </a>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
-    </nav>
+    @include('layouts.header-amp')
     <div class="article--container">
-        \
         <nav class="article-breadcrumb" aria-label="Breadcrumb">
             <ol class="breadcrumb-list">
                 <li class="breadcrumb-item">
@@ -1482,15 +1343,7 @@
                 <li class="breadcrumb-item">
                     <a href="{{ url($category->site_url) }}">{{ $category->name }}</a>
                 </li>
-                <svg fill="#666" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="15"
-                    height="15">
-                    <path
-                        d="M439.1 297.4C451.6 309.9 451.6 330.2 439.1 342.7L279.1 502.7C266.6 515.2 246.3 515.2 233.8 502.7C221.3 490.2 221.3 469.9 233.8 457.4L371.2 320L233.9 182.6C221.4 170.1 221.4 149.8 233.9 137.3C246.4 124.8 266.7 124.8 279.2 137.3L439.2 297.3z" />
-                </svg>
 
-                <li class="breadcrumb-item">
-                    <span>{{ strip_tags($blogs->name) }}</span>
-                </li>
             </ol>
         </nav>
 
@@ -1809,118 +1662,7 @@
         </div>
 
     </div>
-
-    <footer class="footer_main">
-        <div class="cm-container">
-            <div class="footer-top">
-                <div class="footer_left">
-                    <div class="footer_logo_wrap">
-                        <a href="{{ asset('/') }}" class="footer_logo">
-                            <img src="{{ config('global.base_url_frontend') }}frontend/images/logo.png"
-                                alt="" />
-                        </a>
-                        <div class="footer_logo">
-                            <img src="{{ config('global.base_url_asset') }}asset/images/kmc_logo.png" alt="">
-                        </div>
-                    </div>
-                    <p>NMF News is a Subsidary of Khetan Media Creation Pvt Ltd</p>
-                    <div class="contact_wrap">
-                        <div class="contact_block">
-                            <div class="ct_left">
-                                <i class="fa-solid fa-phone"></i>
-                            </div>
-                            <div class="ct_right">
-                                <small>Give us a Call</small>
-                                <a href="tel:+91-080767 27261">+91-080767 27261</a>
-                            </div>
-                        </div>
-                        <div class="contact_block">
-                            <div class="ct_left">
-                                <i class="fa-solid fa-location-dot"></i>
-                            </div>
-                            <div class="ct_right">
-                                <small>Visit Our Office</small>
-                                <p>D-4 1st Floor, Sector 10, Noida, Uttar Pradesh 201301</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="footer_centre">
-                    <div class="footer_col">
-                        <h4>Company</h4>
-                        <ul class="footer_menu">
-                            <li class="footer_item"><a href="{{ asset('/about') }}">About us</a></li>
-                            <li class="footer_item"><a href="{{ asset('/privacy') }}">Privacy Policy</a></li>
-                            <li class="footer_item"><a href="{{ asset('/disclaimer') }}">Disclaimer</a></li>
-                            <li class="footer_item"><a href="{{ asset('/contact') }}">Contact</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer_col">
-                        <h4>Category</h4>
-                        <?php
-                        $footer_menus = App\Models\Menu::where('menu_id', 0)->where('status', 1)->where('type_id', '1')->where('category_id', '2')->limit(8)->get();
-                        $chunks = $footer_menus->chunk(4);
-                        ?>
-                        <ul class="footer_menu">
-                            @foreach ($chunks as $chunk)
-                                <div class="footer_ct">
-                                    @foreach ($chunk as $footer_menu)
-                                        <li class="footer_item">
-                                            <a href="{{ $footer_menu->menu_link }}">{{ $footer_menu->menu_name }}</a>
-                                        </li>
-                                    @endforeach
-                                </div>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-                <div class="footer_right">
-                    <h5>Download App</h5>
-                    <div class="app_btn_wrap">
-                        <a href="https://play.google.com/store/apps/details?id=com.kmcliv.nmfnews"
-                            class="playstore-button">
-                            <svg viewBox="0 0 512 512" class="_icon" fill="currentColor"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M99.617 8.057a50.191 50.191 0 00-38.815-6.713l230.932 230.933 74.846-74.846L99.617 8.057zM32.139 20.116c-6.441 8.563-10.148 19.077-10.148 30.199v411.358c0 11.123 3.708 21.636 10.148 30.199l235.877-235.877L32.139 20.116zM464.261 212.087l-67.266-37.637-81.544 81.544 81.548 81.548 67.273-37.64c16.117-9.03 25.738-25.442 25.738-43.908s-9.621-34.877-25.749-43.907zM291.733 279.711L60.815 510.629c3.786.891 7.639 1.371 11.492 1.371a50.275 50.275 0 0027.31-8.07l266.965-149.372-74.849-74.847z">
-                                </path>
-                            </svg>
-                            <span class="texts">
-                                <span class="text-1">GET IT ON</span>
-                                <span class="text-2">Google Play</span>
-                            </span>
-                        </a>
-                        <a href="https://apps.apple.com/us/app/nmf-news/id6745018964" class="playstore-button">
-                            <svg viewBox="0 0 512 512" class="_icon" fill="currentColor"
-                                xmlns="http://www.w3.org/2000/svg" style="margin-right: -7px;">
-                                <path
-                                    d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
-                            </svg>
-                            <span class="texts">
-                                <span class="text-1">GET IT ON</span>
-                                <span class="text-2">App Store</span>
-                            </span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <div class="f-row">
-                <div class="col-md-6 ps-0">
-                    <div class="footer-site-info">Copyright © 2025 KMC PVT. LTD. All Rights Reserved.</div>
-                </div>
-                <div class="ftcol">
-                    <div class="poweredby">
-                        <span>Designed & Developed by</span>
-                        <a href="https://www.abrosys.com/"> <img width="102" height="19"
-                                src="{{ config('global.base_url_asset') }}asset/images/abrosys.png"
-                                alt="Abrosys Technologies Private Limited"></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+@include('layouts.footer-amp')
 </body>
 
 </html>

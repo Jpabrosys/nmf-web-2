@@ -223,9 +223,9 @@
                                                 {{-- Description --}}
                                                 <div class="at_content">
                                                     {{-- {!! $video->description !!} --}}
-                                                    <p class="rt_sub2 mt-1">
+                                                    <h2 class="rt_sub2 mt-1">
                                                         {!! $video->description !!}
-                                                    </p>
+                                                    </h2>
 
                                                     {{-- Google Ad --}}
                                                     <section class="cm_related_post_container">

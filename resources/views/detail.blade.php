@@ -154,7 +154,7 @@
                                                     {{ $data['blog']->name }}
                                                 </h1>
 
-                                                <p class="rt_sub">{{ $data['blog']->sort_description }}</p>
+                                                <h2 class="rt_sub">{{ $data['blog']->sort_description }}</h2>
 
                                                 <div class="artcle_tab">
                                                     <div class="at_left">

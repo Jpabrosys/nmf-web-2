@@ -142,8 +142,8 @@
                                     <div class="col_left">
                                         <div class="main_article_wrap">
                                             <div class="main_article">
-                                                <h3 class="rt_main"> {{ $blogs->name }}</h3>
-                                                <p class="rt_sub">{{ $blogs->sort_description }}</p>
+                                                <h1 class="rt_main"> {{ $blogs->name }}</h1>
+                                                <h2 class="rt_sub">{{ $blogs->sort_description }}</h2>
                                                 <div class="artcle_tab">
                                                     <div class="at_left flex-wrap-reverse flex-md-wrap ">
                                                         <div class="editedby">Created By: <a

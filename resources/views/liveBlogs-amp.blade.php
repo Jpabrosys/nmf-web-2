@@ -1357,7 +1357,7 @@
             <div class="article--main-content">
                 <header class="article--header">
                     <h1 class="article--title">{{ $blogs->name }}</h1>
-                    <p class="article--subtitle">{{ $blogs->sort_description }}</p>
+                    <h2 class="article--subtitle">{{ $blogs->sort_description }}</h2>
                 </header>
 
                 <div class="article--meta">

@@ -1688,7 +1688,7 @@
                 <!-- Article Header -->
                 <header class="article--header">
                     <h1 class="article--title">{{ $data['blog']->name }}</h1>
-                    <p class="article--subtitle">{{ $data['blog']->sort_description }}</p>
+                    <h2 class="article--subtitle">{{ $data['blog']->sort_description }}</h2>
                 </header>
 
                 <!-- Article Meta -->

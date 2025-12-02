@@ -18,7 +18,7 @@
     $class = '';
     $videorow = 0;
     $videobutrow = 0;
-
+    
     $sectionCategories = [];
     $sidebarCategoriesList = [];
     $bannerList = [];
@@ -26,14 +26,14 @@
     $bannerlinkurl = '#';
     $bannermobileimgurl = null;
     $bannermobilelinkurl = '#';
-
+    
     //Section categories
     if (!empty($data['homeSections'])) {
         foreach ($data['homeSections'] as $section) {
             $title = strtolower($section->title);
-
+    
             // Section category mapping
-
+    
             $sectionOrder = (int) $section->section_order;
             $sectionCategories[$sectionOrder] = [
                 'catid' => $section->catid,
@@ -41,11 +41,11 @@
                 'site_url' => optional($section->category)->site_url ?? '',
             ];
         }
-
+    
         // Extract special sections (राज्य and विधान सभा चुनाव) and remove from list
         $rajyaSection = collect($sectionCategories)->firstWhere('name', 'राज्य');
         $bidhanSabhaSection = collect($sectionCategories)->firstWhere('name', 'विधान सभा चुनाव');
-
+    
         $sectionCategories = collect($sectionCategories)
             ->reject(fn($section) => in_array($section['name'], ['राज्य', 'विधान सभा चुनाव']))
             ->values() // reindex starting from 0
@@ -53,15 +53,15 @@
                 return [$index + 1 => $item]; // start from 1
             })
             ->toArray();
-
+    
         //dd($sectionCategories);
     }
-
+    
     // Sidebar categories
     if (!empty($data['sidebarCategories'])) {
         foreach ($data['sidebarCategories'] as $sidebarSection) {
             $sectionOrder = (int) $sidebarSection->sidebar_sec_order;
-
+    
             if (!empty($sidebarSection->category)) {
                 $sidebarCategoriesList[$sectionOrder] = [
                     'catid' => $sidebarSection->catid,
@@ -70,7 +70,7 @@
                 ];
             }
         }
-
+    
         // Reindex starting from 1
         $sidebarCategoriesList = collect(array_values($sidebarCategoriesList))
             ->mapWithKeys(function ($item, $index) {
@@ -78,13 +78,12 @@
             })
             ->toArray();
     }
-
+    
     // Banners
     if (!empty($data['banners'])) {
         foreach ($data['banners'] as $bannerSection) {
-
             $title = strtolower($bannerSection->title);
-
+    
             if ($title === 'banner') {
                 $bannerimgurl = $bannerSection->image_url;
                 $bannerlinkurl = $bannerSection->banner_link ?? '#';
@@ -94,7 +93,7 @@
             }
         }
     }
-
+    
     ?>
 
     <?php
@@ -125,7 +124,7 @@
                         $todayEng = str_replace(' ', '-', date('jS F Y')); // e.g., 5th-May-2025
                         ?>
                         <a class="brk-link"
-                            href="{{ config('global.base_url').('breakingnews/latest-breaking-news-in-hindi-nmfnews-') }}{{ $todayEng }}">
+                            href="{{ config('global.base_url') . 'breakingnews/latest-breaking-news-in-hindi-nmfnews-' }}{{ $todayEng }}">
                             {{ $blogname }}
                         </a>
                     </div>
@@ -138,79 +137,78 @@
 ?>
 
     @if (!empty($data['uniqueTags']) && count(array_filter($data['uniqueTags'])))
-<div class="swiper-tags-container">
-    <div class="swiper swiper-tags-main">
-        <div class="gradient-left"></div>
-        <div class="gradient-right"></div>
+        <div class="swiper-tags-container">
+            <div class="swiper swiper-tags-main">
+                <div class="gradient-left"></div>
+                <div class="gradient-right"></div>
 
-        <div class="swiper-wrapper swiper-tags-wrapper">
-            @php
-                $baseUrl = config('global.base_url');
-            @endphp
+                <div class="swiper-wrapper swiper-tags-wrapper">
+                    @php
+                        $baseUrl = config('global.base_url');
+                    @endphp
 
-            @foreach ($data['uniqueTags'] as $tag)
-                @if (trim($tag) !== '')
-                    <a href="{{ rtrim($baseUrl, '/') }}/search?search={{ urlencode($tag) }}"
-                       class="swiper-slide swiper-tag">{{ $tag }}</a>
-                @endif
-            @endforeach
+                    @foreach ($data['uniqueTags'] as $tag)
+                        @if (trim($tag) !== '')
+                            <a href="{{ rtrim($baseUrl, '/') }}/search?search={{ urlencode($tag) }}"
+                                class="swiper-slide swiper-tag">{{ $tag }}</a>
+                        @endif
+                    @endforeach
+                </div>
+
+                <!-- Navigation buttons -->
+                <div class="swiper-tags-button-prev">
+                    <i class="fas fa-chevron-left"></i>
+                </div>
+                <div class="swiper-tags-button-next">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
         </div>
-
-        <!-- Navigation buttons -->
-        <div class="swiper-tags-button-prev">
-            <i class="fas fa-chevron-left"></i>
-        </div>
-        <div class="swiper-tags-button-next">
-            <i class="fas fa-chevron-right"></i>
-        </div>
-    </div>
-</div>
-
     @endif
 
 
-@php
-    $showMaha = HomeSection::where('title', 'ElectionMahaSection')->where('status', 1)->exists();
-   
-    $showLive = HomeSection::where('title', 'ElectionLiveSection')->value('status') ?? 0;
-   $showExitpoll = HomeSection::where('title', 'ExitPollSection')->value('status') ?? 0;
-
-    $showBigEvent = HomeSection::where('title', 'DisplayBigEvent')->where('status', 1)->value('status') ?? false;
-@endphp
-
-
-
-
-@if ($showExitpoll==1)
-    {{-- Show Exit Poll when Live is off --}}
-
-    @include('components.election-exit-poll')
-
-    @if ($showBigEvent)
-        <x-horizontal-ad :ad="$data['homeAds']['home_header_ad'] ?? null" />
-    @endif
-@elseif ($showLive==1)
-    {{--  Live has highest priority --}}
-
-    @include('components.election-live-section')
-      @if ($showBigEvent)
-        <x-horizontal-ad :ad="$data['homeAds']['home_header_ad'] ?? null" />
-    @endif
-@endif
-
-    
     @php
-        $showVoteInTopNews = HomeSection::where('title', 'ShowVoteInTop')
-            ->where('status', 1)
-            ->value('status') ?? false;
+        $showMaha = HomeSection::where('title', 'ElectionMahaSection')->where('status', 1)->exists();
+
+        $showLive = HomeSection::where('title', 'ElectionLiveSection')->value('status') ?? 0;
+        $showExitpoll = HomeSection::where('title', 'ExitPollSection')->value('status') ?? 0;
+
+        $showBigEvent = HomeSection::where('title', 'DisplayBigEvent')->where('status', 1)->value('status') ?? false;
+    @endphp
+
+
+
+
+    @if ($showExitpoll == 1)
+        {{-- Show Exit Poll when Live is off --}}
+
+        @include('components.election-exit-poll')
+
+        @if ($showBigEvent)
+            <x-horizontal-ad :ad="$data['homeAds']['home_header_ad'] ?? null" />
+        @endif
+    @elseif ($showLive == 1)
+        {{--  Live has highest priority --}}
+
+        @include('components.election-live-section')
+        @if ($showBigEvent)
+            <x-horizontal-ad :ad="$data['homeAds']['home_header_ad'] ?? null" />
+        @endif
+    @endif
+
+
+    @php
+        $showVoteInTopNews = HomeSection::where('title', 'ShowVoteInTop')->where('status', 1)->value('status') ?? false;
     @endphp
 
     @if ($showBigEvent)
         @php
             $bigEvent = BigEvent::where('is_active', 1)
-                ->with(['blogs' => function($query) {
-                    $query->latest()->take(3);
-                }])
+                ->with([
+                    'blogs' => function ($query) {
+                        $query->latest()->take(3);
+                    },
+                ])
                 ->orderBy('created_at', 'desc')
                 ->first();
         @endphp
@@ -220,42 +218,41 @@
 
         {{-- Horizontal-1 Advertise --}}
     @endif
-        {{-- Horizontal-1 Advertise --}}
-            <x-horizontal-ad :ad="$data['homeAds']['home_header_ad'] ?? null" />
+    {{-- Horizontal-1 Advertise --}}
+    <x-horizontal-ad :ad="$data['homeAds']['home_header_ad'] ?? null" />
 
-            @php $showBannerAboveTopNews = HomeSection::where('title', 'ShowBannerAboveTopStory')
-                ->where('status', 1)
-                ->value('status') ?? false;
-            @endphp
+    @php$showBannerAboveTopNews =
+                    HomeSection::where('title', 'ShowBannerAboveTopStory')->where('status', 1)->value('status') ?? false;
+        @endphp ?>
 
-            {{-- Banner Section --}}
-            @if ($showBannerAboveTopNews)
-                @include('components.home.banner-section', [
-                    'bannerimgurl' => $bannerimgurl,
-                    'bannerlinkurl' => $bannerlinkurl,
-                    'bannermobileimgurl' => $bannermobileimgurl,
-                    'bannermobilelinkurl' => $bannermobilelinkurl,
-            ])
-            @endif
+    {{-- Banner Section --}}
+    @if ($showBannerAboveTopNews)
+        @include('components.home.banner-section', [
+            'bannerimgurl' => $bannerimgurl,
+            'bannerlinkurl' => $bannerlinkurl,
+            'bannermobileimgurl' => $bannermobileimgurl,
+            'bannermobilelinkurl' => $bannermobilelinkurl,
+        ])
+    @endif
 
-            
-            {{-- Top News Section --}}
-            <section class="top--news">
-                @include('components.home.top-news-section', [
-                    'showVoteInTopNews' => $showVoteInTopNews
-                ])
-            </section>
 
-            {{-- Banner Section --}}
-            @if (!$showBannerAboveTopNews)
-                @include('components.home.banner-section', [
-                    'bannerimgurl' => $bannerimgurl,
-                    'bannerlinkurl' => $bannerlinkurl,
-                    'bannermobileimgurl' => $bannermobileimgurl,
-                    'bannermobilelinkurl' => $bannermobilelinkurl,
-                ])
-            @endif
-   
+    {{-- Top News Section --}}
+    <section class="top--news">
+        @include('components.home.top-news-section', [
+            'showVoteInTopNews' => $showVoteInTopNews,
+        ])
+    </section>
+
+    {{-- Banner Section --}}
+    @if (!$showBannerAboveTopNews)
+        @include('components.home.banner-section', [
+            'bannerimgurl' => $bannerimgurl,
+            'bannerlinkurl' => $bannerlinkurl,
+            'bannermobileimgurl' => $bannermobileimgurl,
+            'bannermobilelinkurl' => $bannermobilelinkurl,
+        ])
+    @endif
+
 
 
     <div id="appDownloadModal">
@@ -266,7 +263,7 @@
             <p>Get the best experience by downloading our mobile app!</p>
             <div class="app_btn_wrap justify-content-center">
                 <a href="https://www.newsnmf.com/nmfapps/" class="playstore-button">
-                    
+
                     <span class="texts">
                         <span class="text-2">
                             Download the App
@@ -323,7 +320,7 @@
 
 
     <div class="news-panel reels">
-                @include('components.reels-section')
+        @include('components.reels-section')
     </div>
 
     <section class="custom_block">
@@ -364,100 +361,97 @@
         </div>
     </div>
 
-<section class="custom_block">
-    @if (!empty($sectionCategories[5]))
-        @include('components.news-nine-style', [
-            'cat_id'        => $sectionCategories[5]['catid'],
-            'cat_name'      => $sectionCategories[5]['name'],
-            'cat_site_url'  => $sectionCategories[5]['site_url'],
-        ])
-    @endif
- 
-    <div class="rasifal-section">
-        <div class="cm-container">
- 
-            <div class="rashifal-section">
-                <div class="rashifal-container" role="region" aria-label="राशिफल दैनिक">
-                                    <div class="rashifal-box">
- 
-                    <div class="rotating-bg" aria-hidden="true"></div>
- 
-                    <?php
-                        $rashis = App\Models\Rashifal::where('status', 1)->get();
-                    ?>
- 
-                    <div class="rashifal-wrapper">
- 
-                        <!-- Navigation Buttons -->
-                        <button class="nav-btn prev" aria-label="पिछला राशिफल">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
- 
-                        <div class="rashifal-slider"
-                             tabindex="0"
-                             role="listbox"
-                             aria-live="polite"
-                             aria-label="राशि चिन्ह">
- 
-                            <div class="rashifal-item spacer" aria-hidden="true"></div>
- 
-                            @foreach($rashis as $index => $r)
-                                <?php
-                                    $rashiImg = config('global.base_url_image') . $r->full_path . '/' . $r->file_name;
-                                ?>
-                                <div class="rashifal-item" role="option"
-                                     aria-selected="{{ $index == 0 ? 'true':'false' }}">
-                            <img src="{{ $rashiImg }}"
-                                alt="{{ $r->name }}"
-                                data-sign="{{ strtolower($r->name) }}"
-                                data-title="{{ $r->name }}"
-                                data-description="{{ $r->description }}"
-                                class="{{ $index == 0 ? 'active':'' }}"
-                                loading="lazy"
-                                tabindex="0" />
+    <section class="custom_block">
+        @if (!empty($sectionCategories[5]))
+            @include('components.news-nine-style', [
+                'cat_id' => $sectionCategories[5]['catid'],
+                'cat_name' => $sectionCategories[5]['name'],
+                'cat_site_url' => $sectionCategories[5]['site_url'],
+            ])
+        @endif
+
+        <div class="rasifal-section">
+            <div class="cm-container">
+
+                <div class="rashifal-section">
+                    <div class="rashifal-container" role="region" aria-label="राशिफल दैनिक">
+                        <div class="rashifal-box">
+
+                            <div class="rotating-bg" aria-hidden="true"></div>
+
+                            <?php
+                            $rashis = App\Models\Rashifal::where('status', 1)->get();
+                            ?>
+
+                            <div class="rashifal-wrapper">
+
+                                <!-- Navigation Buttons -->
+                                <button class="nav-btn prev" aria-label="पिछला राशिफल">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+
+                                <div class="rashifal-slider" tabindex="0" role="listbox" aria-live="polite"
+                                    aria-label="राशि चिन्ह">
+
+                                    <div class="rashifal-item spacer" aria-hidden="true"></div>
+
+                                    @foreach ($rashis as $index => $r)
+                                        <?php
+                                        $rashiImg = config('global.base_url_image') . $r->full_path . '/' . $r->file_name;
+                                        ?>
+                                        <div class="rashifal-item" role="option"
+                                            aria-selected="{{ $index == 0 ? 'true' : 'false' }}">
+                                            <img src="{{ $rashiImg }}" alt="{{ $r->name }}"
+                                                data-sign="{{ strtolower($r->name) }}" data-title="{{ $r->name }}"
+                                                data-description="{{ $r->description }}"
+                                                class="{{ $index == 0 ? 'active' : '' }}" loading="lazy" tabindex="0" />
+                                        </div>
+                                    @endforeach
+
+                                    <div class="rashifal-item spacer" aria-hidden="true"></div>
+
                                 </div>
-                            @endforeach
- 
-                            <div class="rashifal-item spacer" aria-hidden="true"></div>
- 
+
+                                <!-- Navigation Buttons -->
+                                <button class="nav-btn next" aria-label="अगला राशिफल">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+
+                            </div>
+
+                            <!-- Dynamic Title -->
+                            <h2 id="rashifal-title">
+                                आपके तारे - दैनिक: {{ $rashis[0]->name ?? '' }}
+                            </h2>
+
+                            <!-- Dynamic Description -->
+                            <p id="rashifal-text">
+                                {{ $rashis[0]->description ?? '' }}
+                            </p>
+
                         </div>
- 
-                        <!-- Navigation Buttons -->
-                        <button class="nav-btn next" aria-label="अगला राशिफल">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
- 
+
+                        <div class="adBgSidebar">
+                            <div class="adtxt">Advertisement</div>
+
+                            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3986924419662120"
+                                data-ad-slot="6911924096" data-ad-format="auto" data-full-width-responsive="true">
+                            </ins>
+
+                            <script>
+                                (adsbygoogle = window.adsbygoogle || []).push({});
+                            </script>
+                        </div>
+
+
                     </div>
- 
-                    <!-- Dynamic Title -->
-                    <h2 id="rashifal-title">
-                        आपके तारे - दैनिक: {{ $rashis[0]->name ?? '' }}
-                    </h2>
- 
-                    <!-- Dynamic Description -->
-                    <p id="rashifal-text">
-                        {{ $rashis[0]->description ?? '' }}
-                    </p>
- 
+
                 </div>
- 
-                <div class="adBgSidebar">
-                    <div class="adtxt">Advertisement</div>
-                    <div class="ad-section side_unit2">
-                        <a href="#" target="_blank">
-                            <img src="{{ asset('asset/images/ads/my-ad-banner.png') }}" alt="Advertisement">
-                        </a>
-                    </div>
-                </div>
- 
-                </div>
- 
+
             </div>
- 
         </div>
-    </div>
-</section>
- 
+    </section>
+
 
 
     <div class="div_row mb-3">
@@ -603,7 +597,7 @@
                                     {{-- Show vote after the second sidebar (1-based index) --}}
                                     <div id="categories-2" class="widget widget_categories">
                                         <div class="news-tab">
-                                            @if(!$showVoteInTopNews)
+                                            @if (!$showVoteInTopNews)
                                                 @include('components.vote')
                                             @else
                                                 @include('components.podcast')
@@ -657,8 +651,8 @@
 
                     {{-- Only show heading if the component does NOT have its own header --}}
                     {{-- @if (!in_array($layoutType, [0, 2])) --}}
-                        {{-- skip news-nine-style (used in case 0 & 2) --}}
-                        {{-- <div class="news-tabs nwstb">
+                    {{-- skip news-nine-style (used in case 0 & 2) --}}
+                    {{-- <div class="news-tabs nwstb">
                             <a class="newstab_title me-3" href="{{ $section['site_url'] }}">
                                 <h2>{{ $section['name'] }}</h2>
                             </a>
@@ -717,5 +711,5 @@
         </div>
     </div>
     <!-- video js -->
-<script src="{{ asset('asset/js/rashifal.js') }}" defer></script>
+    <script src="{{ asset('asset/js/rashifal.js') }}" defer></script>
 @endsection

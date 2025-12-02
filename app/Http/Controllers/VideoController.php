@@ -65,6 +65,9 @@ class VideoController extends Controller
         if (!$video || !$video->category || $video->category->site_url !== $cat_name) {
             return abort(404);
         }
+        
+        // Increase website view count
+        Video::where('id', $video->id)->increment('webViewCount');
 
         $detailsAds = Ads::where('page_type', 'details')->get()->keyBy('location');
 

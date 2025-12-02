@@ -20,7 +20,7 @@ class ReelVideoController extends Controller
         $currentVideo = Clip::where('site_url', $name)
             ->where('status', 1)
             ->firstOrFail();
-
+         $currentVideo->increment('webViewCount');
         // Optional: validate the category slug (or ignore if unnecessary)
         if ($currentVideo->category && $currentVideo->category->site_url !== $cat_name) {
             // Optional: redirect to correct URL

@@ -142,6 +142,8 @@
                                                 <th>Title</th>
                                                 <th>English Name</th>
                                                 <th class="text-nowrap">Category Name</th>
+                                                <th>Web View Count</th>
+                                                <th>App View Count</th>
                                                 <th>Created At</th>
                                                 <th>Manage</th>
                                                 <th>Enable</th>
@@ -160,6 +162,8 @@
                                                         <td>{{ $webstory->name }}</td>
                                                         <td>{{ $webstory->eng_name }}</td>
                                                         <td>{{ $webstory->category->name }}</td>
+                                                        <td>{{ $webstory->webViewCount }}</td>
+                                                        <td> </td>
                                                         <td>{{ $webstory->created_at->format('d-m-Y H:i:s') }}</td>
                                                         <td class="text-nowrap">
                                                             <a class="act_btn"

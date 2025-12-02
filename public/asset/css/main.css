@@ -2388,7 +2388,8 @@ body.boxed .page-wrapper .cm-container {
     position: relative;
     width: 100%;
     max-width: 560px;
-    background: #000e39;
+    background-image: radial-gradient(50% 30% ellipse at center top, #000e39 0%, rgba(0, 0, 0, 0) 100%), radial-gradient(60% 50% ellipse at center bottom, #120039 0%, #211b58 100%);
+    /* background: #000e39; */
     padding: 35px;
     border-radius: 12px;
     color: white;

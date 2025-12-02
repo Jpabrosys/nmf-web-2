@@ -140,8 +140,10 @@
                                                 <th>Video Path</th>
                                                 <th>File Size</th>
                                                 <th>Duration</th>
-						  <!--NL1001:18Sep:2025:Added -->
-						<th>Delete</th>
+                                                <th>Web View Count</th>
+                                                 <th>App View Count</th>
+						                         <!--NL1001:18Sep:2025:Added -->
+						                        <th>Delete</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -186,6 +188,8 @@
                                                             {{ \App\Helpers\CommonFunctionHelper::formatFileSize($video->file_size) }}
                                                         </td>
                                                         <td>{{ $video->duration }}</td>
+                                                        <td>{{ $video->webViewCount }}</td>
+                                                        <td></td>
 						        <!--NL1001:18Sep:2025:Added -->
                                                         <td>
                                                           <form action="{{ route('videos.destroy', $video->id) }}" method="POST" onsubmit="return confirm('Delete this video?');" style="display:inline;">

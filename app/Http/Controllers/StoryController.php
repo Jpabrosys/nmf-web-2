@@ -54,13 +54,9 @@ private function getBlogData($cat_name, $name)
             ->with(['thumbnail', 'images'])
             ->limit(6)->get();
          
-        if ($blog) {
-            Blog::where('id', $blog->id)->increment('WebHitCount');
-            
-            // Optional: Manually update the local $blog object's WebHitCount 
-            // so the current view displays the increased count.
-            $blog->WebHitCount = ($blog->WebHitCount ?? 0) + 1;
-        }
+      
+        
+        
         $latests = Blog::where('status', 1)
             ->where('categories_ids', $blog->category->id)
             ->where('id', '!=', $blog->id)
@@ -112,6 +108,9 @@ public function showStory($cat_name, $name)
     $data = $this->getBlogData($cat_name, $name);
     if (!$data) return view('error');
 
+    Blog::where('id', $data['blog']->id)->increment('WebHitCount');
+    $data['blog']->WebHitCount += 1;
+    
     // --- THIS IS THE NEW LINE ---
     $data['youtubeVideoId'] = $this->getYouTubeVideoId($data['blog']->link ?? null);
     // --- END NEW LINE ---
@@ -137,6 +136,8 @@ public function showStoryAmp($cat_name, $name)
     $data = $this->getBlogData($cat_name, $name); 
     if (!$data) return view('error');
 
+    Blog::where('id', $data['blog']->id)->increment('WebHitCount');
+    $data['blog']->WebHitCount += 1;
     $data['youtubeVideoId'] = $this->getYouTubeVideoId($data['blog']->link ?? null);
 
     $comments = $data['blog']->comments()
@@ -623,6 +624,8 @@ public function showStoryAmp($cat_name, $name)
             return view('error');
         }
 
+        WebStories::where('id', $story->id)->increment('webViewCount');
+        
         $category = Category::where('site_url', $cat_name)->first();
         if (!$category) {
             return view('error');
@@ -677,19 +680,6 @@ public function showStoryAmp($cat_name, $name)
             'category' => $category,
             'nextStoriesWithImages' => $nextStoriesWithImages
         ]);
-    }
-    //Increase WebHitCount
-    public function increaseWebHitCount(Request $request)
-    {
-        $blogId = $request->input('blog_id');
-        if ($blogId) {
-            $originalUpdatedAt = Blog::where('id', $blogId)->value('updated_at');
-            Blog::where('id', $blogId)->update([
-                'WebHitCount' => DB::raw('WebHitCount + 1'),
-                'updated_at' => $originalUpdatedAt,
-            ]);
-            return response()->json(['status' => 'success']);
-        }
     }
 
     public function liveBlogs($cat_name, $name)

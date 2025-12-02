@@ -117,6 +117,8 @@
                                                 <th>Reels video Link</th>
                                                 <th>Likes</th>
                                                 <th>Shares</th>
+                                                <th>Web View Count</th>
+                                                <th>App View Count</th>
                                                 <th class="text-nowrap">Display on App</th>
                                                 <th>Preview</th>
                                                 <th>Action</th>
@@ -141,6 +143,8 @@
                                                         </td>
                                                         <td><span style="font-weight: 400;">{{ $clip->likes }}</span></td>
                                                         <td><span style="font-weight: 400;">{{ $clip->shares }}</span></td>
+                                                        <td><span style="font-weight: 400;">{{ $clip->webViewCount }}</span></td>
+                                                        <td><span style="font-weight: 400;">{{ $clip->appViewCount }}</span></td>
                                                         <td><span
                                                             class="status {{ $clip->status == '1' ? 'status-active' : 'status-inactive' }}">
                                                             {{ $clip->status == '1' ? 'Active' : 'Inactive' }}

@@ -92,7 +92,7 @@
 .horoscope_container {
   padding-top: 25px;
   padding-bottom: 25px;
-  min-height: 550px;
+  min-height: 505px;
   background-image:
     radial-gradient(50% 30% ellipse at center top, #f5a45d 0%, rgba(0, 0, 0, 0) 100%),
     radial-gradient(60% 50% ellipse at center bottom, #ffceaa 0%, #ffe5d2 100%);
@@ -208,7 +208,7 @@
   display: block;
   float: left;
   width: 100%;
-  min-height: 390px;
+  min-height: 330px;
   padding: 10px 3% 3% 3%;
   overflow-y: hidden;
 }

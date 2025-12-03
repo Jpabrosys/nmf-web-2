@@ -7,65 +7,86 @@ function initRashifal() {
     const prevBtn = document.querySelector('.nav-btn.prev');
     const nextBtn = document.querySelector('.nav-btn.next');
 
-    function centerIcon(icon) {
-        const containerWidth = slider.clientWidth;
-        const iconCenter = icon.offsetLeft + icon.offsetWidth / 2;
-        const scrollPosition = Math.max(0, iconCenter - containerWidth / 2);
-        slider.scrollTo({ left: scrollPosition, behavior: 'smooth' });
-    }
+    // 1. Unified function to Update Active Class, Text, and Scroll Position
+    function activateItem(imgElement) {
+        if (!imgElement) return;
 
-    function setActiveIcon(icon) {
+        // A. Update Active Class
         slider.querySelectorAll('img').forEach(img => img.classList.remove('active'));
-        icon.classList.add('active');
+        imgElement.classList.add('active');
+
+        // B. Update Text Content (Title & Description)
+        if (titleEl) titleEl.textContent = "आपके तारे - दैनिक: " + imgElement.dataset.title;
+        if (textEl) textEl.textContent = imgElement.dataset.description;
+
+        // C. Center the selected item in the slider
+        centerItem(imgElement);
     }
 
-    // Click delegation
+    // 2. Helper to Center the Wrapper Element
+    function centerItem(imgElement) {
+        const itemWrapper = imgElement.closest('.rashifal-item');
+        if (!itemWrapper) return;
+
+        // Use getBoundingClientRect for precise positioning relative to the viewport
+        const sliderRect = slider.getBoundingClientRect();
+        const itemRect = itemWrapper.getBoundingClientRect();
+
+        // Calculate offset to center
+        const offset = itemRect.left - sliderRect.left;
+        const centerPos = (sliderRect.width / 2) - (itemRect.width / 2);
+        
+        // Scroll
+        slider.scrollBy({
+            left: offset - centerPos,
+            behavior: 'smooth'
+        });
+    }
+
+    // 3. Click Event (User clicks an icon directly)
     slider.addEventListener('click', (e) => {
         const icon = e.target.closest('img');
-        if (!icon) return;
-
-        setActiveIcon(icon);
-
-        //  Use dynamic DB values
-        titleEl.textContent = "आपके तारे - दैनिक: " + icon.dataset.title;
-        textEl.textContent = icon.dataset.description;
-
-        centerIcon(icon);
-    });
-
-    // Keyboard support
-    slider.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            const icon = e.target.closest('img');
-            if (icon) icon.click();
+        if (icon) {
+            activateItem(icon);
         }
     });
 
-    // Scroll buttons
-    prevBtn?.addEventListener('click', () => slider.scrollBy({ left: -120, behavior: 'smooth' }));
-    nextBtn?.addEventListener('click', () => slider.scrollBy({ left: 120, behavior: 'smooth' }));
+    // 4. Next / Prev Button Logic
+    function handleNavigation(direction) {
+        // Get all actual horoscope images (ignoring spacers)
+        const images = Array.from(slider.querySelectorAll('.rashifal-item img'));
+        
+        // Find current active index
+        let currentIndex = images.findIndex(img => img.classList.contains('active'));
+        
+        // Default to 0 if nothing is active
+        if (currentIndex === -1) currentIndex = 0;
 
-    // Swipe support
-    slider.addEventListener('touchstart', (e) => {
-        slider._startX = e.touches[0].pageX - slider.offsetLeft;
-        slider._scrollLeft = slider.scrollLeft;
-    }, { passive: true });
+        let newIndex;
+        if (direction === 'next') {
+            newIndex = currentIndex + 1;
+            // Loop back to start if we reach the end
+            if (newIndex >= images.length) newIndex = 0;
+        } else {
+            newIndex = currentIndex - 1;
+            // Loop to end if we are at the start
+            if (newIndex < 0) newIndex = images.length - 1;
+        }
 
-    slider.addEventListener('touchmove', (e) => {
-        const x = e.touches[0].pageX - slider.offsetLeft;
-        const walk = (x - slider._startX) * 2;
-        slider.scrollLeft = slider._scrollLeft - walk;
-    }, { passive: true });
-
-    // Auto-set first item
-    const activeIcon = slider.querySelector('img.active') || slider.querySelector('img');
-    if (activeIcon) {
-        titleEl.textContent = "आपके तारे - दैनिक: " + activeIcon.dataset.title;
-        textEl.textContent = activeIcon.dataset.description;
-        centerIcon(activeIcon);
+        // Trigger the update for the new item
+        activateItem(images[newIndex]);
     }
 
-    console.log("Rashifal initialized");
+    // Attach listeners to buttons
+    if (prevBtn) prevBtn.addEventListener('click', () => handleNavigation('prev'));
+    if (nextBtn) nextBtn.addEventListener('click', () => handleNavigation('next'));
+
+    // 5. Initialize (Ensure first item is centered/active if needed)
+    const activeIcon = slider.querySelector('img.active');
+    if (activeIcon) {
+        // Optional: uncomment if you want it to center on load
+        // centerItem(activeIcon); 
+    }
 }
 
 document.addEventListener('DOMContentLoaded', initRashifal);

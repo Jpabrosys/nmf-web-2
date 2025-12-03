@@ -295,75 +295,6 @@
         </div>
     </div>
 
-
-    <div class="web-stories-section">
-        <?php
-        $allWebStories = WebStories::with('category', 'webStoryFiles')->where('status', '1')->orderBy('sequence', 'asc')->limit(10)->get();
-        ?>
-        @include('components.webstory', [
-            'webStories' => $allWebStories,
-        ])
-        {{-- @include('components.webstory') --}}
-    </div>
-
-    <div class="news-panel">
-        <div class="cm-container">
-            @if (!empty($sectionCategories[2]))
-                @include('components.slider-two-news-5', [
-                    'cat_id' => $sectionCategories[2]['catid'],
-                    'leftTitle' => 'ताजा खबर',
-                    'middleTitle' => 'शीर्ष समाचार',
-                    'rightTitle' => 'वीडियो',
-                    'site_url' => $sectionCategories[2]['site_url'],
-                    'category_name' => $sectionCategories[2]['name'],
-                ])
-            @endif
-        </div>
-    </div>
-
-
-    <div class="news-panel reels">
-                @include('components.reels-section')
-    </div>
-
-    <section class="custom_block">
-        @if (!empty($sectionCategories[3]))
-            @include('components.news-nine-style', [
-                'cat_id' => $sectionCategories[3]['catid'],
-                'cat_name' => $sectionCategories[3]['name'],
-                'cat_site_url' => $sectionCategories[3]['site_url'],
-            ])
-        @endif
-    </section>
-
-    <section class="video-section">
-        @include('components.video-gallery-allcat')
-    </section>
-
-    {{-- Horizontal-3 Advertise --}}
-    <x-horizontal-ad :ad="$data['homeAds']['home_below_video_section_ad'] ?? null" />
-
-    {{-- <section class="photo_section">
-        <div class="cm-container photo_block">
-            <a href="{{ asset('photos') }}" class="vdo_title">फोटो गैलरी</a>
-            @include('components.photo-gallery-12')
-        </div>
-    </section> --}}
-    <div class="news-panel">
-        <div class="cm-container">
-            @if (!empty($sectionCategories[4]))
-                @include('components.slider-two-news-5', [
-                    'cat_id' => $sectionCategories[4]['catid'],
-                    'leftTitle' => 'ताजा खबर',
-                    'middleTitle' => 'शीर्ष समाचार',
-                    'rightTitle' => 'वीडियो',
-                    'site_url' => $sectionCategories[4]['site_url'],
-                    'category_name' => $sectionCategories[4]['name'],
-                ])
-            @endif
-        </div>
-    </div>
-
 <section class="custom_block">
     @if (!empty($sectionCategories[5]))
         @include('components.news-nine-style', [
@@ -461,6 +392,75 @@
         </div>
     </div>
 </section>
+    <div class="web-stories-section">
+        <?php
+        $allWebStories = WebStories::with('category', 'webStoryFiles')->where('status', '1')->orderBy('sequence', 'asc')->limit(10)->get();
+        ?>
+        @include('components.webstory', [
+            'webStories' => $allWebStories,
+        ])
+        {{-- @include('components.webstory') --}}
+    </div>
+
+    <div class="news-panel">
+        <div class="cm-container">
+            @if (!empty($sectionCategories[2]))
+                @include('components.slider-two-news-5', [
+                    'cat_id' => $sectionCategories[2]['catid'],
+                    'leftTitle' => 'ताजा खबर',
+                    'middleTitle' => 'शीर्ष समाचार',
+                    'rightTitle' => 'वीडियो',
+                    'site_url' => $sectionCategories[2]['site_url'],
+                    'category_name' => $sectionCategories[2]['name'],
+                ])
+            @endif
+        </div>
+    </div>
+
+
+    <div class="news-panel reels">
+                @include('components.reels-section')
+    </div>
+
+    <section class="custom_block">
+        @if (!empty($sectionCategories[3]))
+            @include('components.news-nine-style', [
+                'cat_id' => $sectionCategories[3]['catid'],
+                'cat_name' => $sectionCategories[3]['name'],
+                'cat_site_url' => $sectionCategories[3]['site_url'],
+            ])
+        @endif
+    </section>
+
+    <section class="video-section">
+        @include('components.video-gallery-allcat')
+    </section>
+
+    {{-- Horizontal-3 Advertise --}}
+    <x-horizontal-ad :ad="$data['homeAds']['home_below_video_section_ad'] ?? null" />
+
+    {{-- <section class="photo_section">
+        <div class="cm-container photo_block">
+            <a href="{{ asset('photos') }}" class="vdo_title">फोटो गैलरी</a>
+            @include('components.photo-gallery-12')
+        </div>
+    </section> --}}
+    <div class="news-panel">
+        <div class="cm-container">
+            @if (!empty($sectionCategories[4]))
+                @include('components.slider-two-news-5', [
+                    'cat_id' => $sectionCategories[4]['catid'],
+                    'leftTitle' => 'ताजा खबर',
+                    'middleTitle' => 'शीर्ष समाचार',
+                    'rightTitle' => 'वीडियो',
+                    'site_url' => $sectionCategories[4]['site_url'],
+                    'category_name' => $sectionCategories[4]['name'],
+                ])
+            @endif
+        </div>
+    </div>
+
+
  
 
 

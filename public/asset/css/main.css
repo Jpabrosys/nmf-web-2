@@ -2367,6 +2367,12 @@ body.boxed .page-wrapper .cm-container {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.fb-amp-wrapper {
+    width: 100%;
+    margin: 0 auto;
+}
+
+
 
 /* ======================================= */
 /* Rashifal*/

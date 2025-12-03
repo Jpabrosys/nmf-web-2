@@ -22,15 +22,56 @@ return [
     // 1. Decode HTML entities first
     $html = html_entity_decode($html);
 
-// 2. ⭐ Convert Facebook <iframe> embeds (FIXED)
-    $html = preg_replace_callback(
-        '/<iframe[^>]*src="https?:\/\/www\.facebook\.com\/plugins\/(?:post|video)\.php\?[^"]*?href=([^"&]+)[^"]*"[^>]*><\/iframe>/i',
-        function ($m) {
-            $decoded_href = urldecode($m[1]);
-            return '<amp-facebook width="552" height="310" layout="responsive" data-href="'.$decoded_href.'"></amp-facebook>';
-        },
-        $html
-    );
+
+// 2. ⭐ Convert Facebook <iframe> embeds (Fixed: 400px Desktop / 100% Mobile)
+$html = preg_replace_callback(
+    // 1. Match ANY facebook plugin iframe (Post, Video, or Reel)
+    '/<iframe\s+[^>]*src\s*=\s*["\'](https?:\/\/www\.facebook\.com\/plugins\/(?:post|video)\.php\?[^"\']+)["\'][^>]*>.*?<\/iframe>/is',
+    function ($m) {
+        $fullTag = $m[0]; 
+        $srcUrl  = $m[1]; 
+
+        // 2. Parse the URL params
+        $query = parse_url(htmlspecialchars_decode($srcUrl), PHP_URL_QUERY);
+        parse_str($query, $params);
+        
+        $decoded_href = isset($params['href']) ? urldecode($params['href']) : '';
+        if (empty($decoded_href)) return $fullTag; 
+
+        // 3. Extract Dimensions for ASPECT RATIO only
+        $width = null;
+        $height = null;
+
+        // Try extracting from <iframe> attributes
+        if (preg_match('/width\s*=\s*["\']?(\d+)["\']?/i', $fullTag, $wMatch)) {
+            $width = $wMatch[1];
+        }
+        if (preg_match('/height\s*=\s*["\']?(\d+)["\']?/i', $fullTag, $hMatch)) {
+            $height = $hMatch[1];
+        }
+
+        // Try URL params
+        if (!$width && !empty($params['width'])) $width = (int)$params['width'];
+        if (!$height && !empty($params['height'])) $height = (int)$params['height'];
+
+        $isReel = strpos($decoded_href, '/reel/') !== false;
+        
+        $finalWidth  = $width ?: ($isReel ? '400' : '552');
+        $finalHeight = $height ?: ($isReel ? '711' : '310');
+
+        return '<div style="max-width: 400px; width: 100%; margin: 0 auto; display: block;">
+                    <amp-facebook 
+                        width="' . $finalWidth . '" 
+                        height="' . $finalHeight . '" 
+                        layout="responsive" 
+                        data-embed-as="video"
+                        data-href="' . $decoded_href . '">
+                    </amp-facebook>
+                </div>';
+    },
+    $html
+);
+
 
     // 2b. ⭐ Convert YouTube <iframe> embeds (No change)
     $html = preg_replace_callback(

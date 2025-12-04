@@ -56,29 +56,29 @@ class SitemapController extends Controller
             ->header('Content-Type', 'application/xml');
     }
 
-    public function newsSitemap()
+   public function newsSitemap()
     {
-        // GOOGLE NEWS: Last 48 hours is standard.
-        
+        // GOOGLE NEWS: Strict 48-hour window
         $blogs = Blog::where('status', 1)
-            ->where('created_at', '>=', now()->subDays(100))
-            ->where('created_at', '<=', now()) 
+            ->where('created_at', '>=', now()->subDays(2)) // CHANGED: 100 -> 2
+            ->where('created_at', '<=', now())
             
-            // *** FIX: Changed 'details' to 'description' ***
-            // If your column is named 'body' or 'content', change it here!
+            // Description Length Check
             ->whereRaw('CHAR_LENGTH(description) >= ?', [$this->minCharCount])
             
-            // STRICT FILTER 2: Title Length
+            // Title Length Check
             ->whereRaw('CHAR_LENGTH(name) >= ?', [$this->minTitleLength])
             
-            // STRICT FILTER 3: Exclude "Test" or "Demo" titles
+            // Exclude Test/Demo content
             ->where('name', 'NOT LIKE', '%test%')
             ->where('name', 'NOT LIKE', '%demo%')
 
+            // Relationships - Ensure Category exists to avoid broken links
             ->whereHas('category')
             ->with('category')
+            
             ->orderBy('created_at', 'desc')
-            ->take(100)
+            ->take(1000) // Increased limit slightly for big news days
             ->get();
 
         return response()->view('news-sitemap', compact('blogs'))
@@ -113,15 +113,22 @@ class SitemapController extends Controller
     {
         $sitemaps = [];
 
-        // OPTIMIZATION: Replaced 100 queries with 1.
+        // OPTIMIZATION: Match filters exactly with dailySitemap to prevent empty map errors
         $dates = Blog::select(DB::raw('DATE(created_at) as date'))
             ->where('status', 1)
             ->where('created_at', '>=', now()->subDays(100))
             
-            // *** FIX: Changed 'details' to 'description' ***
-            ->whereRaw('CHAR_LENGTH(description) >= ?', [$this->minCharCount]) 
+            // Content Quality Checks
+            ->whereRaw('CHAR_LENGTH(description) >= ?', [$this->minCharCount])
+            ->whereRaw('CHAR_LENGTH(name) >= ?', [$this->minTitleLength])
             
+            // Exclude Test Data
+            ->where('name', 'NOT LIKE', '%test%')
+            ->where('name', 'NOT LIKE', '%demo%')
+
+            // Ensure relationships exist
             ->whereHas('category')
+            
             ->groupBy('date')
             ->orderBy('date', 'desc')
             ->pluck('date');
@@ -137,25 +144,35 @@ class SitemapController extends Controller
             ->header('Content-Type', 'application/xml');
     }
 
+
     public function dailySitemap($date)
     {
+        // 1. Validate Date Format
         try {
-            $parsedDate = Carbon::parse($date)->toDateString();
+            $parsedDate = Carbon::createFromFormat('Y-m-d', $date)->startOfDay();
         } catch (\Exception $e) {
-            abort(404, 'Invalid date format');
+            abort(404); // Return 404 for invalid dates
         }
 
         $blogs = Blog::whereDate('created_at', $parsedDate)
             ->where('status', 1)
             
-            // *** FIX: Changed 'details' to 'description' ***
+            // Quality & Spam Filters
             ->whereRaw('CHAR_LENGTH(description) >= ?', [$this->minCharCount])
-            
             ->whereRaw('CHAR_LENGTH(name) >= ?', [$this->minTitleLength])
             ->where('name', 'NOT LIKE', '%test%')
+            ->where('name', 'NOT LIKE', '%demo%')
+
+            // Relationship Checks
             ->whereHas('category')
+            
             ->with('category')
             ->get();
+
+        // 2. Prevent Empty XML responses
+        if ($blogs->isEmpty()) {
+            abort(404);
+        }
 
         return response()->view('news-sitemap', compact('blogs'))
             ->header('Content-Type', 'application/xml');

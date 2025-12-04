@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Category;
+
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use App\Models\Blog;
 
@@ -9,14 +10,13 @@ class RSSFeedController extends Controller
 {
     public function index()
     {
-       $blogs = Blog::where('status', 1)
-    ->with('category')
-    ->whereHas('category') // ensures category exists
-    ->latest()
-    ->take(20)
-    ->get();
-
-
+        $blogs = Blog::where('status', 1)
+            // We eager load 'images' because your blogs table uses 'image_ids' to link to the files table
+            ->with(['category', 'authorUser', 'images']) 
+            ->whereHas('category')
+            ->latest()
+            ->take(20)
+            ->get();
 
         $rss = view('feed', compact('blogs'));
 

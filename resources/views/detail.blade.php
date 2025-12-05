@@ -158,32 +158,41 @@
 
                                                 <div class="artcle_tab">
                                                     <div class="at_left">
-                                                        <div class="editedby">Created By: <a
-                                                                href="{{ asset('/author') }}/{{ str_replace(' ', '_', isset($data['author']->url_name) ? $data['author']->url_name : '-') }}">{{ isset($data['author']->name) ? $data['author']->name : 'NMF News' }}</a>
-                                                        </div>
-                                                        <div class="category_tag"><i class="fa-solid fa-tag"></i><a
-                                                                href="/{{ isset($data['category']->site_url) ? $data['category']->site_url : '' }}">{{ $data['category']->name }}</a>
-                                                        </div>
+                                                        <div class="auth-box">
+                                                            <img class="auth-img" width="40" height="40"
+                                                                src="https://www.newsnmf.com/frontend/images/logo.png"
+                                                                alt="nmf-author">
+                                                            <div class="info-area">
+                                                                <div class="editedby"> <a
+                                                                        href="{{ asset('/author') }}/{{ str_replace(' ', '_', isset($data['author']->url_name) ? $data['author']->url_name : '-') }}">{{ isset($data['author']->name) ? $data['author']->name : 'NMF News' }}</a>
+                                                                </div>
+                                                                <div class="info-inner">
+                                                                    <div class="category_tag">
+                                                                <a
+                                                                            href="/{{ isset($data['category']->site_url) ? $data['category']->site_url : '' }}">{{ $data['category']->name }}</a>
+                                                                    </div>
+                                                                    <div class="publish_wrap">
+                                                                        <div class="publish_dt">
+                                                                            <span>{{ $data['blog']->created_at->format('d M Y') }}</span>
+                                                                        </div>
 
-                                                        <div class="publish_wrap">
-                                                            <div class="publish_dt">
-                                                                <i class="fa-regular fa-calendar-days"></i>
-                                                                <span>{{ $data['blog']->created_at->format('d M, Y') }}</span>
+                                                                        @if ($data['blog']->updated_at)
+                                                                            <div class="publish_dt"> (
+                                                                                <span>Updated:
+                                                                                    {{ $data['blog']->updated_at->format('d M Y') }}</span>
+                                                                            </div>
+                                                                            <div class="publish_tm">
+                                                                                <span>{{ $data['blog']->updated_at->format('h:i A') }}
+                                                                                    ) </span>
+                                                                            </div>
+                                                                        @endif
+                                                                    </div>
+                                                                </div>
                                                             </div>
-
-                                                            @if ($data['blog']->updated_at)
-                                                                <div class="publish_dt"> (
-                                                                    <i class="fa-regular fa-calendar-days"></i>
-                                                                    <span>Updated:
-                                                                        {{ $data['blog']->updated_at->format('d M, Y') }}</span>
-                                                                </div>
-                                                                <div class="publish_tm">
-                                                                    <i class="fa-regular fa-clock"></i>
-                                                                    <span>{{ $data['blog']->updated_at->format('h:i A') }}
-                                                                        ) </span>
-                                                                </div>
-                                                            @endif
                                                         </div>
+
+
+
                                                     </div>
 
                                                     <div class="at_right">
@@ -197,13 +206,26 @@
 
                                                             <div class="shr_dropdown">
                                                                 <button class="shr-button">
-                                                                    <svg viewBox="0 0 512 512"
-                                                                        xmlns="http://www.w3.org/2000/svg" class="icon">
-                                                                        <path
-                                                                            d="M307 34.8c-11.5 5.1-19 16.6-19 29.2v64H176C78.8 128 0 206.8 0 304C0 417.3 81.5 467.9 100.2 478.1c2.5 1.4 5.3 1.9 8.1 1.9c10.9 0 19.7-8.9 19.7-19.7c0-7.5-4.3-14.4-9.8-19.5C108.8 431.9 96 414.4 96 384c0-53 43-96 96-96h96v64c0 12.6 7.4 24.1 19 29.2s25 3 34.4-5.4l160-144c6.7-6.1 10.6-14.7 10.6-23.8s-3.8-17.7-10.6-23.8l-160-144c-9.4-8.5-22.9-10.6-34.4-5.4z">
-                                                                        </path>
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        viewBox="0 0 24 24" width="24" height="24">
+                                                                        <circle cx="18" cy="5" r="3"
+                                                                            stroke="#000" stroke-width="2"
+                                                                            fill="none" />
+                                                                        <circle cx="6" cy="12" r="3"
+                                                                            stroke="#000" stroke-width="2"
+                                                                            fill="none" />
+                                                                        <circle cx="18" cy="19" r="3"
+                                                                            stroke="#000" stroke-width="2"
+                                                                            fill="none" />
+                                                                        <line x1="8.5" y1="13" x2="15.5"
+                                                                            y2="6" stroke="#000" stroke-width="2"
+                                                                            stroke-linecap="round" />
+                                                                        <line x1="8.5" y1="11"
+                                                                            x2="15.5" y2="18" stroke="#000"
+                                                                            stroke-width="2" stroke-linecap="round" />
                                                                     </svg>
-                                                                    Share
+
+
                                                                 </button>
                                                                 <div class="shr_content">
 
@@ -241,24 +263,25 @@
                                                                     </ul>
                                                                 </div>
                                                             </div>
-                                                            <a href="#comments-section" class="comment-button"
+                                                            <a href="#comments-section" class="commt-button"
                                                                 id="commentToggle" title="Comment">
-                                                                <svg stroke-linejoin="round" stroke-linecap="round"
-                                                                    stroke="currentColor" stroke-width="2"
-                                                                    viewBox="0 0 24 24" height="30" width="41"
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    class="w-8 hover:scale-125 duration-200 hover:stroke-blue-500"
-                                                                    fill="none">
-                                                                    <path fill="none" d="M0 0h24v24H0z" stroke="none">
+                                                                <svg viewBox="0 0 24 24" class="comment-icon"
+                                                                    xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M8 9h8" stroke="#000" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round">
                                                                     </path>
-                                                                    <path d="M8 9h8"></path>
-                                                                    <path d="M8 13h6"></path>
+                                                                    <path d="M8 13h6" stroke="#000" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                                    </path>
                                                                     <path
-                                                                        d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z">
-                                                                    </path>
+                                                                        d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z"
+                                                                        stroke="#000" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                                        fill="none"></path>
                                                                 </svg>
-
+                                                                <span>Comment</span>
                                                             </a>
+
 
                                                         </div>
                                                     </div>

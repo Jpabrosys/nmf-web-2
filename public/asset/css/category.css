@@ -125,7 +125,8 @@
   display: flex;
   align-items: self-end;
   gap: 22px;
-
+  padding-top: 11px;
+  border-top: 1px solid #dbd9d9;
   .publish_dt,
   .publish_tm {
     color: #797979;
@@ -133,32 +134,61 @@
 }
 
 /* NL1021- 16sep 2025 - poppins removed */
+.auth-box {
+  display: flex;
+  flex-direction: row;
+}
+
+.auth-img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+
+.info-area {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .editedby {
   font-size: 12px;
   color: #666;
   font-family: "Noto Sans Devanagari", sans-serif;
 
-  a {
-    color: #000;
-    font-weight: 600;
-    text-decoration: underline;
-    margin-left: 5px;
-  }
+}
+
+.editedby a {
+  color: #ff0000;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.category_tag i {
+  font-size: 12px;
+}
+
+.category_tag a {
+    font-size: 12px;
+    color: #797979;
+    font-weight: 500;
 }
 
 .category_tag {
-  display: flex;
-  gap: 6px;
-  color: #797979;
-  align-items: center;
-
-  a {
-    font-size: 12px;
-    color: #666;
-    font-weight: 600;
-    text-decoration: underline;
-
-  }
+    display: flex;
+    gap: 6px;
+    margin-right: 9px;
+    color: #797979;
+    height: 14px;
+    padding-right: 10px;
+    align-items: center;
+    border-right: 1px solid #ccc;
 }
 
 .artcle_tab {
@@ -303,7 +333,7 @@ a.trendingtopic_container {
   display: none;
   position: absolute;
   border-radius: 10px;
-  background-color: #eeeeeec6;
+  background-color: #eeeeeef2;
   min-width: 151px;
   bottom: -65px;
   left: -138px;
@@ -875,26 +905,57 @@ a.trendingtopic_container {
 .c-row {
   display: flex;
   align-items: center;
-  gap: 18px;
 }
 
 /* share button----------------------------- */
 .shr-button {
-  cursor: pointer;
-  padding: 9px 1px;
-  line-height: 0px;
-  font-size: 15px;
-  width: 6.2em;
-  color: white;
-  background: #212121;
-  background-size: cover;
-  background-blend-mode: overlay;
-  border-radius: 0.5em;
-  outline: 0.1em solid #353535;
-  border: 0;
-  transition: all 0.3s ease-in-out;
-  position: relative;
+    padding: 6px 8px 7px;
+    line-height: 0px;
+    font-size: 15px;
+    width: 2.5em;
+    color: white;
+    background: #fafafa;
+    border: 1px solid #cbcbcb;
+    background-size: cover;
+    background-blend-mode: overlay;
+    border-radius: 10px 0 0 10px;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    min-height: 36px;
 }
+.shr-button  svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 6px;
+    flex-shrink: 0;
+    display: block;
+}
+.commt-button {
+    position: relative;
+    background: none;
+    outline: none;
+    padding: 0;
+    cursor: pointer;
+    background: #fafafa;
+    border: 1px solid #cbcbcb;
+    border-left: 0;
+    border-radius: 0 10px 10px 0;
+    font-size: 15px;
+    padding: 5px 10px 0;
+    min-height: 36px;
+    display: flex;
+}
+
+
+.commt-button svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 6px;
+    flex-shrink: 0;
+    display: block;
+}
+
+
 
 
 
@@ -1061,6 +1122,9 @@ a.trendingtopic_container {
 }
 
 /* NL1021- 16sep 2025 - poppins removed */
+.publish_dt i, .publish_tm i{
+  font-size: 10px;
+}
 .publish_dt,
 .publish_tm {
   display: flex;
@@ -1873,7 +1937,6 @@ a.trendingtopic_container {
     align-items: flex-start;
     gap: 12px;
     flex-direction: column-reverse;
-
     .at_left {
       flex-wrap: wrap;
       gap: 12px;

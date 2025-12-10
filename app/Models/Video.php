@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Cache;
 class Video extends Model
 {
     use HasFactory;
+    public static $skipUpdatedEvent = false;
+
 
     protected $fillable = [
         'title',
@@ -42,11 +44,15 @@ class Video extends Model
     
     protected static function booted()
     {
-        static::created(function ($video) {
+        static::updated(function ($video) {
+            if (self::$skipUpdatedEvent) {
+                return; // Skip event for view count update
+            }
+
             self::clearPodcastCache($video);
         });
 
-        static::updated(function ($video) {
+        static::created(function ($video) {
             self::clearPodcastCache($video);
         });
 
@@ -54,6 +60,7 @@ class Video extends Model
             self::clearPodcastCache($video);
         });
     }
+
 
     protected static function clearPodcastCache($video)
     {

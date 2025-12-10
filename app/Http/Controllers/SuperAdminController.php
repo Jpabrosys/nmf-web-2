@@ -121,6 +121,7 @@ public function editSave($id, Request $request)
         'role' => $request->role,
         'name' => $request->name,
         'url_name' => $request->url_name,
+        'email' => $request->email,
         'description' => $request->description,
         'twitter_link' => $request->twitter_link,
         'image' => $imageName,

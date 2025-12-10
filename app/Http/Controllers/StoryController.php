@@ -108,9 +108,20 @@ public function showStory($cat_name, $name)
     $data = $this->getBlogData($cat_name, $name);
     if (!$data) return view('error');
 
-    Blog::where('id', $data['blog']->id)->increment('WebHitCount');
+Blog::$skipUpdatedEvent = true;
+
+DB::table('blogs')
+    ->where('id', $data['blog']->id)
+    ->update([
+        'WebHitCount' => DB::raw('WebHitCount + 1')
+    ]);
+
+Blog::$skipUpdatedEvent = false;
+
+
+
     $data['blog']->WebHitCount += 1;
-    
+
     // --- THIS IS THE NEW LINE ---
     $data['youtubeVideoId'] = $this->getYouTubeVideoId($data['blog']->link ?? null);
     // --- END NEW LINE ---
@@ -136,7 +147,17 @@ public function showStoryAmp($cat_name, $name)
     $data = $this->getBlogData($cat_name, $name); 
     if (!$data) return view('error');
 
-    Blog::where('id', $data['blog']->id)->increment('WebHitCount');
+    Blog::$skipUpdatedEvent = true;
+
+    DB::table('blogs')
+        ->where('id', $data['blog']->id)
+        ->update([
+            'WebHitCount' => DB::raw('WebHitCount + 1')
+        ]);
+
+    Blog::$skipUpdatedEvent = false;
+
+
     $data['blog']->WebHitCount += 1;
     $data['youtubeVideoId'] = $this->getYouTubeVideoId($data['blog']->link ?? null);
 
@@ -681,6 +702,19 @@ public function showStoryAmp($cat_name, $name)
             'nextStoriesWithImages' => $nextStoriesWithImages
         ]);
     }
+    //Increase WebHitCount
+    // public function increaseWebHitCount(Request $request)
+    // {
+    //     $blogId = $request->input('blog_id');
+    //     if ($blogId) {
+    //         $originalUpdatedAt = Blog::where('id', $blogId)->value('updated_at');
+    //         Blog::where('id', $blogId)->update([
+    //             'WebHitCount' => DB::raw('WebHitCount + 1'),
+    //             'updated_at' => $originalUpdatedAt,
+    //         ]);
+    //         return response()->json(['status' => 'success']);
+    //     }
+    // }
 
     public function liveBlogs($cat_name, $name)
     {

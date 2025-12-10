@@ -12,6 +12,7 @@ use App\Models\State;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File as FileFacade;
 use getID3;
@@ -67,7 +68,14 @@ class VideoController extends Controller
         }
         
         // Increase website view count
-        Video::where('id', $video->id)->increment('webViewCount');
+        Video::$skipUpdatedEvent = true;
+
+        Video::where('id', $video->id)->update([
+            'webViewCount' => DB::raw('webViewCount + 1'),
+            'updated_at' => $video->updated_at, // prevent timestamp change
+        ]);
+
+        Video::$skipUpdatedEvent = false;
 
         $detailsAds = Ads::where('page_type', 'details')->get()->keyBy('location');
 

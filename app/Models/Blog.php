@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Cache;
 class Blog extends Model
 {
     use HasFactory;
-
+    public static $skipUpdatedEvent = false;
     // NL1026:16Sep2025: Cache blog category and detail pages:Start
     protected static function booted()
     {
@@ -25,12 +25,17 @@ class Blog extends Model
         });
 
         static::updated(function ($blog) {
+            if (self::$skipUpdatedEvent) {
+                return; // 🚀 Skip clearing cache + skip touching updated_at
+            }
+
             self::clearCategoryCache($blog);
             self::clearBlogCache($blog);
             self::clearBreakingNewsCache($blog);
             self::clearSidebarCache($blog);
             self::clearPodcastCache($blog);
         });
+
 
         static::deleted(function ($blog) {
             self::clearCategoryCache($blog);

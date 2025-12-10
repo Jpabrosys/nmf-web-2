@@ -61,18 +61,39 @@
                                                     <div class="text_wrap">
                                                         <h2>{{ $users->name ?? '' }}</h2>
 
-                                                        @if (!empty($users->twitter_link))
-                                                            <a class="twitter-link" href="{{ $users->twitter_link }}"
-                                                                target="_blank">
-                                                                <i class="fa-brands fa-x-twitter"></i>
-                                                                {{-- @{{ basename($users - > twitter_link) }} --}}
+                                                        <div class="ath-wrap">
+                                                            {{-- Email Icon --}}
+                                                            <a href="mailto:{{ $users->email }}" class="author-email"
+                                                                title="{{ $users->email }}">
+                                                                <i class="fa-solid fa-envelope"></i>
                                                             </a>
-                                                        @else
-                                                            <a class="twitter-link" href="javascript:void(0)">
+
+                                                            {{-- Twitter Icon --}}
+                                                            @php
+                                                                $defaultTwitterLink = 'https://x.com/NMFNewsOfficial';
+                                                                $defaultUsername = '@NMFNewsOfficial';
+
+                                                                if (!empty($users->twitter_link)) {
+                                                                    $path = parse_url(
+                                                                        $users->twitter_link,
+                                                                        PHP_URL_PATH,
+                                                                    );
+                                                                    $twitterUsername = '@' . ltrim($path, '/');
+                                                                    $twitterLink = $users->twitter_link;
+                                                                } else {
+                                                                    $twitterUsername = $defaultUsername;
+                                                                    $twitterLink = $defaultTwitterLink;
+                                                                }
+                                                            @endphp
+
+                                                            <a class="twitter-link" href="{{ $twitterLink }}"
+                                                                target="_blank" title="{{ $twitterUsername }}">
                                                                 <i class="fa-brands fa-x-twitter"></i>
                                                             </a>
-                                                        @endif
+                                                        </div>
+
                                                     </div>
+
 
                                                     <div class="author-desc">
                                                         <p>

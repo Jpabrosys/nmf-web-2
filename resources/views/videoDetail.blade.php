@@ -82,15 +82,15 @@
                                             <div class="main_article">
                                                 <h1 class="rt_main">{{ $video->title }}</h1>
                                                 <!-- <p class="rt_sub">
-                                                                    {!! $video->description !!}
-                                                                </p> -->
+                                                                        {!! $video->description !!}
+                                                                    </p> -->
                                                 {{-- Metadata --}}
                                                 <div class="artcle_tab">
                                                     <div class="at_left">
                                                         <div class="auth-box">
                                                             <img class="auth-img" width="40" height="40"
-                                                                src="{{config('global.base_url_asset')}}asset/images/nmf-author.webp" loading="lazy"
-                                                                alt="nmf-author">
+                                                                src="{{ !empty($video->author->image) ? asset('file/' . $video->author->image) : asset('asset/images/nmf-author.webp') }}"
+                                                                alt="{{ $video->author->name ?? 'Author' }}">
                                                             <div class="info-area">
                                                                 <div class="editedby">
                                                                     <a
@@ -107,7 +107,7 @@
                                                                     </div>
                                                                     <div class="publish_wrap">
                                                                         <div class="publish_dt">
-                                                                        
+
                                                                             <span>{{ $video->created_at->format('d M, Y') }}</span>
                                                                         </div>
 
@@ -152,8 +152,8 @@
                                                                             stroke="#000" stroke-width="2"
                                                                             fill="none" />
                                                                         <line x1="8.5" y1="13" x2="15.5"
-                                                                            y2="6" stroke="#000" stroke-width="2"
-                                                                            stroke-linecap="round" />
+                                                                            y2="6" stroke="#000"
+                                                                            stroke-width="2" stroke-linecap="round" />
                                                                         <line x1="8.5" y1="11"
                                                                             x2="15.5" y2="18" stroke="#000"
                                                                             stroke-width="2" stroke-linecap="round" />

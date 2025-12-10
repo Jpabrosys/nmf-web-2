@@ -31,9 +31,9 @@
                 "@type": "Organization",
                 "name": "NMF News",
                "logo": {
-                    "@type": "ImageObject",
-                    "url": "{{config('global.base_url_frontend')}}frontend/images/logo.png"
-                }
+                    "@type": "ImageObject",
+                    "url": "{{config('global.base_url_frontend')}}frontend/images/logo.png"
+                }
             },
             "datePublished": "{{ $data['blog']->created_at->toIso8601String() }}",
             "dateModified": "{{ $data['blog']->updated_at->toIso8601String() }}",
@@ -159,9 +159,10 @@
                                                 <div class="artcle_tab">
                                                     <div class="at_left">
                                                         <div class="auth-box">
-                                                            <img class="auth-img" width="40" height="40"
-                                                                src="{{config('global.base_url_asset')}}asset/images/nmf-author.webp" loading="lazy"
-                                                                alt="nmf-author">
+                                                           <img class="auth-img" width="40" height="40"
+                                                            src="{{ $data['author']->image ? asset('file/' . $data['author']->image) : asset('asset/images/nmf-author.webp') }}"
+                                                            alt="Author">
+
                                                             <div class="info-area">
                                                                 <div class="editedby"> <a
                                                                         href="{{ asset('/author') }}/{{ str_replace(' ', '_', isset($data['author']->url_name) ? $data['author']->url_name : '-') }}">{{ isset($data['author']->name) ? $data['author']->name : 'NMF News' }}</a>

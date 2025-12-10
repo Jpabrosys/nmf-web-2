@@ -91,9 +91,10 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
+                                        {{-- Twitter Link --}}
                                         <div class="input-field col-md-6">
                                             <input placeholder="" autocomplete="off" type="text" name="twitter_link"
-                                                value="{{ old('twitter_link') }}" id="twitter_link"
+                                                value="{{ $user->twitter_link }}" id="twitter_link"
                                                 oninput="clearError('twitter_link-error')">
                                             <label for="twitter_link">Twitter Link</label>
 
@@ -108,7 +109,28 @@
                                                 </div>
                                             @enderror
                                         </div>
+
+                                        {{-- Email --}}
+                                        <div class="input-field col-md-6">
+                                            <input placeholder="" autocomplete="off" type="email" name="email"
+                                                value="{{ $user->email }}" id="email">
+                                            <label for="email">Email <span class="text-danger">*</span></label>
+
+                                            @error('email')
+                                                <div class="input-group-append">
+                                                    <div class="input-group-text">
+                                                        <span class="me-1">
+                                                            <i class="fa-solid fa-circle-exclamation"></i>
+                                                            {{ $errors->first('email') }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            @enderror
+                                        </div>
                                     </div>
+
+
+
 
                                     <div class="form-group row">
                                         <div class=" input-field mb-4">

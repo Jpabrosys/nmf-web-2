@@ -43,35 +43,38 @@
 </div>
 {{-- <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script> --}}
 <script>
-    const swipernew = new Swiper(".swp-main", {
-        direction: "horizontal",
-        loop: true,
-        slidesPerView: 2.07,
-        spaceBetween: 1,
-        allowTouchMove: true, // swipe/drag enabled on all screens
+    // This listener makes the code wait until the entire page (including footer scripts) is ready
+    window.addEventListener('load', function() {
+        
+        const swipernew = new Swiper(".swp-main", {
+            direction: "horizontal",
+            loop: true,
+            slidesPerView: 2.07,
+            spaceBetween: 1,
+            allowTouchMove: true,
 
-        pagination: {
-            el: ".swiper-pagination",
-        },
-
-        scrollbar: {
-            el: ".swiper-scrollbar",
-        },
-
-        // Only show navigation for screens >= 600px
-        breakpoints: {
-            0: {
-                navigation: false, // Disable nav arrows on mobile
+            pagination: {
+                el: ".swiper-pagination",
             },
-            600: {
-                slidesPerView: 5,
-                spaceBetween: 5,
-                navigation: {
-                    nextEl: ".swiper-button-next",
-                    prevEl: ".swiper-button-prev",
+
+            scrollbar: {
+                el: ".swiper-scrollbar",
+            },
+
+            breakpoints: {
+                0: {
+                    navigation: false,
                 },
+                600: {
+                    slidesPerView: 5,
+                    spaceBetween: 5,
+                    navigation: {
+                        nextEl: ".swiper-button-next",
+                        prevEl: ".swiper-button-prev",
+                    },
+                }
             }
-        }
+        });
+
     });
 </script>
-

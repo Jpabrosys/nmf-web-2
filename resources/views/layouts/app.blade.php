@@ -262,9 +262,7 @@ window.addEventListener('load', function () {
     <link rel="stylesheet" href="{{config('global.base_url_asset')}}asset/css/footer.css?v=1.1" type="text/css" media="all" /> -->
     <link rel="stylesheet" href="{{config('global.base_url_asset')}}/asset/css/webstory.css" type="text/css" media="all" />
     <link rel="stylesheet" href="{{config('global.base_url_asset')}}/asset/css/category.css?v=1.1" type="text/css" media="all" />
-    </script>
-    <script type="text/javascript" src="{{config('global.base_url_asset')}}asset/js/swiper-bundle.min.js" ></script>
-    
+        
     <link rel="stylesheet" href="{{config('global.base_url_asset')}}asset/css/style.css" type="text/css" media="all" />
     <style id="theia-sticky-sidebar-stylesheet-TSS">
         .theiaStickySidebar:after {
@@ -489,27 +487,9 @@ window.addEventListener('load', function () {
                                             </li>
 
                                             <?php
-                                            // $menus = App\Models\Menu::whereRelation('type', 'type', 'Header')
-                                            //     ->whereRelation('category', 'category', 'User')
-                                            //     ->where([['status', '1'], ['menu_id', 0]])
-                                            //     ->get()
-                                            //     ->toArray();
-                                            
-                                          //  $menus = App\Models\Menu::whereRelation('type', 'type', 'Header')
-                                              //  ->whereRelation('category', 'category', 'User')
-                                              //  ->where([['status', '1'], ['menu_id', 0]])
-                                              //  ->whereNotNull('sequence_id')
-                                              //  ->where('sequence_id', '!=', 0)
-                                              //  ->orderBy('sequence_id', 'asc')
-                                              //  ->get()
-                                               // ->take(11)
-                                               // ->toArray();
                                             ?>
                                             @foreach ($menus as $menu)
                                                 <?php
-                                                // if ($menu['menu_name'] === 'PODCAST') {
-                                                //     $menu['menu_name'] = 'पॉडकास्ट';
-                                                // }
                                                 $subMenus = App\Models\Menu::where('menu_id', $menu['id'])->where('status', '1')->where('type_id', '1')->where('category_id', '2')->get();
                                                 $file = App\Models\File::where('id', $menu['image'])->first();
                                                 ?>
@@ -861,7 +841,7 @@ window.addEventListener('load', function () {
                 "enable_sticky_menu_section": ""
             };
         </script> --}}
-
+        <script type="text/javascript" src="{{config('global.base_url_asset')}}asset/js/swiper-bundle.min.js" ></script>
         <script type="text/javascript" src="{{ asset('/asset/js/bundle.min.js') }}" id="cream-magazine-bundle-js" defer></script>
         <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v55bfa2fee65d44688e90c00735ed189a1713218998793"
             integrity="sha512-FIKRFRxgD20moAo96hkZQy/5QojZDAbyx0mQ17jEGHCJc/vi0G2HXLtofwD7Q3NmivvP9at5EVgbRqOaOQb+Rg=="

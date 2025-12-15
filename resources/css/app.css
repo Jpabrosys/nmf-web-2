@@ -1,8 +1,34 @@
+/* 1. Google Fonts (Locally hosted via NPM) */
+@import "@fontsource/noto-sans-devanagari/100.css";
+@import "@fontsource/noto-sans-devanagari/200.css";
+@import "@fontsource/noto-sans-devanagari/400.css";
+@import "@fontsource/noto-sans-devanagari/500.css";
+@import "@fontsource/noto-sans-devanagari/600.css";
+@import "@fontsource/noto-sans-devanagari/700.css";
+@import "@fontsource/noto-sans-devanagari/800.css";
+@import "@fontsource/noto-sans-devanagari/900.css";
+
+/* 2. FontAwesome (Replaces the CDN link) */
+@import "@fortawesome/fontawesome-free/css/all.css";
+
+/* 3. Bootstrap (From NPM) */
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+/* 4. Swiper (From NPM) */
+@import "swiper/css/bundle";
+
+/* 5. OwlCarousel (From NPM) */
+@import "owl.carousel/dist/assets/owl.carousel.css";
+@import "owl.carousel/dist/assets/owl.theme.default.css";
+
+/* 6. Custom Project Styles */
 @import './big-breaking.css';
-@import './swiper-bundle.min.css';
-@import './bootstrap.min.css';
 @import './main.css';
 @import './webstory.css';
 @import './category.css';
 @import './style.css';
-@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css");
+
+/* Ensure the font is applied globally */
+body {
+    font-family: 'Noto Sans Devanagari', sans-serif;
+}

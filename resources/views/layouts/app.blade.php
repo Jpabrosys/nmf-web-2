@@ -4,7 +4,6 @@
     <?php
     use Carbon\Carbon;
     use App\View\Components\TitleDescription;
-    $setting = App\Models\Setting::where('id', 1)->first();
     ?>
     @php
         $metaTitle = isset($data['blog'])
@@ -50,27 +49,13 @@
     <link href="{{config('global.base_url_frontend')}}frontend/images/logo.png" rel="shortcut icon" type="image/x-icon">
 
     {{-- 
-        ========================================================================
-        PERFORMANCE FIX: ASSET BUNDLING
-        We replaced the 8 separate CSS files with one Vite directive.
-        This reduces HTTP requests from ~10 to 1.
-        ========================================================================
+        PERFORMANCE: LOCALLY HOSTED ASSETS
+        Fonts, FontAwesome, jQuery, and OwlCarousel are now bundled here.
+        No external DNS lookups for these resources.
     --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    {{-- 
-        PERFORMANCE FIX: DNS LOOKUPS
-        1. Google Fonts: To get an "A" grade, download these fonts and serve them locally (public/fonts) 
-           instead of linking to googleapis.com. For now, we leave them, but it costs you points.
-        2. FontAwesome: I removed the CDN link. Please ensure FontAwesome CSS is imported inside your resources/css/app.css 
-           to remove the 'cdnjs.cloudflare.com' DNS lookup.
-    --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@100..900&display=swap" rel="stylesheet">
-
-
-    {{-- SCHEMA & SEO TAGS (Kept as is) --}}
+    {{-- SCHEMA & SEO TAGS --}}
     @if (config('global.schema_enabled'))
     <script type="application/ld+json">
     {
@@ -148,8 +133,8 @@
     <meta name="robots" content="max-image-preview:large" />
 
     {{-- 
-        LAZY LOAD SCRIPTS
-        This section is GOOD. It defers heavy 3rd party scripts until the page loads. 
+        3RD PARTY SCRIPTS (Must remain external)
+        Deferring these is correct for performance.
     --}}
     <script>    
     window.addEventListener('load', function () {
@@ -176,10 +161,7 @@
     });
     </script>
 
-    {{-- 
-        Sticky Sidebar CSS 
-        (Keep inline if small, or move to app.css)
-    --}}
+    {{-- Inline CSS for Critical Layout Shift --}}
     <style id="theia-sticky-sidebar-stylesheet-TSS">
         .theiaStickySidebar:after {
             content: "";
@@ -193,18 +175,6 @@
 
 <body class="home right-sidebar">
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5BSHD2LX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    
-    <?php
-    $menus = App\Models\Menu::whereRelation('type', 'type', 'Header')
-        ->whereRelation('category', 'category', 'User')
-        ->where([['status', '1'], ['menu_id', 0]])
-        ->whereNotNull('sequence_id')
-        ->where('sequence_id', '!=', 0)
-        ->orderBy('sequence_id', 'asc')
-        ->get()
-        ->take(11)
-        ->toArray();
-    ?>
 
     <div class="page-wrapper">
         
@@ -213,28 +183,21 @@
                 <div class="--header-container">
                     <div class="--header-left">
                         <a href="/" class="--nmf-logo">
-                            <!-- NL1025:20Sept:2025:Added config path -->
-                            <img src="{{config('global.base_url_frontend')}}frontend/images/logo.png" alt="Logo"
-                                class="--logo" />
+                            <img src="{{config('global.base_url_frontend')}}frontend/images/logo.png" alt="Logo" class="--logo" />
                         </a>
                     </div>
                     <div class="--header-right">
                         <div class="--header-right-top">
                             <div class="--hdr-top">
                                 <div class="--hdr-t-l">
-
-                                    <button class="--toggle-box" id="toggle-btn" aria-label="Open Menu">
+                                    <button class="--toggle-box" id="toggle-btn">
                                         <label class="burger" for="burger">
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
+                                            <span></span><span></span><span></span>
                                         </label>
                                     </button>
                                     <a href="javascript:void(0);" class="nav-item srch" onclick="openSearchModal()">
                                         <i class="fas fa-search"></i>
-
                                     </a>
-
                                     <form class="--search-form" method="get" action="{{ asset('/search') }}">
                                         <div class="input-group">
                                             <input type="search" name="search" class="form-control pt-2 pb-1"
@@ -249,50 +212,35 @@
                                 <div class="--hdr-t-r">
                                     <div class="pod-cast">
                                         <a href="{{ config('global.base_url') }}being-ghumakkad">
-                             <!--NL1028:Added:global config path-->
-                                            <img loading="lazy" style="width: 30px;"
+                                                <img loading="lazy" style="width: 30px;"
                                                 src="{{ config('global.base_url_image') }}file/bg_icon.png" alt="">
                                         </a>
- 
                                         <a href="{{ config('global.base_url') }}Podcast">
-                                            <img loading="lazy" style="width: 54px;"
+                                                <img loading="lazy" style="width: 54px;"
                                                 src="{{ config('global.base_url_image') . 'file/podcost_icon.png' }}" alt="">
                                         </a>
                                     </div>
                                     <div class="social-wrap">
-                                        <a href="https://www.facebook.com/NMFNewsNational/" target="_blank"
-                                            class="social-item"><span><i
-                                                    class="fa-brands fa-facebook-f"></i></span></a>
-                                        <a href="https://x.com/NMFNewsOfficial" target="_blank"
-                                            class="social-item"><span><i class="fa-brands fa-x-twitter"></i>
-                                            </span></a>
-                                        <a href="https://instagram.com/nmfnewsofficial" target="_blank"
-                                            class="social-item"><span><i
-                                                    class="fa-brands fa-instagram"></i></span></a>
-                                        <a href="https://www.youtube.com/c/NMFNews/featured" target="_blank"
-                                            class="social-item"><span><i class="fa-brands fa-youtube"></i></span></a>
-                                        <a href="https://whatsapp.com/channel/0029VajdZqv9xVJbRYtSFM3C"
-                                            target="_blank" class="social-item"><span><i
-                                                    class="fa-brands fa-whatsapp"></i></span></a>
+                                        <a href="https://www.facebook.com/NMFNewsNational/" target="_blank" class="social-item"><span><i class="fa-brands fa-facebook-f"></i></span></a>
+                                        <a href="https://x.com/NMFNewsOfficial" target="_blank" class="social-item"><span><i class="fa-brands fa-x-twitter"></i></span></a>
+                                        <a href="https://instagram.com/nmfnewsofficial" target="_blank" class="social-item"><span><i class="fa-brands fa-instagram"></i></span></a>
+                                        <a href="https://www.youtube.com/c/NMFNews/featured" target="_blank" class="social-item"><span><i class="fa-brands fa-youtube"></i></span></a>
+                                        <a href="https://whatsapp.com/channel/0029VajdZqv9xVJbRYtSFM3C" target="_blank" class="social-item"><span><i class="fa-brands fa-whatsapp"></i></span></a>
                                     </div>
-                                    {{-- login button here --}}
-                                   {{-- login button here --}}
+
                                     @auth('viewer')
                                         <form method="POST" action="{{ rtrim(config('global.base_url'), '/').(route('viewer.logout', [], false)) }}" class="inline">
                                             @csrf
                                             <button type="submit" class="log logout-btn">
-                                                <i class="fas fa-sign-out-alt"></i>
-                                                Logout
+                                                <i class="fas fa-sign-out-alt"></i> Logout
                                             </button>
                                         </form>
                                     @else
                                         <a href="{{ rtrim(config('global.base_url'), '/').(route('auth.google', [], false)) }}" class="log">
-                                            <i class="fa-solid fa-user"></i>
-                                            Login
+                                            <i class="fa-solid fa-user"></i> Login
                                         </a>
                                     @endauth
                                 </div>
-                                <!-- Search Modal -->
                                 <div id="searchModal" class="search-modal">
                                     <div class="search-modal-content">
                                         <span class="closeBtn" onclick="closeSearchModal()">&times;</span>
@@ -308,22 +256,18 @@
                                         class="HeadertagHalf">करता है भरोसा</span> </small>
                             </div>
                             <div class="modal-overlay" id="modal-overlay">
-                                <!-- Modal Content -->
                                 <div class="modal-content">
                                     <div class="modal_top">
-                                        <button class="close_btn" id="close-btn" aria-label="Close Modal">
+                                        <button class="close_btn" id="close-btn">
                                             <i class="fa-solid fa-times"></i>
                                         </button>
-                                        <!-- NL1025:20Sept:2025:Added config path -->
-                                        <a href="{{ asset('/') }}" class="modal_logo"><img
-                                               src="{{config('global.base_url_frontend')}}frontend/images/logo.png" alt="NMF logo"></a>
+                                        <a href="{{ asset('/') }}" class="modal_logo"><img loading="lazy"
+                                               src="{{config('global.base_url_frontend')}}frontend/images/logo.png" alt=""></a>
                                         <a class="Headertag ms-0" style="margin-left: 0px"> <span class="">जिस
-                                                पर
-                                                देश</span><span class="HeadertagHalf">करता है भरोसा</span> </a>
+                                                पर देश</span><span class="HeadertagHalf">करता है भरोसा</span> </a>
                                     </div>
 
                                     <?php
-                                    // Define category-to-icon mapping
                                     $categoryIcons = [
                                         'न्यूज' => 'fa-solid fa-newspaper',
                                         'राज्य' => 'fa-solid fa-landmark',
@@ -337,15 +281,6 @@
                                         'दुनिया' => 'fa-solid fa-globe',
                                         'विधान सभा चुनाव' => 'fa-solid fa-vote-yea',
                                     ];
-                                    //$toggleMenus = App\Models\Menu::where('menu_id', 0)->where('status', 1)->where('type_id', '1')->where('category_id', '2')->get();
-                                    //$toggleMenus = App\Models\Menu::where('menu_id', 0)->get();
-                                    $toggleMenus = App\Models\Menu::whereRelation('type', 'type', 'Header')
-                                        ->whereRelation('category', 'category', 'User')
-                                        ->where([['status', '1'], ['menu_id', 0]])
-                                        ->whereNotNull('sequence_id')
-                                        ->where('sequence_id', '!=', 0)
-                                        ->orderBy('sequence_id', 'asc')
-                                        ->get();
                                     ?>
                                     <ul class="modalmenu">
                                         @foreach ($toggleMenus as $menu)
@@ -354,8 +289,7 @@
                                             ?>
                                             <li class="modal_item">
                                                 <a href="{{ asset($menu->menu_link) }}">
-                                                    <i
-                                                        class="{{ $categoryIcons[$menu->menu_name] ?? 'fa-solid fa-link' }}"></i>
+                                                    <i class="{{ $categoryIcons[$menu->menu_name] ?? 'fa-solid fa-link' }}"></i>
                                                     {{ $menu->menu_name }}
                                                     @if (count($subMenus) > 0)
                                                         <i class="fa-solid fa-chevron-down submenu-toggle-icon"></i>
@@ -369,7 +303,7 @@
                                                                 <a href="{{ asset($subMenu->menu_link) }}">
                                                                     <i class="fas fa-circle"
                                                                         style="font-size: 0.5em; vertical-align: middle; margin-right: 8px;"></i>
-                                                                    {{ $subMenu->menu_name }}
+                                                                {{ $subMenu->menu_name }}
                                                                 </a>
                                                             </li>
                                                         @endforeach
@@ -378,43 +312,29 @@
                                             </li>
                                         @endforeach
                                     </ul>
-
                                 </div>
                             </div>
                             <div class="--hdr-bottom">
-
                                 <nav class="main-navigation scrollMargin" id="myHeader">
                                     <div id="" class="inner-nav cm-container">
                                         <ul class="menuSearch menuSearchalign-end navmenu">
-
-                                            <li id="navLogo"
-                                                class="menu-item menu-item-type-custom menu-item-object-custom">
-                                                <a class="sub_logo" href="{{ asset('/') }}"
-                                                    aria-current="page">
-                                                    <!-- NL1025:20Sept:2025:Added config path -->
-                                                    <img loading="lazy"
-                                                       src="{{config('global.base_url_frontend')}}frontend/images/logo.png"
-                                                        alt="" style="width: 41px" />
+                                            <li id="navLogo" class="menu-item menu-item-type-custom menu-item-object-custom">
+                                                <a class="sub_logo" href="{{ asset('/') }}" aria-current="page">
+                                                    <img loading="lazy" src="{{config('global.base_url_frontend')}}frontend/images/logo.png" alt="" style="width: 41px" />
                                                 </a>
                                             </li>
-
-                                            <?php
-                                            ?>
                                             @foreach ($menus as $menu)
                                                 <?php
                                                 $subMenus = App\Models\Menu::where('menu_id', $menu['id'])->where('status', '1')->where('type_id', '1')->where('category_id', '2')->get();
                                                 $file = App\Models\File::where('id', $menu['image'])->first();
                                                 ?>
                                                 <li class="item {{ Str::contains($menu['menu_link'], 'state-legislative-assembly-election') ? 'new' : '' }}">
-
                                                     <a href="{{ asset($menu['menu_link']) }}" class="link">
                                                         <span> {{ $menu['menu_name'] }}</span>
                                                         @if (count($subMenus) > 0)
                                                             <svg viewBox="0 0 360 360" xml:space="preserve">
                                                                 <g id="SVGRepo_iconCarrier">
-                                                                    <path id="XMLID_225_"
-                                                                        d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393 c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393 s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z">
-                                                                    </path>
+                                                                    <path id="XMLID_225_" d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393 c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393 s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z"></path>
                                                                 </g>
                                                             </svg>
                                                         @endif
@@ -424,9 +344,8 @@
                                                         <div class="submenu">
                                                             @foreach ($subMenus as $subMenu)
                                                                 <div class="submenu-item">
-                                                                    <a href="{{ asset($subMenu['menu_link']) }}"
-                                                                        class="submenu-link">
-                                                                        {{ $subMenu['menu_name'] }} </a>
+                                                                    <a href="{{ asset($subMenu['menu_link']) }}" class="submenu-link">
+                                                                    {{ $subMenu['menu_name'] }} </a>
                                                                 </div>
                                                             @endforeach
                                                         </div>
@@ -446,25 +365,20 @@
             <div class="menu-container">
                 <ul class="menu-list">
                     @php
-                      $baseUrl = config('global.base_url'); // your configured base URL
-                       
+                      $baseUrl = config('global.base_url');
                     @endphp
 
                      @foreach ($menus  as $item)
-		               @php
-                        if (substr($item['menu_link'], 0, 1) !== '/') {
+                        @php
+                         if (substr($item['menu_link'], 0, 1) !== '/') {
                             $item['menu_link'] = '/' . $item['menu_link'];
-                        }
+                         }
                            $fullUrl = (substr($baseUrl, -1) === '/' ? substr($baseUrl, 0, -1) : $baseUrl) . $item['menu_link'];
                         @endphp   
-                     <li
-                            class="menu-item {{ request()->is('/') &&  $item['menu_link'] === '/' ? 'active' : '' }}{{ request()->is(ltrim($item['menu_link'], '/')) && $item['menu_link'] !== '/' ? 'active' : '' }}">
-                            <a href="{{ $fullUrl}}" class="menu-link {{   str_contains( $item['menu_link'], 'state-legislative-assembly-election') ? 'mobile-new' : '' }}">{{ $item['menu_name'] }}
-</a>
+                     <li class="menu-item {{ request()->is('/') &&  $item['menu_link'] === '/' ? 'active' : '' }}{{ request()->is(ltrim($item['menu_link'], '/')) && $item['menu_link'] !== '/' ? 'active' : '' }}">
+                            <a href="{{ $fullUrl}}" class="menu-link {{   str_contains( $item['menu_link'], 'state-legislative-assembly-election') ? 'mobile-new' : '' }}">{{ $item['menu_name'] }}</a>
                         </li>
                     @endforeach
-                   
-
                 </ul>
             </div>
         </nav>
@@ -473,29 +387,20 @@
             @yield('content')
         </div>
 
-        {{-- STICKY AD (Unchanged) --}}
+        {{-- STICKY AD --}}
         <div class="mobile-sticky-ad" id="stickyFooterAd">
-
             <div class="sticky-close-btn" onclick="document.getElementById('stickyFooterAd').style.display='none';">
                 <i class="fa-solid fa-xmark"></i> Close
             </div>
-
-            <span
-                style="font-size: 9px; color: #999; margin-top:0px; margin-bottom: 0px; display:block; text-align:center;">ADVERTISEMENT</span>
-
-            <div
-                style="position: relative; min-width: 320px; min-height: 50px; display: flex; justify-content: center;">
-
+            <span style="font-size: 9px; color: #999; margin-top:0px; margin-bottom: 0px; display:block; text-align:center;">ADVERTISEMENT</span>
+            <div style="position: relative; min-width: 320px; min-height: 50px; display: flex; justify-content: center;">
                 <ins class="adsbygoogle" style="display:inline-block;width:320px;height:50px"
                     data-ad-client="ca-pub-3986924419662120" data-ad-slot="6911924096"></ins>
-
-                <a href="https://www.newsnmf.com/nmfapps/" target="_blank" class="ad-fallback-content"
-                    id="myFallback">
+                <a href="https://www.newsnmf.com/nmfapps/" target="_blank" class="ad-fallback-content" id="myFallback">
                     <div class="dl-wrapper">
                         <div class="ad-fallback-info">
                             <div class="ad-app-icon">
-                                <img src="https://www.newsnmf.com/frontend/images/logo.png" alt="NewsNMF"
-                                    class="--logo-sm" />
+                                <img src="https://www.newsnmf.com/frontend/images/logo.png" alt="NewsNMF" class="--logo-sm" />
                             </div>
                             <div class="ad-text-group">
                                 <div class="ad-app-name">NMF App</div>
@@ -504,18 +409,13 @@
                         <div class="ad-fallback-btn">Download</div>
                     </div>
                 </a>
-
             </div>
-
             <script>
                 (adsbygoogle = window.adsbygoogle || []).push({});
-
                 window.addEventListener('load', function() {
                     setTimeout(function() {
                         var adSlot = document.querySelector('#stickyFooterAd ins.adsbygoogle');
-                        // If AdSense is empty or hidden, show Fallback
-                        if (adSlot && (adSlot.getAttribute('data-ad-status') === 'unfilled' || adSlot
-                                .offsetHeight === 0 || adSlot.style.display === 'none')) {
+                        if (adSlot && (adSlot.getAttribute('data-ad-status') === 'unfilled' || adSlot.offsetHeight === 0 || adSlot.style.display === 'none')) {
                             if (adSlot) adSlot.style.display = 'none';
                             document.getElementById('myFallback').style.display = 'block';
                         }
@@ -523,17 +423,12 @@
                 });
             </script>
         </div>
-        <!-- Bottom Navigation -->
-         <?php
+
+        <?php
            use App\Models\Clip;
-          
-            $clip = Clip::with('category')
-            ->where('status', 1)
-            ->latest('id')
-            ->first();
-            if($clip){
-                $catUrl = optional($clip->category)->site_url;
-            }
+           if($clip){
+               $catUrl = optional($clip->category)->site_url;
+           }
             $videourl=$clip->site_url;
          ?>
         <div class="btm-nav" id="btm-nav">
@@ -559,27 +454,24 @@
             </a>
         </div>
         <script>
-            // Buttom nav hide on scroll
+        // Bottom nav hide on scroll
         let lastScroll = 0;
         const stickyAd = document.getElementById("stickyFooterAd");
         const bottomNav = document.getElementById("btm-nav");
 
         window.addEventListener("scroll", function () {
-        const currentScroll = window.pageYOffset;
-
-        if (currentScroll > lastScroll + 10) {
-        stickyAd.style.transform = "translateY(0)";      // show smooth
-        bottomNav.style.transform = "translateY(100%)";  // hide smooth
-        } 
-        else if (currentScroll < lastScroll - 10) {
-        stickyAd.style.transform = "translateY(100%)";   // hide smooth
-        bottomNav.style.transform = "translateY(0)";     // show smooth
-        }
-
-        lastScroll = currentScroll;
+            const currentScroll = window.pageYOffset;
+            if (currentScroll > lastScroll + 10) {
+                stickyAd.style.transform = "translateY(0)";      // show smooth
+                bottomNav.style.transform = "translateY(100%)";  // hide smooth
+            } 
+            else if (currentScroll < lastScroll - 10) {
+                stickyAd.style.transform = "translateY(100%)";   // hide smooth
+                bottomNav.style.transform = "translateY(0)";     // show smooth
+            }
+            lastScroll = currentScroll;
         });
         </script>
-
 
         <footer class="footer_main">
             <div class="cm-container">
@@ -587,12 +479,10 @@
                     <div class="footer_left">
                         <div class="footer_logo_wrap">
                             <a href="{{ asset('/') }}" class="footer_logo">
-                                <!-- NL1025:20Sept:2025:Added config path -->
-
-                                <img loading="lazy" src="{{config('global.base_url_frontend')}}frontend/images/logo.png" alt="NMF Homepage" />
+                                <img loading="lazy" src="{{config('global.base_url_frontend')}}frontend/images/logo.png" alt="" />
                             </a>
                             <div class="footer_logo">
-                                <img loading="lazy" src="{{config('global.base_url_asset')}}asset/images/kmc_logo.png" alt="NMF Homepage">
+                                <img loading="lazy" src="{{config('global.base_url_asset')}}asset/images/kmc_logo.png" alt="">
                             </div>
                         </div>
                         <p>NMF News is a Subsidary of Khetan Media Creation Pvt Ltd</p>
@@ -638,8 +528,7 @@
                                     <div class="footer_ct">
                                         @foreach ($chunk as $footer_menu)
                                             <li class="footer_item">
-                                                <a
-                                                    href="{{ $footer_menu->menu_link }}">{{ $footer_menu->menu_name }}</a>
+                                                <a href="{{ $footer_menu->menu_link }}">{{ $footer_menu->menu_name }}</a>
                                             </li>
                                         @endforeach
                                     </div>
@@ -654,8 +543,7 @@
                                 class="playstore-button">
                                 <svg viewBox="0 0 512 512" class="_icon" fill="currentColor"
                                     xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M99.617 8.057a50.191 50.191 0 00-38.815-6.713l230.932 230.933 74.846-74.846L99.617 8.057zM32.139 20.116c-6.441 8.563-10.148 19.077-10.148 30.199v411.358c0 11.123 3.708 21.636 10.148 30.199l235.877-235.877L32.139 20.116zM464.261 212.087l-67.266-37.637-81.544 81.544 81.548 81.548 67.273-37.64c16.117-9.03 25.738-25.442 25.738-43.908s-9.621-34.877-25.749-43.907zM291.733 279.711L60.815 510.629c3.786.891 7.639 1.371 11.492 1.371a50.275 50.275 0 0027.31-8.07l266.965-149.372-74.849-74.847z">
+                                    <path d="M99.617 8.057a50.191 50.191 0 00-38.815-6.713l230.932 230.933 74.846-74.846L99.617 8.057zM32.139 20.116c-6.441 8.563-10.148 19.077-10.148 30.199v411.358c0 11.123 3.708 21.636 10.148 30.199l235.877-235.877L32.139 20.116zM464.261 212.087l-67.266-37.637-81.544 81.544 81.548 81.548 67.273-37.64c16.117-9.03 25.738-25.442 25.738-43.908s-9.621-34.877-25.749-43.907zM291.733 279.711L60.815 510.629c3.786.891 7.639 1.371 11.492 1.371a50.275 50.275 0 0027.31-8.07l266.965-149.372-74.849-74.847z">
                                     </path>
                                 </svg>
                                 <span class="texts">
@@ -666,8 +554,7 @@
                             <a href="https://apps.apple.com/us/app/nmf-news/id6745018964" class="playstore-button">
                                 <svg viewBox="0 0 512 512" class="_icon" fill="currentColor"
                                     xmlns="http://www.w3.org/2000/svg" style="margin-right: -7px;">
-                                    <path
-                                        d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
+                                    <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
                                 </svg>
                                 <span class="texts">
                                     <span class="text-1">GET IT ON</span>
@@ -730,8 +617,6 @@
                     <div class="ftcol">
                         <div class="poweredby">
                             <span>Designed & Developed by</span>
-                            <!-- NL1025:20Sept:2025:Added config path -->
-
                             <a href="https://www.abrosys.com/"> <img width="102" height="19"
                                     src="{{config('global.base_url_asset')}}asset/images/abrosys.png"
                                     alt="Abrosys Technologies Private Limited"></a>
@@ -746,20 +631,14 @@
                 <i class="fa fa-angle-up" aria-hidden="true"></i>
             </button>
         </div>
-
-        {{-- 
-             PERFORMANCE FIX: SCRIPTS
-             1. We removed individual script tags (jquery, swiper, main.js).
-             2. They are now loaded via the @vite() directive in the <head> (Laravel handles deferring automatically).
-        --}}
         
-        {{-- Cloudflare Insights (Keep as is, it's external) --}}
+        {{-- Cloudflare Insights (Must be external) --}}
         <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v55bfa2fee65d44688e90c00735ed189a1713218998793"
             integrity="sha512-FIKRFRxgD20moAo96hkZQy/5QojZDAbyx0mQ17jEGHCJc/vi0G2HXLtofwD7Q3NmivvP9at5EVgbRqOaOQb+Rg=="
             data-cf-beacon='{"rayId":"877e2b567a269fa5","r":1,"version":"2024.3.0","token":"e07ffd4cc02748408b326adb64b6cc16"}'
             crossorigin="anonymous"></script>
 
-        {{-- INLINE SCRIPTS --}}
+        {{-- INLINE SCRIPTS (Logic specific to this view) --}}
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 // Modal Menu Logic
@@ -776,6 +655,7 @@
             });
         </script>
         <script>
+            // Note: $ is now available globally because we imported it in app.js
             $(function() {
                 $('#load-more-btn').on('click', function() {
                     let button = $(this);
@@ -786,7 +666,6 @@
 
                     button.prop('disabled', true).html(
                         'Loading... <i class="fa-solid fa-spinner fa-spin"></i>');
-
 
                     $.ajax({
                         url: `/categories/${name}/load-more`,
@@ -847,24 +726,25 @@
                 });
             });
         </script>
- <script>
-$(document).ready(function(){
-                     $(".middle_widget_six_carousel").owlCarousel({
-        items: 2,     
-        margin: 15,    
-        loop: true,     
-        autoplay: true, 
-        autoplayTimeout: 4000,
-        autoplayHoverPause: true,
-        nav: true,       
-        dots: false,       
-        responsive: {
-            0:   { items: 1 },
-            600: { items: 2 },
-            1000:{ items: 2 }
-        }
-    });
+        <script>
+        $(document).ready(function(){
+            // OwlCarousel is now imported in app.js
+             $(".middle_widget_six_carousel").owlCarousel({
+                items: 2,     
+                margin: 15,    
+                loop: true,     
+                autoplay: true, 
+                autoplayTimeout: 4000,
+                autoplayHoverPause: true,
+                nav: true,       
+                dots: false,       
+                responsive: {
+                    0:   { items: 1 },
+                    600: { items: 2 },
+                    1000:{ items: 2 }
+                }
             });
+        });
         </script>
 
         <x-home.gdpr-consent />

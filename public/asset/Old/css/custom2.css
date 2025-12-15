@@ -2230,7 +2230,7 @@ element {
     vertical-align: middle;
     font-size: 13px;
     zoom: 1;
-    *display: inline;
+    display: inline;
     float: left;
     width: 100% !important;
     height: auto;

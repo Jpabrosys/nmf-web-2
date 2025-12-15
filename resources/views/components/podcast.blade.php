@@ -82,7 +82,7 @@ $isVideo = $podcastData['isVideo'];
             <img src="https://img.youtube.com/vi/{{ $videoId }}/hqdefault.jpg" alt="Podcast video"
                 class="podcast--vdo" width="345" height="auto" loading="lazy">
 
-            <button class="yt-play-btn"><i class="fa fa-play"></i></button>
+            <button class="yt-play-btn" aria-label="Play Video"><i class="fa fa-play"></i></button>
         </div>
 
         <div class="podcast_title">

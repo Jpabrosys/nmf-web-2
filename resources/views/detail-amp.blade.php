@@ -1657,24 +1657,31 @@
 @include('layouts.header-amp')
     <div class="article--container">
         <!-- Breadcrumb -->
-        <nav class="article-breadcrumb" aria-label="Breadcrumb">
-            <ol class="breadcrumb-list">
-                <li class="breadcrumb-item">
-                    <a href="/" rel="home">Home</a>
-                </li> <svg fill="#666" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="15"
-                    height="15"><!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                    <path
-                        d="M439.1 297.4C451.6 309.9 451.6 330.2 439.1 342.7L279.1 502.7C266.6 515.2 246.3 515.2 233.8 502.7C221.3 490.2 221.3 469.9 233.8 457.4L371.2 320L233.9 182.6C221.4 170.1 221.4 149.8 233.9 137.3C246.4 124.8 266.7 124.8 279.2 137.3L439.2 297.3z" />
-                </svg>
-                @if (!empty($data['category']))
-                    <li class="breadcrumb-item">
-                        <a href="{{ url($data['category']->site_url) }}">
-                            {{ $data['category']->name }}
-                        </a>
-                    </li>
-                @endif
-            </ol>
-        </nav>
+<nav class="article-breadcrumb" aria-label="Breadcrumb">
+    <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+            <a href="/" rel="home">Home</a>
+            <svg class="breadcrumb-separator"
+                fill="#666"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 640 640"
+                width="15"
+                height="15"
+                aria-hidden="true">
+                <path
+                    d="M439.1 297.4C451.6 309.9 451.6 330.2 439.1 342.7L279.1 502.7C266.6 515.2 246.3 515.2 233.8 502.7C221.3 490.2 221.3 469.9 233.8 457.4L371.2 320L233.9 182.6C221.4 170.1 221.4 149.8 233.9 137.3C246.4 124.8 266.7 124.8 279.2 137.3L439.2 297.3z" />
+            </svg>
+        </li>
+
+        @if (!empty($data['category']))
+            <li class="breadcrumb-item">
+                <a href="{{ url($data['category']->site_url) }}">
+                    {{ $data['category']->name }}
+                </a>
+            </li>
+        @endif
+    </ol>
+</nav>
 
         <!-- Header Ad -->
         <div class="ad-container">
@@ -1817,7 +1824,7 @@
                 <div class="follow_us">
                     <div class="follow_us_bar"></div>
                     <div class="flw_wrap">
-                        <h6>Follow Us: </h6>
+                        <div>Follow Us: </div>
                         <div class="follow_us_socials">
                             <a href="https://www.facebook.com/officialnmfnews" target="_blank" rel="noopener"
                                 title="Facebook" class="socials-item">
@@ -1989,7 +1996,7 @@
                 <!-- Tags Section -->
                 @if (!empty($data['blog']->tags))
                     <section class="article--tags-section">
-                        <h3 class="article--tags-title">Tags</h3>
+                        <div class="article--tags-title">Tags</div>
                         <div class="article--tags-container">
                             @foreach (explode(',', $data['blog']->tags) as $tag)
                                 @if (trim($tag) !== '')

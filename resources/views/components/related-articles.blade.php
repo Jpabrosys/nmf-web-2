@@ -1,7 +1,7 @@
 <div class="rel_artcle">
     <!-- Heading row -->
     <div class="d-flex align-items-center justify-content-between mb-3 rel_heading_wrap">
-        <h3 class="rel_heading mb-0">यह भी पढ़ें</h3>
+        <div class="rel_heading mb-0">यह भी पढ़ें</div>
 
         <!-- Arrow wrapper -->
         <div class="rel_arrows d-flex gap-2 position-relative">

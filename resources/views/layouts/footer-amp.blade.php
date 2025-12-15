@@ -37,7 +37,7 @@
                 </div>
                 <div class="footer_centre">
                     <div class="footer_col">
-                        <h4>Company</h4>
+                        <div>Company</div>
                         <ul class="footer_menu">
                             <li class="footer_item"><a href="{{ asset('/about') }}">About us</a></li>
                             <li class="footer_item"><a href="{{ asset('/privacy') }}">Privacy Policy</a></li>
@@ -46,26 +46,25 @@
                         </ul>
                     </div>
                     <div class="footer_col">
-                        <h4>Category</h4>
+                        <div>Category</div>
                         <?php
                         $footer_menus = App\Models\Menu::where('menu_id', 0)->where('status', 1)->where('type_id', '1')->where('category_id', '2')->limit(8)->get();
                         $chunks = $footer_menus->chunk(4);
                         ?>
-                        <ul class="footer_menu">
-                            @foreach ($chunks as $chunk)
-                                <div class="footer_ct">
-                                    @foreach ($chunk as $footer_menu)
-                                        <li class="footer_item">
-                                            <a href="{{ $footer_menu->menu_link }}">{{ $footer_menu->menu_name }}</a>
-                                        </li>
-                                    @endforeach
-                                </div>
+                        <ul class="footer_menu footer_grid">
+                            @foreach ($footer_menus as $footer_menu)
+                                <li class="footer_item">
+                                    <a href="{{ $footer_menu->menu_link }}">
+                                        {{ $footer_menu->menu_name }}
+                                    </a>
+                                </li>
                             @endforeach
                         </ul>
+
                     </div>
                 </div>
                 <div class="footer_right">
-                    <h5>Download App</h5>
+                    <div>Download App</div>
                     <div class="app_btn_wrap">
                         <a href="https://play.google.com/store/apps/details?id=com.kmcliv.nmfnews"
                             class="playstore-button">

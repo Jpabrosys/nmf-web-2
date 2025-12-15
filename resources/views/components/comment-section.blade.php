@@ -1,9 +1,9 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="cmmt-container">
     <div class="cmmt-header">
-        <h3 class="cmmt-title">
+        <div class="cmmt-title">
             टिप्पणियाँ <span>{{ $comments->total() }}</span>
-        </h3>
+        </div>
         {{-- <button class="close_btn" id="close-btn2" type="button" aria-label="Close">
             <i class="fa-solid fa-times"></i> 
         </button> --}}

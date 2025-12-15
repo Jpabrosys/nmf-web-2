@@ -21,7 +21,7 @@ $liveBlogs = Cache::remember('breaking_news_amp', now()->addHour(), function () 
     <div class="just_in">
 
         <div class="js_title">
-            <h5 class="js_t">LIVE</h5>
+            <div class="js_t">LIVE</div>
         </div>
 
         <ul class="js_block jb">

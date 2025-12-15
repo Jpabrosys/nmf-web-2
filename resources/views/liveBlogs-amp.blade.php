@@ -1462,7 +1462,7 @@
                 <div class="follow_us">
                     <div class="follow_us_bar"></div>
                     <div class="flw_wrap">
-                        <h6>Follow Us: </h6>
+                        <div>Follow Us: </div>
                         <div class="follow_us_socials">
                             <a href="https://www.facebook.com/officialnmfnews" target="_blank" rel="noopener"
                                 title="Facebook" class="socials-item">

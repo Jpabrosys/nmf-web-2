@@ -223,7 +223,7 @@
                             <div class="--hdr-top">
                                 <div class="--hdr-t-l">
 
-                                    <button class="--toggle-box" id="toggle-btn">
+                                    <button class="--toggle-box" id="toggle-btn" aria-label="Open Menu">
                                         <label class="burger" for="burger">
                                             <span></span>
                                             <span></span>
@@ -311,12 +311,12 @@
                                 <!-- Modal Content -->
                                 <div class="modal-content">
                                     <div class="modal_top">
-                                        <button class="close_btn" id="close-btn">
+                                        <button class="close_btn" id="close-btn" aria-label="Close Modal">
                                             <i class="fa-solid fa-times"></i>
                                         </button>
                                         <!-- NL1025:20Sept:2025:Added config path -->
-                                        <a href="{{ asset('/') }}" class="modal_logo"><img loading="lazy"
-                                               src="{{config('global.base_url_frontend')}}frontend/images/logo.png" alt=""></a>
+                                        <a href="{{ asset('/') }}" class="modal_logo"><img
+                                               src="{{config('global.base_url_frontend')}}frontend/images/logo.png" alt="NMF logo"></a>
                                         <a class="Headertag ms-0" style="margin-left: 0px"> <span class="">जिस
                                                 पर
                                                 देश</span><span class="HeadertagHalf">करता है भरोसा</span> </a>
@@ -589,10 +589,10 @@
                             <a href="{{ asset('/') }}" class="footer_logo">
                                 <!-- NL1025:20Sept:2025:Added config path -->
 
-                                <img loading="lazy" src="{{config('global.base_url_frontend')}}frontend/images/logo.png" alt="" />
+                                <img loading="lazy" src="{{config('global.base_url_frontend')}}frontend/images/logo.png" alt="NMF Homepage" />
                             </a>
                             <div class="footer_logo">
-                                <img loading="lazy" src="{{config('global.base_url_asset')}}asset/images/kmc_logo.png" alt="">
+                                <img loading="lazy" src="{{config('global.base_url_asset')}}asset/images/kmc_logo.png" alt="NMF Homepage">
                             </div>
                         </div>
                         <p>NMF News is a Subsidary of Khetan Media Creation Pvt Ltd</p>

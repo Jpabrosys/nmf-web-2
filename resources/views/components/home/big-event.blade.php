@@ -122,7 +122,7 @@ linear infinite;
                                     <div class="yt-video w-100" data-id="{{ $videoInfo['id'] }}" style="position: relative;">
                                         <img src="https://img.youtube.com/vi/{{ $videoInfo['id'] }}/hqdefault.jpg" 
                                             alt="{{ $bigEvent->title }}" class="podcast--vdo" width="100%" height="auto" loading="lazy">
-                                        <button class="yt-play-btn"><i class="fa fa-play"></i></button>
+                                        <button class="yt-play-btn" aria-label="Play Video"><i class="fa fa-play"></i></button>
                                     </div>
 
                                 {{-- Instagram --}}

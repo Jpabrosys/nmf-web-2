@@ -166,7 +166,7 @@ use App\Models\Video;
                     @endphp
                     <div class="custom-tab-card">
                         <div class="playBtn-wrap2">
-                            <a href="{{ $blogUrl }}" class="play-btn"><i class="fa-solid fa-play"></i></a>
+                            <div class="play-btn"><i class="fa-solid fa-play"></i></div>
                                 <p class="v-duration2">
                                     {{ $blog->duration }}
                                 </p>
@@ -194,7 +194,7 @@ use App\Models\Video;
                     @endphp
                     <div class="custom-tab-card">
                         <div class="playBtn-wrap2">
-                            <a href="{{ $blogUrl }}" class="play-btn"><i class="fa-solid fa-play"></i></a>
+                            <div class="play-btn"><i class="fa-solid fa-play"></i></div>
                                 <p class="v-duration2">
                                 </p>
                             </div>

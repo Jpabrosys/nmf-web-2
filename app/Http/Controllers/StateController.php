@@ -7,6 +7,7 @@ use App\Models\State;
 use App\Models\Ads;
 use App\Models\Blog;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 
 class StateController extends Controller
 {
@@ -16,64 +17,74 @@ class StateController extends Controller
         $states->setPath(asset('/state'));
         return view('admin/stateList')->with('states', $states);
     }
+
     public function add()
     {
         return view('admin/addState');
     }
+
     public function save(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
-            'eng_name' => 'required|string'
+            'name' => 'required|string|max:255',
+            'eng_name' => 'required|string|max:255'
         ]);
-        $url = $this->clean($request->eng_name);
-        $url = strtolower(str_replace(' ', '-', trim($url)));
-        $home_page_status = 0;
-        if ($request->home_page_status) {
-            $home_page_status = 1;
-        }
+
+        $url = $this->generateSlug($request->eng_name);
+
         State::create([
             'name' => $request->name,
             'eng_name' => $request->eng_name,
             'site_url' => $url,
-            'home_page_status' => $home_page_status,
-            'sequence_id' => $request->sequence,
+            'home_page_status' => $request->has('home_page_status') ? 1 : 0,
+            'sequence_id' => $request->sequence ?? 0,
         ]);
-        return redirect('state');
+
+        return redirect('state')->with('success', 'State created successfully');
     }
+
     public function edit($id)
     {
-        $state = State::where('id', $id)->first();
+        $state = State::findOrFail($id);
         return view('admin/editState')->with('state', $state);
     }
+
     public function editSave($id, Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
-            'eng_name' => 'required|string'
+            'name' => 'required|string|max:255',
+            'eng_name' => 'required|string|max:255'
         ]);
-        $home_page_status = 0;
-        $url = $this->clean($request->eng_name);
-        $url = strtolower(str_replace(' ', '-', trim($url)));
-        if ($request->home_page_status) {
-            $home_page_status = 1;
-        }
+
+        $url = $this->generateSlug($request->eng_name);
+
         State::where('id', $id)->update([
             'name' => $request->name,
             'eng_name' => $request->eng_name,
             'site_url' => $url,
-            'home_page_status' => $home_page_status,
-            'sequence_id' => $request->sequence,
+            'home_page_status' => $request->has('home_page_status') ? 1 : 0,
+            'sequence_id' => $request->sequence ?? 0,
         ]);
-        return redirect('state');
+
+        return redirect('state')->with('success', 'State updated successfully');
     }
-    public function clean($string)
+
+    /**
+     * FIX: Improved slug generation method
+     * Old clean() method had confusing logic
+     */
+    private function generateSlug($string)
     {
-        $string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
-        $string = preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
-        $string = trim($string);
-        return preg_replace('/-+/', ' ', $string); // Replaces multiple hyphens with single one.
+        $string = strtolower(trim($string));
+        $string = preg_replace('/[^a-z0-9\s-]/', '', $string);
+        $string = preg_replace('/[\s-]+/', '-', $string);
+        return trim($string, '-');
     }
+
+    /**
+     * DEPRECATED: This approach is bad UX
+     * Use proper delete confirmation in frontend
+     */
     public function del($id, Request $request)
     {
         ?>
@@ -86,10 +97,11 @@ class StateController extends Controller
         </script>
         <?php
     }
+
     public function deleteState($id, Request $request)
     {
         State::where('id', $id)->delete();
-        return redirect('/state');
+        return redirect('/state')->with('success', 'State deleted successfully');
     }
 
     public function updateStatus(Request $request)
@@ -97,7 +109,10 @@ class StateController extends Controller
         $state = State::find($request->state_id);
 
         if (!$state) {
-            return response()->json(['success' => false, 'message' => 'Invalid state ID']);
+            return response()->json([
+                'success' => false, 
+                'message' => 'Invalid state ID'
+            ], 404);
         }
 
         $state->home_page_status = $request->active_status ? 1 : 0;
@@ -106,65 +121,106 @@ class StateController extends Controller
         return response()->json(['success' => true]);
     }
 
+    /**
+     * MAJOR FIX: Optimized load more with single efficient query
+     * 
+     * PROBLEMS FIXED:
+     * 1. Two separate queries replaced with one
+     * 2. Added eager loading for relationships
+     * 3. Added caching for ads
+     * 4. Better error handling
+     * 5. Proper offset calculation
+     */
     public function stateLoadMore(Request $request, $name)
     {
         try {
-            // Log::info('stateLoadMore called', [
-            //     'name' => $name,
-            //     'offset' => $request->input('offset', 0)
-            // ]);
-
             $offset = (int) $request->input('offset', 0);
             $limit = 10;
 
-            // State lookup (same as state() function)
+            // State lookup with caching
             $name = str_replace('_', ' ', $name);
-            $state = State::where('site_url', $name)->firstOrFail();
+            $state = Cache::remember("state_by_url_{$name}", 600, function () use ($name) {
+                return State::where('site_url', $name)->firstOrFail();
+            });
 
-            // Ads (same type you used in state())
-            $sateAds = Ads::where('page_type', 'category')->get()->keyBy('location');
+            // Cache ads for 10 minutes
+            $sateAds = Cache::remember('category_page_ads', 600, function () {
+                return Ads::where('page_type', 'category')
+                    ->get()
+                    ->keyBy('location');
+            });
 
-            // Top 5 blogs (to exclude)
-            $topBlogIds = Blog::where('state_ids', $state->id)
-                ->where('status', 1)
-                ->orderBy('created_at', 'DESC')
-                ->limit(5)
-                ->pluck('id')
-                ->toArray();
-
-            // Remaining blogs with offset
+            /**
+             * CRITICAL FIX: Single optimized query
+             * Old code:
+             * 1. Query 1: Get top 5 blog IDs
+             * 2. Query 2: Get remaining blogs with whereNotIn
+             * 
+             * New code: Single query with proper offset
+             */
             $blogs = Blog::where('state_ids', $state->id)
                 ->where('status', 1)
-                ->whereNotIn('id', $topBlogIds)
-                ->with('images')
+                ->with([
+                    'images' => function($query) {
+                        $query->select('id', 'blog_id', 'file_name', 'full_path');
+                    },
+                    'category:id,name,site_url'
+                ])
                 ->orderBy('created_at', 'DESC')
-                ->skip($offset)
-                ->take($limit)
+                ->offset($offset + 5) // Skip initial 5 + current offset
+                ->limit($limit)
                 ->get();
 
-            // Render only the <li> elements as a partial
-            // $html = view('partials.blogList', [
-            //     'blogs' => $blogs,
-            //     'sateAds' => $sateAds  // blade expects this variable
-            // ])->render();
-
-            // return response()->json([
-            //     'blogs' => $html,
-            //     'count' => $blogs->count()
-            // ]);
+            // If you need the first 5 separately, use this approach instead:
+            // if ($offset === 0) {
+            //     // For first page, skip top 5
+            //     $blogs = Blog::where('state_ids', $state->id)
+            //         ->where('status', 1)
+            //         ->with(['images', 'category'])
+            //         ->orderBy('created_at', 'DESC')
+            //         ->offset(5)
+            //         ->limit($limit)
+            //         ->get();
+            // } else {
+            //     // For subsequent pages
+            //     $blogs = Blog::where('state_ids', $state->id)
+            //         ->where('status', 1)
+            //         ->with(['images', 'category'])
+            //         ->orderBy('created_at', 'DESC')
+            //         ->offset($offset + 5)
+            //         ->limit($limit)
+            //         ->get();
+            // }
 
             return response()->json([
                 'blogs' => view('components.category.state-blog-list', [
                     'blogs' => $blogs,
-                    'sateAds' => $sateAds ?? []
+                    'sateAds' => $sateAds
                 ])->render(),
                 'count' => $blogs->count()
             ]);
 
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            Log::warning('State not found in loadMore', ['name' => $name]);
+            return response()->json([
+                'blogs' => '', 
+                'count' => 0,
+                'error' => 'State not found'
+            ], 404);
+            
         } catch (\Exception $e) {
-            Log::error('stateLoadMore error: '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            return response()->json(['blogs' => '', 'count' => 0], 500);
+            Log::error('stateLoadMore error', [
+                'name' => $name,
+                'offset' => $offset ?? 0,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'blogs' => '', 
+                'count' => 0,
+                'error' => 'Internal server error'
+            ], 500);
         }
     }
-
 }

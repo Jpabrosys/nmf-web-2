@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\HomeSection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
+
+// Models
+use App\Models\HomeSection;
 use App\Models\Category;
 use App\Models\Blog;
 use App\Models\Subscriber;
@@ -11,9 +17,9 @@ use App\Models\Vote;
 use App\Models\VoteOption;
 use App\Models\TrendingTag;
 use App\Models\Ads;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use App\Models\Rashifal;
+use App\Models\WebStories;
+use App\Models\BigEvent;
 
 class HomeController extends Controller
 {
@@ -27,105 +33,208 @@ class HomeController extends Controller
         return view('admin/dashboard');
     }
 
+    /**
+     * Optimized Home Page Function
+     * Caches all data for 10 minutes to reduce DB load
+     */
     public function homePage()
     {
-        // Cache frequently used queries for 5 minutes
-        $categories = Cache::remember('home_categories', 300, function () {
-            return Category::where('home_page_status', '1')->get();
+        // Cache key: homepage_data_v1
+        // Duration: 600 seconds (10 minutes)
+        $data = Cache::remember('homepage_data_v1', 600, function () {
+            return $this->getHomePageData();
         });
-
-        $homeSections = Cache::remember('home_sections', 300, function () {
-            return HomeSection::with('category')
-                ->where('type', 'section')
-                ->where('status', 1)
-                ->orderBy('section_order', 'asc')
-                ->get();
-        });
-
-        $sidebarCategories = Cache::remember('sidebar_categories', 300, function () {
-            return HomeSection::with('category')
-                ->where('type', 'sidebar')
-                ->where('status', 1)
-                ->orderBy('sidebar_sec_order', 'asc')
-                ->get();
-        });
-
-        $banners = Cache::remember('home_banners', 300, function () {
-            return HomeSection::with('category')
-                ->where('type', 'banner')
-                ->where('status', 1)
-                ->get();
-        });
-
-        // Optimize random blog selection (avoid inRandomOrder on large tables)
-        $blogCount = Blog::count();
-        $randomBlog = null;
-        if ($blogCount > 0) {
-            $randomBlog = Blog::skip(rand(0, $blogCount - 1))->first();
-        }
-
-        $homeAds = Cache::remember('home_ads', 300, function () {
-            return Ads::where('page_type', 'home')->get()->keyBy('location');
-        });
-
-        $trendingTags = Cache::remember('trending_tags', 300, function () {
-            return TrendingTag::where('status', 1)
-                ->orderBy('sequence_id', 'asc')
-                ->pluck('name')
-                ->toArray();
-        });
-
-        $latestPoll = Cache::remember('latest_poll', 60, function () {
-            return Vote::latest()->first();
-        });
-
-        if (!$latestPoll) {
-            $title = 'Default Question?';
-            $allVotes = [];
-            $totalVotes = 0;
-        } else {
-            $title = $latestPoll->title;
-
-            $options = VoteOption::where('vote_id', $latestPoll->id)
-                ->select('name', DB::raw('SUM(vote_count) as count'))
-                ->groupBy('name')
-                ->pluck('count', 'name');
-
-            $allVotes = $options->toArray();
-            $totalVotes = array_sum($allVotes);
-        }
 
         return response()
-            ->view('welcome', [
-                'data' => [
-                    'categories'       => $categories ?? [],
-                    'homeSections'     => $homeSections ?? [],
-                    'randomBlog'       => $randomBlog ?? [],
-                    'uniqueTags'       => $trendingTags,
-                    'sidebarCategories'=> $sidebarCategories ?? [],
-                    'voteTitle'        => $title,
-                    'voteOptions'      => $allVotes,
-                    'voteTotal'        => $totalVotes,
-                    'voteId'           => $latestPoll->id ?? null,
-                    'homeAds'          => $homeAds,
-                    'banners'          => $banners ?? [],
-                ]
-            ])
-            ->header('Cache-Control', 'public, max-age=300'); // allow browser cache for 5 min
+            ->view('welcome', ['data' => $data])
+            ->header('Cache-Control', 'public, max-age=600, s-maxage=1800');
     }
 
-   public function savedVote($id, Request $request)
+    /**
+     * Gather all data in a single function for caching
+     */
+    private function getHomePageData()
     {
-        // $request->validate([
-        //     'vote_id' => 'required|integer',
-        //     'option_id' => 'required|integer',
-        // ]);
+        // 1. Fetch All Home Sections (Single Query)
+        $allSections = HomeSection::with('category')
+            ->where('status', 1)
+            ->orderBy('section_order', 'asc')
+            ->orderBy('sidebar_sec_order', 'asc')
+            ->get();
+
+        // 2. Separate logic for Banners, Sidebar, and Main Sections
+        $tempSections = [];
+        $sidebarCategoriesList = [];
+        $bannerData = [
+            'bannerimgurl' => null,
+            'bannerlinkurl' => '#',
+            'bannermobileimgurl' => null,
+            'bannermobilelinkurl' => '#'
+        ];
+
+        foreach ($allSections as $section) {
+            // Main Sections
+            if ($section->type === 'section') {
+                $order = (int) $section->section_order;
+                $tempSections[$order] = [
+                    'catid' => $section->catid,
+                    'name' => optional($section->category)->name ?? '',
+                    'site_url' => optional($section->category)->site_url ?? '',
+                ];
+            }
+            // Sidebar
+            elseif ($section->type === 'sidebar' && !empty($section->category)) {
+                $order = (int) $section->sidebar_sec_order;
+                $sidebarCategoriesList[$order] = [
+                    'catid' => $section->catid,
+                    'name' => $section->category->name,
+                    'site_url' => $section->category->site_url,
+                ];
+            }
+            // Banners
+            elseif ($section->type === 'banner') {
+                $title = strtolower($section->title);
+                if ($title === 'banner') {
+                    $bannerData['bannerimgurl'] = $section->image_url;
+                    $bannerData['bannerlinkurl'] = $section->banner_link ?? '#';
+                } elseif ($title === 'bannermobile') {
+                    $bannerData['bannermobileimgurl'] = $section->image_url;
+                    $bannerData['bannermobilelinkurl'] = $section->banner_link ?? '#';
+                }
+            }
+        }
+
+        // 3. Process Section Logic (Extract Rajya/Vidhan Sabha & Reindex)
+        $collection = collect($tempSections);
+        
+        $rajyaSection = $collection->firstWhere('name', 'राज्य');
+        $bidhanSabhaSection = $collection->firstWhere('name', 'विधान सभा चुनाव');
+
+        // Remove special sections and reindex starting from 1
+        $finalSectionCategories = $collection
+            ->reject(fn($item) => in_array($item['name'], ['राज्य', 'विधान सभा चुनाव']))
+            ->values()
+            ->mapWithKeys(function ($item, $index) {
+                return [$index + 1 => $item];
+            })
+            ->toArray();
+
+        // Reindex Sidebar starting from 1
+        $finalSidebarList = collect($sidebarCategoriesList)
+            ->values()
+            ->mapWithKeys(function ($item, $index) {
+                return [$index + 1 => $item];
+            })
+            ->toArray();
+
+        // 4. Fetch Breaking News (Optimized)
+        $breakingNews = Blog::where('status', 1)
+            ->where('breaking_status', 1)
+            ->where('sequence_id', 0)
+            ->whereDate('created_at', Carbon::today())
+            ->orderBy('created_at', 'DESC')
+            ->select('name', 'created_at') // Optimize: select only needed fields
+            ->first();
+
+        // 5. Fetch Big Event
+        $showBigEvent = HomeSection::where('title', 'DisplayBigEvent')->where('status', 1)->exists();
+        $bigEventData = null;
+        if ($showBigEvent) {
+            $bigEventData = BigEvent::where('is_active', 1)
+                ->with(['blogs' => function($query) {
+                    $query->latest()->take(3);
+                }])
+                ->orderBy('created_at', 'desc')
+                ->first();
+        }
+
+        // 6. Fetch Web Stories
+        $webStories = WebStories::with(['category', 'webStoryFiles'])
+            ->where('status', '1')
+            ->orderBy('sequence', 'asc')
+            ->limit(10)
+            ->get();
+
+        // 7. Fetch Rashifal
+        $rashifal = Rashifal::where('status', 1)->get();
+
+        // 8. Fetch Other Data (Ads, Tags, Polls)
+        $homeAds = Ads::where('page_type', 'home')->get()->keyBy('location');
+        
+        $trendingTags = TrendingTag::where('status', 1)
+            ->orderBy('sequence_id', 'asc')
+            ->pluck('name')
+            ->toArray();
+            
+        $pollData = $this->getLatestPollData();
+        
+        // 9. Flags for conditional rendering
+        $flags = [
+            'showMaha' => HomeSection::where('title', 'ElectionMahaSection')->where('status', 1)->exists(),
+            'showLive' => (int) (HomeSection::where('title', 'ElectionLiveSection')->value('status') ?? 0),
+            'showExitpoll' => (int) (HomeSection::where('title', 'ExitPollSection')->value('status') ?? 0),
+            'showBigEvent' => $showBigEvent,
+            'showVoteInTopNews' => HomeSection::where('title', 'ShowVoteInTop')->where('status', 1)->exists(),
+            'showBannerAboveTopNews' => HomeSection::where('title', 'ShowBannerAboveTopStory')->where('status', 1)->exists(),
+        ];
+
+        return [
+            'sectionCategories' => $finalSectionCategories,
+            'rajyaSection'      => $rajyaSection,
+            'bidhanSabhaSection'=> $bidhanSabhaSection,
+            'sidebarCategories' => $finalSidebarList,
+            'banners'           => $bannerData,
+            'breakingNews'      => $breakingNews,
+            'bigEvent'          => $bigEventData,
+            'webStories'        => $webStories,
+            'rashifal'          => $rashifal,
+            'uniqueTags'        => $trendingTags,
+            'homeAds'           => $homeAds,
+            'voteData'          => $pollData,
+            'flags'             => $flags,
+        ];
+    }
+
+    /**
+     * Optimized Poll Data Fetching
+     */
+    private function getLatestPollData()
+    {
+        $latestPoll = Vote::with(['options' => function($query) {
+                $query->select('id', 'vote_id', 'name', 'vote_count');
+            }])
+            ->latest()
+            ->first();
+
+        if (!$latestPoll) {
+            return ['title' => 'Default Question?', 'options' => [], 'total' => 0, 'id' => null];
+        }
+
+        $allVotes = $latestPoll->options->pluck('vote_count', 'name')->toArray();
+        $totalVotes = array_sum($allVotes);
+
+        return [
+            'title' => $latestPoll->title,
+            'options' => $allVotes,
+            'total' => $totalVotes,
+            'id' => $latestPoll->id,
+        ];
+    }
+    
+    /**
+     * Vote Saving Logic with Transaction
+     */
+    public function savedVote($id, Request $request)
+    {
+        $request->validate([
+            'vote_id' => 'required|integer|exists:votes,id',
+            'option_id' => 'required|integer|exists:vote_options,id',
+            'title' => 'required|string',
+        ]);
 
         $userIp = $request->ip();
 
-        // Check if the same user_ip has already voted on this title
-        $alreadyVoted = DB::table('votes')
-            ->where('id', $id)
+        $alreadyVoted = Vote::where('id', $id)
             ->where('title', $request->title)
             ->where('user_ip', $userIp)
             ->exists();
@@ -138,78 +247,65 @@ class HomeController extends Controller
             ], 403);
         }
 
-        // Get the vote option to increment
-        $voteOption = VoteOption::where('vote_id', $request->vote_id)
-            ->where('id', $request->option_id)
-            ->first();
+        DB::beginTransaction();
+        try {
+            $updated = VoteOption::where('vote_id', $request->vote_id)
+                ->where('id', $request->option_id)
+                ->increment('vote_count');
 
-        if (!$voteOption) {
+            if (!$updated) {
+                throw new \Exception('Option not found');
+            }
+
+            Vote::where('id', $id)
+                ->whereNull('user_ip')
+                ->update([
+                    'user_ip' => $userIp,
+                    'updated_at' => now()
+                ]);
+
+            DB::commit();
+            
+            // Clear homepage cache so the new vote count shows up eventually
+            Cache::forget('homepage_data_v1');
+
+            $results = VoteOption::where('vote_id', $request->vote_id)->pluck('vote_count', 'id');
+            $totalVotes = $results->sum();
+
             return response()->json([
-                'status' => 'error',
-                'message' => 'Option not found'
-            ], 404);
-        }
-
-        // Increment the vote count
-        $voteOption->increment('vote_count');
-
-        // Update the vote row with user_ip ONLY if it was empty
-        DB::table('votes')
-            ->where('id', $id)
-            ->whereNull('user_ip') // prevent overwriting someone else's IP
-            ->update([
-                'user_ip' => $userIp,
-                'updated_at' => now()
+                'status' => 'success',
+                'message' => 'Vote recorded',
+                'results' => $results,
+                'totalVotes' => $totalVotes,
+                'voteId' => $request->vote_id
             ]);
 
-        // Get updated results
-        $options = VoteOption::where('vote_id', $request->vote_id)->get();
-        $results = $options->pluck('vote_count', 'id');
-        $totalVotes = $results->sum();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Vote recorded',
-            'results' => $results,
-            'totalVotes' => $totalVotes,
-            'voteId' => $request->vote_id // Add this line
-        ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Vote failed', ['error' => $e->getMessage()]);
+            return response()->json(['status' => 'error', 'message' => 'Failed to record vote'], 500);
+        }
     }
 
     public function getVoteResults($id)
     {
-        $latestPoll = Vote::find($id);
-
-        if (!$latestPoll) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Poll not found'
-            ], 404);
-        }
-
-        $options = VoteOption::where('vote_id', $latestPoll->id)
-            ->select('id', 'name', DB::raw('SUM(vote_count) as count'))
-            ->groupBy('id', 'name')
-            ->pluck('count', 'id');
-
-        $allVotes = $options->toArray();
-        $totalVotes = array_sum($allVotes);
+        // Short cache for results to prevent spamming DB
+        $results = Cache::remember("vote_results_{$id}", 60, function () use ($id) {
+            $options = VoteOption::where('vote_id', $id)->pluck('vote_count', 'id');
+            return ['results' => $options->toArray(), 'totalVotes' => $options->sum()];
+        });
 
         return response()->json([
             'status' => 'success',
-            'results' => $allVotes,
-            'totalVotes' => $totalVotes
+            'results' => $results['results'],
+            'totalVotes' => $results['totalVotes']
         ]);
     }
 
     public function subscribe(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email|unique:subscribers,email',
-        ]);
-
+        $request->validate(['email' => 'required|email|unique:subscribers,email']);
         Subscriber::create(['email' => $request->email]);
-
         return redirect('/')->with('subscribemessage', "Thanks for subscribing!");
     }
 
@@ -220,94 +316,70 @@ class HomeController extends Controller
         } elseif ($request->_action === 'subscribe') {
             return $this->subscribe($request);
         }
-
         abort(400, 'Invalid form action.');
     }
-public function toggleMahaSection()
-{
-    $section = HomeSection::where('title', 'ElectionMahaSection')->first();
-
-    if ($section) {
-        // Toggle between 1 and 0
-        $section->status = $section->status == 1 ? 0 : 1;
-        $section->save();
-    } else {
-        // Create record if it doesn't exist
-        HomeSection::create([
-            'title' => 'ElectionMahaSection',
-            'status' => 1,
-            'section_order' => 0
-        ]);
-    }
-     try {
-            app(\App\Services\ExportHome::class)->run();
-        } catch (\Throwable $e) {
-             Log::error('ExportHome failed', ['error' => $e->getMessage()]);
-        }
-
-
-   // return back()->with('success', 'Election Maha Section visibility updated!');
- return redirect(config('global.base_url').'election/mahamukabla/show')->with('success', 'Election Mahamukabla visibility updated!');
-
-
-}
-
-public function toggleLiveSection()
-{
-    $section = HomeSection::where('title', 'ElectionLiveSection')->first();
-
-    if ($section) {
-        // Toggle between 1 and 0
-        $section->status = $section->status == 1 ? 0 : 1;
-        $section->save();
-    } else {
-        // Create record if it doesn't exist
-        HomeSection::create([
-            'title' => 'ElectionLiveSection',
-            'status' => 1,
-            'section_order' => 0
-        ]);
-    }
-
-     try {
-            app(\App\Services\ExportHome::class)->run();
-        } catch (\Throwable $e) {
-            \Log::error('ExportHome failed', ['error' => $e->getMessage()]);
-        }
-
-
-    //return back()->with('success', 'Election Live Section visibility updated!');
- return redirect(config('global.base_url').'election/manage-vote-count')->with('success', 'Election Result visibility updated!');
-
-}
-public function toggleExitPoll()
-{
-    $section = HomeSection::where('title', 'ExitPollSection')->first();
-
-    if ($section) {
-        // Toggle between 1 and 0
-        $section->status = $section->status == 1 ? 0 : 1;
-        $section->save();
-    } else {
-        // Create record if it doesn't exist
-        HomeSection::create([
-            'title' => 'ExitPollSection',
-            'status' => 1,
-            'section_order' => 0
-        ]);
-    }
-
-     try {
-            app(\App\Services\ExportHome::class)->run();
-        } catch (\Throwable $e) {
-            \Log::error('ExportHome failed', ['error' => $e->getMessage()]);
-        }
-
-
     
- return redirect(config('global.base_url').'election/exit-poll')->with('success', 'Exit Poll visibility updated!');
+    // Toggle Functions (Clear Cache on Update)
+    
+    private function clearHomePageCache()
+    {
+        Cache::forget('homepage_data_v1');
+    }
+    
+    public function toggleMahaSection()
+    {
+        $section = HomeSection::firstOrCreate(
+            ['title' => 'ElectionMahaSection'],
+            ['status' => 0, 'section_order' => 0]
+        );
+        $section->status = $section->status == 1 ? 0 : 1;
+        $section->save();
+        $this->clearHomePageCache();
+        
+        try {
+            app(\App\Services\ExportHome::class)->run();
+        } catch (\Throwable $e) {
+            Log::error('ExportHome failed', ['error' => $e->getMessage()]);
+        }
 
-}
+        return redirect(config('global.base_url').'election/mahamukabla/show')->with('success', 'Updated!');
+    }
 
+    public function toggleLiveSection()
+    {
+        $section = HomeSection::firstOrCreate(
+            ['title' => 'ElectionLiveSection'],
+            ['status' => 0, 'section_order' => 0]
+        );
+        $section->status = $section->status == 1 ? 0 : 1;
+        $section->save();
+        $this->clearHomePageCache();
+        
+        try {
+            app(\App\Services\ExportHome::class)->run();
+        } catch (\Throwable $e) {
+            Log::error('ExportHome failed', ['error' => $e->getMessage()]);
+        }
 
+        return redirect(config('global.base_url').'election/manage-vote-count')->with('success', 'Updated!');
+    }
+
+    public function toggleExitPoll()
+    {
+        $section = HomeSection::firstOrCreate(
+            ['title' => 'ExitPollSection'],
+            ['status' => 0, 'section_order' => 0]
+        );
+        $section->status = $section->status == 1 ? 0 : 1;
+        $section->save();
+        $this->clearHomePageCache();
+        
+        try {
+            app(\App\Services\ExportHome::class)->run();
+        } catch (\Throwable $e) {
+            Log::error('ExportHome failed', ['error' => $e->getMessage()]);
+        }
+
+        return redirect(config('global.base_url').'election/exit-poll')->with('success', 'Updated!');
+    }
 }

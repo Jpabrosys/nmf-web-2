@@ -49,7 +49,8 @@
 
 
 
-<div class="news-tabs nwstb">
+<div class="cm-container">
+    <div class="news-tabs nwstb">
     <a class="newstab_title" href="{{ $site_url }}">
         {{-- <h2>{{ $category_name }}</h2> --}}
         <h2>{{ $category_name === 'विधानसभा चुनाव' ? 'बिहार चुनाव' : $category_name }}</h2>
@@ -63,69 +64,91 @@
         @include('components.election-maha-section')
     </div>
 @endif
-<div class="news-inner">
-
-    <!-- Left Section -->
-    @if ($leftSection->isNotEmpty())
-        <div class="news-block2">
-            <div class="swiper mySwiper">
-                <div class="swiper-wrapper">
-                    @foreach ($leftSection as $item)
-                        <div class="swiper-slide">
-                            <div class="swiper_card">
-                                <div class="swiper_card_top">
-                                    <a href="{{ $item['url'] }}">
-                                        <!-- <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" loading="lazy"> -->
-
-                                        <img 
-                                            src="/file/Image/nmf-logo-full.webp" 
-                                            data-src="{{ $item['image'] }}" 
-                                            alt="{{ $item['title'] }}" 
-                                            class="lazy-image"
-                                        >
-                                    </a>
-                                    @if (!empty($item['category']))
-                                        <div class="category_strip">
-                                            <a href="{{ asset($item['category_url']) }}"
-                                                class="category">{{ $item['category'] }}</a>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="swiper_card_bottom">
-                                    <a href="{{ $item['url'] }}">
-                                        @if ($item['type'] !== 'blog')
-                                            <i class="fa fa-video-camera" aria-hidden="true"></i>
-                                        @elseif(!empty($item['link']))
-                                            <i class="fa fa-video-camera" aria-hidden="true"></i>
+    <div class="news-inner">
+    
+        <!-- Left Section -->
+        @if ($leftSection->isNotEmpty())
+            <div class="news-block2">
+                <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        @foreach ($leftSection as $item)
+                            <div class="swiper-slide">
+                                <div class="swiper_card">
+                                    <div class="swiper_card_top">
+                                        <a href="{{ $item['url'] }}">
+                                            <!-- <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" loading="lazy"> -->
+    
+                                            <img 
+                                                src="/file/Image/nmf-logo-full.webp" 
+                                                data-src="{{ $item['image'] }}" 
+                                                alt="{{ $item['title'] }}" 
+                                                class="lazy-image"
+                                            >
+                                        </a>
+                                        @if (!empty($item['category']))
+                                            <div class="category_strip">
+                                                <a href="{{ asset($item['category_url']) }}"
+                                                    class="category">{{ $item['category'] }}</a>
+                                            </div>
                                         @endif
-                                        {{ $item['title'] }}
-                                    </a>
+                                    </div>
+                                    <div class="swiper_card_bottom">
+                                        <a href="{{ $item['url'] }}">
+                                            @if ($item['type'] !== 'blog')
+                                                <i class="fa fa-video-camera" aria-hidden="true"></i>
+                                            @elseif(!empty($item['link']))
+                                                <i class="fa fa-video-camera" aria-hidden="true"></i>
+                                            @endif
+                                            {{ $item['title'] }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
             </div>
-        </div>
-    @endif
-    <!-- Left Section End -->
-
-
-    <!-- Middle Section -->
-    @if ($middleSection->isNotEmpty())
-        <div class="news-block2">
-            @foreach ($middleSection as $item)
-                <div class="custom-tab-card ctn2">
-                    <a class="--ct_img" href="{{ $item['url'] }}">
-                       <!--  <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" loading="lazy"> -->
-                          <img 
-                                            src="/file/Image/nmf-logo-full.webp" 
-                                            data-src="{{ $item['image'] }}" 
-                                            alt="{{ $item['title'] }}" 
-                                            class="lazy-image"
-                                        >
-                    </a>
-                    <div class="custom--card-title">
+        @endif
+        <!-- Left Section End -->
+    
+    
+        <!-- Middle Section -->
+        @if ($middleSection->isNotEmpty())
+            <div class="news-block2">
+                @foreach ($middleSection as $item)
+                    <div class="custom-tab-card ctn2">
+                        <a class="--ct_img" href="{{ $item['url'] }}">
+                           <!--  <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" loading="lazy"> -->
+                              <img 
+                                                src="/file/Image/nmf-logo-full.webp" 
+                                                data-src="{{ $item['image'] }}" 
+                                                alt="{{ $item['title'] }}" 
+                                                class="lazy-image"
+                                            >
+                        </a>
+                        <div class="custom--card-title">
+                            <a href="{{ $item['url'] }}">
+                                @if ($item['type'] !== 'blog')
+                                    <i class="fa fa-video-camera" aria-hidden="true"></i>
+                                @elseif(!empty($item['link']))
+                                    <i class="fa fa-video-camera" aria-hidden="true"></i>
+                                @endif
+                                {{ $item['title'] }}
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+        <!-- Middle Section End -->
+    
+    
+        <!-- Right Section -->
+        @if ($rightSection->isNotEmpty())
+            <div class="news-block3">
+                {{-- Blog list view --}}
+                @foreach ($rightSection as $item)
+                    <div class="news_desc p_2">
                         <a href="{{ $item['url'] }}">
                             @if ($item['type'] !== 'blog')
                                 <i class="fa fa-video-camera" aria-hidden="true"></i>
@@ -135,32 +158,13 @@
                             {{ $item['title'] }}
                         </a>
                     </div>
-                </div>
-            @endforeach
-        </div>
-    @endif
-    <!-- Middle Section End -->
+                @endforeach
+    
+            </div>
+        @endif
+        <!-- Right Section End -->
+    
+    </div>
 
-
-    <!-- Right Section -->
-    @if ($rightSection->isNotEmpty())
-        <div class="news-block3">
-            {{-- Blog list view --}}
-            @foreach ($rightSection as $item)
-                <div class="news_desc p_2">
-                    <a href="{{ $item['url'] }}">
-                        @if ($item['type'] !== 'blog')
-                            <i class="fa fa-video-camera" aria-hidden="true"></i>
-                        @elseif(!empty($item['link']))
-                            <i class="fa fa-video-camera" aria-hidden="true"></i>
-                        @endif
-                        {{ $item['title'] }}
-                    </a>
-                </div>
-            @endforeach
-
-        </div>
-    @endif
-    <!-- Right Section End -->
 
 </div>

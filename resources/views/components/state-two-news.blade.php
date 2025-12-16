@@ -5,7 +5,8 @@ use Illuminate\Support\Str;
 ?>
 
 
-<div class="news-tabs nwstb">
+<div class="cm-container">
+    <div class="news-tabs nwstb">
     <a class="newstab_title" href="{{ $site_url }}">
         <h2>{{ $category_name }}</h2>
     </a>
@@ -123,5 +124,7 @@ use Illuminate\Support\Str;
     @endif
 
     <!-- Right Section End -->
+
+</div>
 
 </div>

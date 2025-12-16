@@ -22,6 +22,9 @@ Route::post('/trigger-export', [ExportController::class, 'trigger'])
     ->middleware('auth.export')
     ->name('api.export.trigger');
 
+Route::get('/lazy-load-section/{section_id}', 
+    [App\Http\Controllers\HomeController::class, 'lazyLoadSection']
+)->name('api.lazy-load-section');
 
 //YesAway Api Routes
 Route::controller(App\Http\Controllers\Api\YesAwayApiController::class)

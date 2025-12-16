@@ -5,21 +5,48 @@
     @if(!empty($data['banners']['bannerimgurl']))
         <link rel="preload" as="image" href="{{ $data['banners']['bannerimgurl'] }}">
     @endif
+    <style>
+        /* Minimal styling for the loading state */
+        .lazy-load-skeleton {
+            min-height: 300px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            color: #999;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .lazy-load-container {
+            min-height: 250px;
+        }
+        
+        .lazy-load-container.loaded {
+            min-height: auto;
+        }
+    </style>
 @endsection
 
 @section('content')
 
-{{-- Unpack Data Variables for easier use --}}
+{{-- Unpack Data Variables Safely --}}
 @php
-    $sectionCategories = $data['sectionCategories'];
-    $sidebarCategoriesList = $data['sidebarCategories'];
-    $bannerimgurl = $data['banners']['bannerimgurl'];
-    $bannerlinkurl = $data['banners']['bannerlinkurl'];
-    $bannermobileimgurl = $data['banners']['bannermobileimgurl'];
-    $bannermobilelinkurl = $data['banners']['bannermobilelinkurl'];
-    $flags = $data['flags'];
-    $rajyaSection = $data['rajyaSection'];
-    $bidhanSabhaSection = $data['bidhanSabhaSection'];
+    $sectionCategories = $data['sectionCategories'] ?? [];
+    $sidebarCategoriesList = $data['sidebarCategories'] ?? [];
+    $bannerimgurl = $data['banners']['bannerimgurl'] ?? null;
+    $bannerlinkurl = $data['banners']['bannerlinkurl'] ?? null;
+    $bannermobileimgurl = $data['banners']['bannermobileimgurl'] ?? null;
+    $bannermobilelinkurl = $data['banners']['bannermobilelinkurl'] ?? null;
+    $flags = $data['flags'] ?? [];
 @endphp
 
 {{-- Breaking News Section --}}
@@ -35,11 +62,8 @@
                     </h4>
                 </div>
                 <div class="brk-r">
-                    @php
-                        $todayEng = str_replace(' ', '-', date('jS F Y'));
-                    @endphp
-                    <a class="brk-link"
-                       href="{{ config('global.base_url').('breakingnews/latest-breaking-news-in-hindi-nmfnews-') }}{{ $todayEng }}">
+                    @php $todayEng = str_replace(' ', '-', date('jS F Y')); @endphp
+                    <a class="brk-link" href="{{ config('global.base_url').('breakingnews/latest-breaking-news-in-hindi-nmfnews-') }}{{ $todayEng }}">
                         {{ $data['breakingNews']->name }}
                     </a>
                 </div>
@@ -49,10 +73,9 @@
 </div>
 @endif
 
-{{-- Trending Tags Slider --}}
+{{-- Trending Tags --}}
 @if (!empty($data['uniqueTags']) && count(array_filter($data['uniqueTags'])))
 <div class="swiper-tags-container">
-    {{-- Accessibility: Added aria-label --}}
     <div class="swiper swiper-tags-main" aria-label="Trending Topics">
         <div class="gradient-left"></div>
         <div class="gradient-right"></div>
@@ -60,88 +83,55 @@
             @php $baseUrl = config('global.base_url'); @endphp
             @foreach ($data['uniqueTags'] as $tag)
                 @if (trim($tag) !== '')
-                    <a href="{{ rtrim($baseUrl, '/') }}/search?search={{ urlencode($tag) }}"
-                       class="swiper-slide swiper-tag">{{ $tag }}</a>
+                    <a href="{{ rtrim($baseUrl, '/') }}/search?search={{ urlencode($tag) }}" class="swiper-slide swiper-tag">{{ $tag }}</a>
                 @endif
             @endforeach
         </div>
-        {{-- Accessibility: Added role and aria-label --}}
-        <div class="swiper-tags-button-prev" role="button" aria-label="Previous Tag"><i class="fas fa-chevron-left"></i></div>
-        <div class="swiper-tags-button-next" role="button" aria-label="Next Tag"><i class="fas fa-chevron-right"></i></div>
+        <div class="swiper-tags-button-prev" role="button"><i class="fas fa-chevron-left"></i></div>
+        <div class="swiper-tags-button-next" role="button"><i class="fas fa-chevron-right"></i></div>
     </div>
 </div>
 @endif
 
-{{-- Conditional Election Sections --}}
-@if ($flags['showExitpoll'] == 1)
-    {{-- Show Exit Poll when Live is off --}}
+{{-- Election / Live Sections --}}
+@if (($flags['showExitpoll'] ?? 0) == 1)
     @include('components.election-exit-poll')
-    @if ($flags['showBigEvent'])
-        <x-horizontal-ad :ad="$data['homeAds']['home_header_ad'] ?? null" />
-    @endif
-@elseif ($flags['showLive'] == 1)
-    {{-- Live has highest priority --}}
+    @if ($flags['showBigEvent'] ?? false) <x-horizontal-ad :ad="$data['homeAds']['home_header_ad'] ?? null" /> @endif
+@elseif (($flags['showLive'] ?? 0) == 1)
     @include('components.election-live-section')
-    @if ($flags['showBigEvent'])
-        <x-horizontal-ad :ad="$data['homeAds']['home_header_ad'] ?? null" />
-    @endif
+    @if ($flags['showBigEvent'] ?? false) <x-horizontal-ad :ad="$data['homeAds']['home_header_ad'] ?? null" /> @endif
 @endif
 
-{{-- Big Event Section --}}
-@if ($flags['showBigEvent'] && !empty($data['bigEvent']))
+{{-- Big Event --}}
+@if (($flags['showBigEvent'] ?? false) && !empty($data['bigEvent']))
     @include('components.home.big-event', ['bigEvent' => $data['bigEvent']])
 @endif
 
-{{-- Horizontal Ad 1 --}}
 <x-horizontal-ad :ad="$data['homeAds']['home_header_ad'] ?? null" />
 
-{{-- Banner Section --}}
-@if ($flags['showBannerAboveTopNews'])
-    @include('components.home.banner-section', [
-        'bannerimgurl' => $bannerimgurl,
-        'bannerlinkurl' => $bannerlinkurl,
-        'bannermobileimgurl' => $bannermobileimgurl,
-        'bannermobilelinkurl' => $bannermobilelinkurl,
-    ])
+{{-- Banner --}}
+@if ($flags['showBannerAboveTopNews'] ?? false)
+    @include('components.home.banner-section', ['bannerimgurl' => $bannerimgurl, 'bannerlinkurl' => $bannerlinkurl, 'bannermobileimgurl' => $bannermobileimgurl, 'bannermobilelinkurl' => $bannermobilelinkurl])
 @endif
 
-{{-- Top News Section --}}
+{{-- Top News --}}
 <section class="top--news">
-    @include('components.home.top-news-section', [
-        'showVoteInTopNews' => $flags['showVoteInTopNews']
-    ])
+    @include('components.home.top-news-section', ['showVoteInTopNews' => $flags['showVoteInTopNews'] ?? false])
 </section>
 
-{{-- Banner Section (If not shown above) --}}
-@if (!$flags['showBannerAboveTopNews'])
-    @include('components.home.banner-section', [
-        'bannerimgurl' => $bannerimgurl,
-        'bannerlinkurl' => $bannerlinkurl,
-        'bannermobileimgurl' => $bannermobileimgurl,
-        'bannermobilelinkurl' => $bannermobilelinkurl,
-    ])
+@if (!($flags['showBannerAboveTopNews'] ?? false))
+    @include('components.home.banner-section', ['bannerimgurl' => $bannerimgurl, 'bannerlinkurl' => $bannerlinkurl, 'bannermobileimgurl' => $bannermobileimgurl, 'bannermobilelinkurl' => $bannermobilelinkurl])
 @endif
 
-{{-- App Download Modal --}}
+{{-- App Modal --}}
 <div id="appDownloadModal">
     <div class="app-download-modal">
-        {{-- CLS Fix: Added width/height and style --}}
-        <img class="modal-img" 
-             src="{{ config('global.base_url_asset') }}asset/images/modal.webp" 
-             alt="Download App Image"
-             width="300" height="300"
-             style="width: 100%; height: auto; max-width: 300px;">
-        
-        {{-- Accessibility: Added aria-label --}}
-        <button class="modal-close-button" onclick="closeModal()" aria-label="Close Modal">×</button>
+        <img class="modal-img" src="{{ config('global.base_url_asset') }}asset/images/modal.webp" alt="Download App" width="300" height="300" style="width: 100%; height: auto; max-width: 300px;">
+        <button class="modal-close-button" onclick="closeModal()">×</button>
         <h2>Download Our App</h2>
         <p>Get the best experience by downloading our mobile app!</p>
         <div class="app_btn_wrap justify-content-center">
-            <a href="https://www.newsnmf.com/nmfapps/" class="playstore-button" aria-label="Download on Playstore">
-                <span class="texts">
-                    <span class="text-2">Download the App</span>
-                </span>
-            </a>
+            <a href="https://www.newsnmf.com/nmfapps/" class="playstore-button"><span class="texts"><span class="text-2">Download the App</span></span></a>
         </div>
     </div>
 </div>
@@ -150,14 +140,7 @@
 <div class="news-panel">
     <div class="cm-container">
         @if (!empty($sectionCategories[1]))
-            @include('components.slider-two-news-5', [
-                'cat_id' => $sectionCategories[1]['catid'],
-                'leftTitle' => 'ताजा खबर',
-                'middleTitle' => 'शीर्ष समाचार',
-                'rightTitle' => 'वीडियो',
-                'site_url' => $sectionCategories[1]['site_url'],
-                'category_name' => $sectionCategories[1]['name'],
-            ])
+            @include('components.slider-two-news-5', ['cat_id' => $sectionCategories[1]['catid'], 'leftTitle' => 'ताजा खबर', 'middleTitle' => 'शीर्ष समाचार', 'rightTitle' => 'वीडियो', 'site_url' => $sectionCategories[1]['site_url'], 'category_name' => $sectionCategories[1]['name']])
         @endif
         <x-horizontal-ad :ad="$data['homeAds']['home_below_news_section_ad'] ?? null" />
     </div>
@@ -172,373 +155,180 @@
 <div class="news-panel">
     <div class="cm-container">
         @if (!empty($sectionCategories[2]))
-            @include('components.slider-two-news-5', [
-                'cat_id' => $sectionCategories[2]['catid'],
-                'leftTitle' => 'ताजा खबर',
-                'middleTitle' => 'शीर्ष समाचार',
-                'rightTitle' => 'वीडियो',
-                'site_url' => $sectionCategories[2]['site_url'],
-                'category_name' => $sectionCategories[2]['name'],
-            ])
+            @include('components.slider-two-news-5', ['cat_id' => $sectionCategories[2]['catid'], 'leftTitle' => 'ताजा खबर', 'middleTitle' => 'शीर्ष समाचार', 'rightTitle' => 'वीडियो', 'site_url' => $sectionCategories[2]['site_url'], 'category_name' => $sectionCategories[2]['name']])
         @endif
     </div>
 </div>
 
-{{-- Reels Section --}}
-<div class="news-panel reels">
-    @include('components.reels-section')
+{{-- SAFETY DIVS (To close any unclosed tags from above) --}}
+</div></div></div></div>
+
+{{-- 
+    =======================================================
+    START LAZY LOAD SECTIONS 
+    =======================================================
+--}}
+
+{{-- Reels --}}
+<div class="lazy-load-container news-panel reels" data-load-url="{{ route('api.lazy-load-section', ['section_id' => 'reels']) }}">
+    <div class="lazy-load-skeleton"><span class="loading-text">Loading Reels...</span></div>
 </div>
 
-{{-- Section 3 (Custom Block) --}}
-<section class="custom_block">
-    @if (!empty($sectionCategories[3]))
-        @include('components.news-nine-style', [
-            'cat_id' => $sectionCategories[3]['catid'],
-            'cat_name' => $sectionCategories[3]['name'],
-            'cat_site_url' => $sectionCategories[3]['site_url'],
-        ])
-    @endif
-</section>
+{{-- Section 3 --}}
+@if (!empty($sectionCategories[3]))
+<div class="lazy-load-container custom_block" data-load-url="{{ route('api.lazy-load-section', ['section_id' => '3']) }}">
+    <div class="lazy-load-skeleton"><span class="loading-text">Loading {{ $sectionCategories[3]['name'] }}...</span></div>
+</div>
+@endif
 
-{{-- Video Section --}}
-<section class="video-section">
-    @include('components.video-gallery-allcat')
-</section>
+{{-- Video --}}
+<div class="lazy-load-container video-section" data-load-url="{{ route('api.lazy-load-section', ['section_id' => 'video']) }}">
+    <div class="lazy-load-skeleton"><span class="loading-text">Loading Videos...</span></div>
+</div>
 
 <x-horizontal-ad :ad="$data['homeAds']['home_below_video_section_ad'] ?? null" />
 
 {{-- Section 4 --}}
-<div class="news-panel">
-    <div class="cm-container">
-        @if (!empty($sectionCategories[4]))
-            @include('components.slider-two-news-5', [
-                'cat_id' => $sectionCategories[4]['catid'],
-                'leftTitle' => 'ताजा खबर',
-                'middleTitle' => 'शीर्ष समाचार',
-                'rightTitle' => 'वीडियो',
-                'site_url' => $sectionCategories[4]['site_url'],
-                'category_name' => $sectionCategories[4]['name'],
-            ])
-        @endif
-
-        {{-- Rashifal Section --}}
-        @if (collect($sectionCategories)->contains('name', 'धर्म ज्ञान') && !empty($data['rashifal']))
-        <div class="rasifal-section">
-            <div class="cm-container">
-                <div class="rashifal-section">
-                    <div class="rashifal-container" role="region" aria-label="राशिफल दैनिक">
-                        <div class="rashifal-box">
-                            <div class="rotating-bg" aria-hidden="true"></div>
-                            <div class="rashifal-wrapper">
-                                <button class="nav-btn prev" aria-label="पिछला राशिफल"><i class="fas fa-chevron-left"></i></button>
-                                <div class="rashifal-slider" tabindex="0" role="listbox" aria-live="polite" aria-label="राशि चिन्ह">
-                                    <div class="rashifal-item spacer" aria-hidden="true"></div>
-                                    @foreach($data['rashifal'] as $index => $r)
-                                        @php
-                                            $rashiImg = config('global.base_url_image') . $r->full_path . '/' . $r->file_name;
-                                        @endphp
-                                        <div class="rashifal-item" role="option" aria-selected="{{ $index == 0 ? 'true':'false' }}">
-                                            {{-- CLS Fix: Added width/height --}}
-                                            <img src="{{ $rashiImg }}"
-                                                 alt="{{ $r->name }}"
-                                                 width="100" height="100"
-                                                 data-sign="{{ strtolower($r->name) }}"
-                                                 data-title="{{ $r->name }}"
-                                                 data-description="{{ $r->description }}"
-                                                 class="{{ $index == 0 ? 'active':'' }}"
-                                                 loading="lazy" tabindex="0" />
-                                        </div>
-                                    @endforeach
-                                    <div class="rashifal-item spacer" aria-hidden="true"></div>
-                                </div>
-                                <button class="nav-btn next" aria-label="अगला राशिफल"><i class="fas fa-chevron-right"></i></button>
-                            </div>
-                            <h2 id="rashifal-title">आपके तारे - दैनिक: {{ $data['rashifal'][0]->name ?? '' }}</h2>
-                            <p id="rashifal-text">{{ $data['rashifal'][0]->description ?? '' }}</p>
-                        </div>
-                        {{-- Ad Sidebar --}}
-                        <div class="adBgSidebar">
-                            <div class="adtxt">Advertisement</div>
-                            <ins class="adsbygoogle"
-                                 style="display:block"
-                                 data-ad-client="ca-pub-3986924419662120"
-                                 data-ad-slot="6911924096"
-                                 data-ad-format="auto"
-                                 data-full-width-responsive="true"></ins>
-                            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
-    </div>
+@if (!empty($sectionCategories[4]))
+<div class="lazy-load-container news-panel" data-load-url="{{ route('api.lazy-load-section', ['section_id' => '4']) }}">
+    <div class="lazy-load-skeleton"><span class="loading-text">Loading {{ $sectionCategories[4]['name'] }}...</span></div>
 </div>
+@endif
 
-{{-- Section 5 (Custom Block) --}}
-<section class="custom_block">
-    @if (!empty($sectionCategories[5]))
-        @include('components.news-nine-style', [
-            'cat_id' => $sectionCategories[5]['catid'],
-            'cat_name' => $sectionCategories[5]['name'],
-            'cat_site_url' => $sectionCategories[5]['site_url'],
-        ])
-    @endif
-</section>
-
-{{-- States / Vidhan Sabha Tabs --}}
-<div class="div_row mb-3">
-    <div class="cm-container">
-        <div class="news_tab_row">
-            <div class="_devider">
-                <div class="left_content news_tabs">
-                    @if (!empty($rajyaSection))
-                        @include('components.all-states-tab', [
-                            'cat_id' => $rajyaSection['catid'],
-                            'cat_name' => $rajyaSection['name'],
-                            'cat_site_url' => $rajyaSection['site_url'],
-                        ])
-                    @endif
-
-                    <x-horizontal-ad :ad="$data['homeAds']['home_below_state_section_ad'] ?? null" />
-
-                    @if (!empty($bidhanSabhaSection))
-                        @include('components.bidhansabha-states-tab', [
-                            'cat_id' => $bidhanSabhaSection['catid'],
-                            'cat_name' => $bidhanSabhaSection['name'],
-                            'cat_site_url' => $bidhanSabhaSection['site_url'],
-                        ])
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
+{{-- Section 5 --}}
+@if (!empty($sectionCategories[5]))
+<div class="lazy-load-container custom_block" data-load-url="{{ route('api.lazy-load-section', ['section_id' => '5']) }}">
+    <div class="lazy-load-skeleton"><span class="loading-text">Loading {{ $sectionCategories[5]['name'] }}...</span></div>
 </div>
+@endif
+
+{{-- State Tabs (FIXED: Using direct array check to avoid 500 Error) --}}
+@if (!empty($data['rajyaSection']) || !empty($data['bidhanSabhaSection']))
+<div class="lazy-load-container div_row mb-3" data-load-url="{{ route('api.lazy-load-section', ['section_id' => 'state-tabs']) }}">
+    <div class="lazy-load-skeleton"><span class="loading-text">Loading State News...</span></div>
+</div>
+@endif
 
 {{-- Section 6 --}}
-<section class="news-panel">
-    <div class="cm-container">
-        @if (!empty($sectionCategories[6]))
-            @include('components.slider-two-news-5', [
-                'cat_id' => $sectionCategories[6]['catid'],
-                'leftTitle' => 'ताजा खबर',
-                'middleTitle' => 'शीर्ष समाचार',
-                'rightTitle' => 'वीडियो',
-                'site_url' => $sectionCategories[6]['site_url'],
-                'category_name' => $sectionCategories[6]['name'],
-            ])
-        @endif
-    </div>
-</section>
+@if (!empty($sectionCategories[6]))
+<div class="lazy-load-container news-panel" data-load-url="{{ route('api.lazy-load-section', ['section_id' => '6']) }}">
+    <div class="lazy-load-skeleton"><span class="loading-text">Loading {{ $sectionCategories[6]['name'] }}...</span></div>
+</div>
+@endif
 
 {{-- Section 7 --}}
-<section class="custom_block">
-    @if (!empty($sectionCategories[7]))
-        @include('components.news-nine-style', [
-            'cat_id' => $sectionCategories[7]['catid'],
-            'cat_name' => $sectionCategories[7]['name'],
-            'cat_site_url' => $sectionCategories[7]['site_url'],
-            'rightTitle' => 'वीडियो',
-        ])
-    @endif
-</section>
+@if (!empty($sectionCategories[7]))
+<div class="lazy-load-container custom_block" data-load-url="{{ route('api.lazy-load-section', ['section_id' => '7']) }}">
+    <div class="lazy-load-skeleton"><span class="loading-text">Loading {{ $sectionCategories[7]['name'] }}...</span></div>
+</div>
+@endif
 
 {{-- Section 8 --}}
-<section class="news-panel">
-    <div class="cm-container">
-        @if (!empty($sectionCategories[8]))
-            @include('components.slider-two-news-5', [
-                'cat_id' => $sectionCategories[8]['catid'],
-                'leftTitle' => 'ताजा खबर',
-                'middleTitle' => 'शीर्ष समाचार',
-                'rightTitle' => 'वीडियो',
-                'site_url' => $sectionCategories[8]['site_url'],
-                'category_name' => $sectionCategories[8]['name'],
-            ])
-        @endif
-    </div>
-</section>
+@if (!empty($sectionCategories[8]))
+<div class="lazy-load-container news-panel" data-load-url="{{ route('api.lazy-load-section', ['section_id' => '8']) }}">
+    <div class="lazy-load-skeleton"><span class="loading-text">Loading {{ $sectionCategories[8]['name'] }}...</span></div>
+</div>
+@endif
 
-{{-- Middle News Area with Sidebar --}}
-<div class="middle-news-area news-area">
-    <div class="cm-container">
-        <div class="left_and_right_layout_divider">
-            <div class="lay_row">
-                <div class="cm-col-lg-8 cm-col-12 sticky_portion px-0">
-                    <div id="primary" class="content-area">
-                        <main id="main" class="site-main">
-                            @if (!empty($sectionCategories[9]))
-                                @include('components.slider-one-news-5', [
-                                    'cat_id' => $sectionCategories[9]['catid'],
-                                    'cat_name' => $sectionCategories[9]['name'],
-                                    'cat_site_url' => $sectionCategories[9]['site_url'],
-                                ])
-                            @endif
-
-                            <x-horizontal-sm-ad :ad="$data['homeAds']['home_middle_horz_sm_ad1'] ?? null" />
-
-                            @if (!empty($sectionCategories[10]))
-                                @include('components.slider-one-news-5', [
-                                    'cat_id' => $sectionCategories[10]['catid'],
-                                    'cat_name' => $sectionCategories[10]['name'],
-                                    'cat_site_url' => $sectionCategories[10]['site_url'],
-                                ])
-                            @endif
-
-                            {{-- Photo Slider (Section 11) --}}
-                            @if (!empty($sectionCategories[11]))
-                                @include('components.photo-slider', [
-                                    'cat_id' => $sectionCategories[11]['catid'],
-                                    'cat_name' => $sectionCategories[11]['name'],
-                                    'cat_site_url' => $sectionCategories[11]['site_url'],
-                                ])
-                            @endif
-
-                            @if (!empty($sectionCategories[12]))
-                                @include('components.slider-one-news-5', [
-                                    'cat_id' => $sectionCategories[12]['catid'],
-                                    'cat_name' => $sectionCategories[12]['name'],
-                                    'cat_site_url' => $sectionCategories[12]['site_url'],
-                                ])
-                            @endif
-
-                            <x-horizontal-sm-ad :ad="$data['homeAds']['home_middle_horz_sm_ad2'] ?? null" />
-
-                            @if (!empty($sectionCategories[13]))
-                                @include('components.slider-one-news-5', [
-                                    'cat_id' => $sectionCategories[13]['catid'],
-                                    'cat_name' => $sectionCategories[13]['name'],
-                                    'cat_site_url' => $sectionCategories[13]['site_url'],
-                                ])
-                            @endif
-                        </main>
-                    </div>
-                </div>
-
-                {{-- Sidebar Area --}}
-                <div class="cm-col-lg-4 cm-col-12 sticky_portion px-1">
-                    <aside id="secondary" class="sidebar-widget-area">
-                        <x-vertical-sm-ad :ad="$data['homeAds']['home_sidebar_vertical_ad2'] ?? null" />
-
-                        @foreach ($sidebarCategoriesList as $index => $sidebarCategory)
-                            @include('components.sidebar-widget-3news', [
-                                'cat_id' => $sidebarCategory['catid'],
-                                'cat_name' => $sidebarCategory['name'],
-                                'cat_site_url' => $sidebarCategory['site_url'],
-                            ])
-                            {{-- Show vote after the 2nd sidebar item (Index 2 in 1-based index) --}}
-                            @if ($index === 2)
-                                <div id="categories-2" class="widget widget_categories">
-                                    <div class="news-tab">
-                                        @if(!$flags['showVoteInTopNews'])
-                                            @include('components.vote')
-                                        @else
-                                            @include('components.podcast')
-                                        @endif
-                                    </div>
-                                </div>
-                            @endif
-                        @endforeach
-
-                        <x-vertical-sm-ad :ad="$data['homeAds']['home_sidebar_vertical_ad3'] ?? null" />
-                    </aside>
-                </div>
-            </div>
-        </div>
-    </div>
+{{-- Middle News --}}
+<div class="lazy-load-container middle-news-area news-area" data-load-url="{{ route('api.lazy-load-section', ['section_id' => 'middle-news-area']) }}">
+    <div class="lazy-load-skeleton"><span class="loading-text">Loading More News...</span></div>
 </div>
 
 {{-- Section 14 --}}
-<div class="news-panel">
-    <div class="cm-container">
-        @if (!empty($sectionCategories[14]))
-            @include('components.slider-two-news-5', [
-                'cat_id' => $sectionCategories[14]['catid'],
-                'leftTitle' => 'ताजा खबर',
-                'middleTitle' => 'शीर्ष समाचार',
-                'rightTitle' => 'वीडियो',
-                'site_url' => $sectionCategories[14]['site_url'],
-                'category_name' => $sectionCategories[14]['name'],
-            ])
-        @endif
-    </div>
+@if (!empty($sectionCategories[14]))
+<div class="lazy-load-container news-panel" data-load-url="{{ route('api.lazy-load-section', ['section_id' => '14']) }}">
+    <div class="lazy-load-skeleton"><span class="loading-text">Loading {{ $sectionCategories[14]['name'] }}...</span></div>
 </div>
+@endif
 
-{{-- Bottom Dynamic Sections Loop (Starting from 15) --}}
+{{-- Bottom Dynamic --}}
 <div class="bottom-news-area news-area">
     <div class="cm-container">
         <x-horizontal-ad :ad="$data['homeAds']['home_bottom_ad'] ?? null" />
-
-        @php $loopCounter = 0; @endphp
-
-        @foreach ($sectionCategories as $index => $section)
-            @if ($index >= 15 && !empty($section) && isset($section['site_url'], $section['name'], $section['catid']))
-                @php 
-                    $loopCounter++;
-                    $layoutType = $index % 4;
-                @endphp
-
-                @switch($layoutType)
-                    @case(0)
-                        @include('components.news-nine-style', [
-                            'cat_id' => $section['catid'],
-                            'cat_name' => $section['name'],
-                            'cat_site_url' => $section['site_url'],
-                        ])
-                    @break
-
-                    @case(1)
-                        @include('components.slider-two-news-5', [
-                            'cat_id' => $section['catid'],
-                            'leftTitle' => 'ताजा खबर',
-                            'middleTitle' => 'शीर्ष समाचार',
-                            'rightTitle' => 'वीडियो',
-                            'site_url' => $section['site_url'],
-                            'category_name' => $section['name'],
-                        ])
-                    @break
-
-                    @case(2)
-                        @include('components.news-nine-style', [
-                            'cat_id' => $section['catid'],
-                            'cat_name' => $section['name'],
-                            'cat_site_url' => $section['site_url'],
-                        ])
-                    @break
-
-                    @case(3)
-                        @include('components.slider-two-news-5', [
-                            'cat_id' => $section['catid'],
-                            'leftTitle' => 'ताजा खबर',
-                            'middleTitle' => 'शीर्ष समाचार',
-                            'rightTitle' => 'वीडियो',
-                            'site_url' => $section['site_url'],
-                            'category_name' => $section['name'],
-                        ])
-                    @break
-                @endswitch
-
-                {{-- Insert Ad after every 3 sections in this loop --}}
-                @if ($loopCounter % 3 === 0)
-                    <x-horizontal-ad :ad="$data['homeAds']['home_bottom_ad'] ?? null" />
-                @endif
-            @endif
-        @endforeach
-
+        <div class="lazy-load-container" data-load-url="{{ route('api.lazy-load-section', ['section_id' => 'bottom-dynamic']) }}">
+            <div class="lazy-load-skeleton"><span class="loading-text">Loading More Sections...</span></div>
+        </div>
     </div>
 </div>
 
-{{-- Scripts with Safety Checks --}}
+{{-- 
+    =======================================================
+    NUCLEAR DEBUGGING SCRIPT 
+    =======================================================
+--}}
 <script>
-    // Ensure jQuery/Swiper are loaded before running dependent code
-    document.addEventListener("DOMContentLoaded", function() {
-        var waitForJQuery = setInterval(function() {
-            if (typeof $ !== 'undefined') {
-                clearInterval(waitForJQuery);
-                // Trigger any jQuery dependent code here if necessary
-            }
-        }, 100);
-    });
+(function() {
+    console.warn("🚀 STEP 1: Lazy Load Script STARTED execution.");
+    
+    function debugLog(step, message, type = 'info') {
+        const timestamp = new Date().toLocaleTimeString();
+        if(type === 'error') console.error(`[${timestamp}] ❌ ${step}: ${message}`);
+        else if(type === 'success') console.log(`[${timestamp}] ✅ ${step}: ${message}`);
+        else console.log(`[${timestamp}] ℹ️ ${step}: ${message}`);
+    }
+
+    function init() {
+        debugLog("STEP 2", "DOM Content Loaded.");
+        
+        // FIND CONTAINERS
+        const containers = document.querySelectorAll('.lazy-load-container');
+        if (containers.length === 0) {
+            debugLog("STEP 3", "CRITICAL ERROR: No lazy-load containers found!", 'error');
+            return;
+        }
+        debugLog("STEP 3", `Found ${containers.length} containers.`, 'success');
+
+        // OBSERVER
+        if ('IntersectionObserver' in window) {
+            debugLog("STEP 4", "Starting Observer...");
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const container = entry.target;
+                        const url = container.getAttribute('data-load-url');
+                        debugLog("STEP 5", `Intersection detected. Loading: ${url}`);
+                        loadContent(container, url);
+                        obs.unobserve(container);
+                    }
+                });
+            }, { rootMargin: '300px', threshold: 0.01 });
+
+            containers.forEach(c => observer.observe(c));
+        } else {
+            // FALLBACK
+            debugLog("STEP 4", "Observer not supported. Loading immediately.");
+            containers.forEach(c => loadContent(c, c.getAttribute('data-load-url')));
+        }
+    }
+
+    async function loadContent(container, url) {
+        debugLog("STEP 6", `Fetching: ${url}`);
+        try {
+            const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            debugLog("STEP 7", `Response Status: ${response.status}`);
+            
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            
+            const html = await response.text();
+            debugLog("STEP 8", `Data received (${html.length} chars). Injecting...`);
+            
+            if (html.length < 5) debugLog("WARNING", "Response looks empty!", 'error');
+
+            container.innerHTML = html;
+            container.classList.add('loaded');
+            debugLog("STEP 9", "Content injected.", 'success');
+            
+        } catch (error) {
+            debugLog("ERROR", `Fetch Failed: ${error.message}`, 'error');
+            container.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+        }
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+})();
 </script>
+
 <script src="{{ asset('asset/js/rashifal.js') }}" defer></script>
 @endsection

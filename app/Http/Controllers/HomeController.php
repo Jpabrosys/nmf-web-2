@@ -382,4 +382,191 @@ class HomeController extends Controller
 
         return redirect(config('global.base_url').'election/exit-poll')->with('success', 'Updated!');
     }
+
+    /**
+     * Helper method to get the home page data (cached or fresh).
+     * This avoids repeating the Cache::remember logic.
+     */
+    private function getHomeDataFromCacheOrFresh()
+    {
+        return Cache::remember('homepage_data_v1', 600, function () {
+            return $this->getHomePageData();
+        });
+    }
+
+/**
+ * Handles the AJAX request for lazy loading a single section.
+ * @param string $section_id The identifier for the section
+ * @return \Illuminate\Http\Response
+ */
+public function lazyLoadSection(Request $request, $section_id)
+{
+    // Debug logging
+    \Log::info('Lazy load request received', [
+        'section_id' => $section_id,
+        'url' => $request->fullUrl()
+    ]);
+
+    try {
+        // 1. Retrieve ALL home data from the cache (or refresh if expired)
+        $data = $this->getHomeDataFromCacheOrFresh();
+
+        $sectionCategories = $data['sectionCategories'];
+        $sidebarCategoriesList = $data['sidebarCategories'];
+        $rajyaSection = $data['rajyaSection'];
+        $bidhanSabhaSection = $data['bidhanSabhaSection'];
+        $homeAds = $data['homeAds'];
+        $rashifal = $data['rashifal'];
+        $flags = $data['flags'];
+        
+        // 2. Determine which section to render
+        switch ((string) $section_id) {
+            case 'reels':
+                \Log::info('Loading reels section');
+                // Return a simple test if view doesn't exist
+                if (view()->exists('components.reels-section')) {
+                    return response(view('components.reels-section')->render())
+                        ->header('Content-Type', 'text/html');
+                }
+                return response('<div class="p-3">Reels component exists here</div>')
+                    ->header('Content-Type', 'text/html');
+
+            case 'video':
+                \Log::info('Loading video section');
+                if (view()->exists('components.video-gallery-allcat')) {
+                    return response(view('components.video-gallery-allcat')->render())
+                        ->header('Content-Type', 'text/html');
+                }
+                return response('<div class="p-3">Video component exists here</div>')
+                    ->header('Content-Type', 'text/html');
+
+            // Sections that use slider-two-news-5
+            case '4':
+            case '6':
+            case '8':
+            case '14':
+                \Log::info('Loading section', ['section' => $section_id]);
+                $section = $sectionCategories[(int)$section_id] ?? null;
+                
+                if (!$section) {
+                    \Log::warning('Section not found', ['section_id' => $section_id]);
+                    return response('<div class="p-3">Section not configured</div>', 200)
+                        ->header('Content-Type', 'text/html');
+                }
+
+                $output = view('components.slider-two-news-5', [
+                    'cat_id' => $section['catid'],
+                    'leftTitle' => 'ताजा खबर',
+                    'middleTitle' => 'शीर्ष समाचार',
+                    'rightTitle' => 'वीडियो',
+                    'site_url' => $section['site_url'],
+                    'category_name' => $section['name'],
+                ])->render();
+                
+                // Special case: Rashifal Section embedded after Section 4
+                if ($section_id == '4' && !empty($rashifal)) {
+                    if (view()->exists('components.lazy-loaded.rashifal-block')) {
+                        $rashifalHtml = view('components.lazy-loaded.rashifal-block', compact('rashifal'))->render();
+                        $output .= $rashifalHtml;
+                    }
+                }
+
+                return response($output)->header('Content-Type', 'text/html');
+            
+            // Sections that use news-nine-style
+            case '3':
+            case '5':
+            case '7':
+                \Log::info('Loading news-nine-style section', ['section' => $section_id]);
+                $section = $sectionCategories[(int)$section_id] ?? null;
+                
+                if (!$section) {
+                    return response('<div class="p-3">Section not configured</div>', 200)
+                        ->header('Content-Type', 'text/html');
+                }
+
+                return response(view('components.news-nine-style', [
+                    'cat_id' => $section['catid'],
+                    'cat_name' => $section['name'],
+                    'cat_site_url' => $section['site_url'],
+                    'rightTitle' => ($section_id == '7') ? 'वीडियो' : null,
+                ])->render())->header('Content-Type', 'text/html');
+            
+            case 'state-tabs':
+                \Log::info('Loading state-tabs section');
+                if (view()->exists('components.lazy-loaded.state-tabs-block')) {
+                    return response(view('components.lazy-loaded.state-tabs-block', [
+                        'rajyaSection' => $rajyaSection,
+                        'bidhanSabhaSection' => $bidhanSabhaSection,
+                        'homeAds' => $homeAds,
+                    ])->render())->header('Content-Type', 'text/html');
+                }
+                
+                // Fallback inline version
+                $html = '<div class="cm-container"><div class="news_tab_row"><div class="_devider"><div class="left_content news_tabs">';
+                
+                if (!empty($rajyaSection)) {
+                    $html .= view('components.all-states-tab', [
+                        'cat_id' => $rajyaSection['catid'],
+                        'cat_name' => $rajyaSection['name'],
+                        'cat_site_url' => $rajyaSection['site_url'],
+                    ])->render();
+                }
+                
+                if (!empty($bidhanSabhaSection)) {
+                    $html .= view('components.bidhansabha-states-tab', [
+                        'cat_id' => $bidhanSabhaSection['catid'],
+                        'cat_name' => $bidhanSabhaSection['name'],
+                        'cat_site_url' => $bidhanSabhaSection['site_url'],
+                    ])->render();
+                }
+                
+                $html .= '</div></div></div></div>';
+                return response($html)->header('Content-Type', 'text/html');
+                
+            case 'middle-news-area':
+                \Log::info('Loading middle-news-area section');
+                if (view()->exists('components.lazy-loaded.middle-news-area-block')) {
+                    return response(view('components.lazy-loaded.middle-news-area-block', [
+                        'sectionCategories' => $sectionCategories,
+                        'sidebarCategoriesList' => $sidebarCategoriesList,
+                        'homeAds' => $homeAds,
+                        'flags' => $flags,
+                    ])->render())->header('Content-Type', 'text/html');
+                }
+                return response('<div class="p-3">Middle news area component missing</div>')
+                    ->header('Content-Type', 'text/html');
+                
+            case 'bottom-dynamic':
+                \Log::info('Loading bottom-dynamic section');
+                if (view()->exists('components.lazy-loaded.bottom-dynamic-block')) {
+                    return response(view('components.lazy-loaded.bottom-dynamic-block', [
+                        'sectionCategories' => $sectionCategories,
+                        'homeAds' => $homeAds,
+                    ])->render())->header('Content-Type', 'text/html');
+                }
+                return response('<div class="p-3">Bottom dynamic component missing</div>')
+                    ->header('Content-Type', 'text/html');
+                
+            default:
+                \Log::warning('Unknown section ID requested', ['section_id' => $section_id]);
+                return response('<div class="p-3">Unknown section</div>', 200)
+                    ->header('Content-Type', 'text/html');
+        }
+
+    } catch (\Exception $e) {
+        \Log::error("Lazy load failed for section $section_id", [
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        
+        return response(
+            '<div class="alert alert-danger m-3">Error: ' . $e->getMessage() . '</div>', 
+            500
+        )->header('Content-Type', 'text/html');
+    }
+}
+
 }

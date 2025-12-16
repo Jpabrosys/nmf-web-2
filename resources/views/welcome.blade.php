@@ -271,7 +271,6 @@
     function init() {
         debugLog("STEP 2", "DOM Content Loaded.");
         
-        // FIND CONTAINERS
         const containers = document.querySelectorAll('.lazy-load-container');
         if (containers.length === 0) {
             debugLog("STEP 3", "CRITICAL ERROR: No lazy-load containers found!", 'error');
@@ -279,7 +278,6 @@
         }
         debugLog("STEP 3", `Found ${containers.length} containers.`, 'success');
 
-        // OBSERVER
         if ('IntersectionObserver' in window) {
             debugLog("STEP 4", "Starting Observer...");
             const observer = new IntersectionObserver((entries, obs) => {
@@ -287,7 +285,6 @@
                     if (entry.isIntersecting) {
                         const container = entry.target;
                         const url = container.getAttribute('data-load-url');
-                        debugLog("STEP 5", `Intersection detected. Loading: ${url}`);
                         loadContent(container, url);
                         obs.unobserve(container);
                     }
@@ -296,32 +293,55 @@
 
             containers.forEach(c => observer.observe(c));
         } else {
-            // FALLBACK
             debugLog("STEP 4", "Observer not supported. Loading immediately.");
             containers.forEach(c => loadContent(c, c.getAttribute('data-load-url')));
         }
     }
 
     async function loadContent(container, url) {
-        debugLog("STEP 6", `Fetching: ${url}`);
+        // ============================================================
+        // 🛡️ SECURITY FIX: Auto-upgrade HTTP to HTTPS
+        // ============================================================
+        if (window.location.protocol === 'https:' && url.startsWith('http:')) {
+            const originalUrl = url;
+            url = url.replace('http:', 'https:');
+            debugLog("FIX", `Mixed Content Detected! Upgraded URL to HTTPS.\nFrom: ${originalUrl}\nTo: ${url}`, 'success');
+        }
+        // ============================================================
+
+        debugLog("STEP 5", `Fetching: ${url}`);
+        
         try {
-            const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-            debugLog("STEP 7", `Response Status: ${response.status}`);
+            const response = await fetch(url, { 
+                headers: { 
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'text/html'
+                } 
+            });
+            
+            debugLog("STEP 6", `Response Status: ${response.status}`);
             
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             
             const html = await response.text();
-            debugLog("STEP 8", `Data received (${html.length} chars). Injecting...`);
             
-            if (html.length < 5) debugLog("WARNING", "Response looks empty!", 'error');
+            if (html.length < 5) {
+                debugLog("WARNING", "Response looks empty!", 'error');
+                throw new Error("Empty Response");
+            }
 
             container.innerHTML = html;
             container.classList.add('loaded');
-            debugLog("STEP 9", "Content injected.", 'success');
+            
+            // Re-initialize scripts inside the new content
+            debugLog("STEP 7", "Content injected. Initializing widgets...", 'success');
+            
+            // Dispatch event so other scripts know content is ready
+            document.dispatchEvent(new CustomEvent('lazyContentLoaded', { detail: { container: container } }));
             
         } catch (error) {
             debugLog("ERROR", `Fetch Failed: ${error.message}`, 'error');
-            container.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+            container.innerHTML = `<div class="alert alert-danger" style="padding:10px; color:red; text-align:center;">Failed to load section.</div>`;
         }
     }
 

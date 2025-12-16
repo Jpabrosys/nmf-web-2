@@ -13195,6 +13195,7 @@ footer p {
         display: block;
         margin-bottom: 2px;
         transition: color 0.3s ease;
+        width: 100%;
     }
 
     .btm-nav .nav-item span {

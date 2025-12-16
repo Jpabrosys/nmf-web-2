@@ -374,7 +374,8 @@
             background-color: #ffffff;
             box-shadow: 3px 9px 16px rgb(0 0 0 / 13%), -3px -3px 10px rgb(255 255 255 / 0%), inset 14px 14px 26px rgb(182 182 182 / 30%), inset -3px -3px 15px rgba(255, 255, 255, 0.05);
         }
-                .follow_us_socials .socials-item:hover {
+
+        .follow_us_socials .socials-item:hover {
             box-shadow: 0 0px 14px rgb(255, 176, 176);
         }
 
@@ -397,6 +398,7 @@
         .follow_us_socials .socials-item .whatsapp {
             color: #25d366;
         }
+
         /* Article Content */
         .article--content {
             color: #242424;
@@ -1347,322 +1349,330 @@
             </ol>
         </nav>
 
-        <div class="ad-container">
-            <p class="ad-title">Advertisement</p>
-            <amp-ad layout="responsive" width="300" height="250" type="adsense"
-                data-ad-client="ca-pub-3986924419662120" data-ad-slot="2615238860">
-            </amp-ad>
-        </div>
-        <div class="article--main-grid">
-            <div class="article--main-content">
-                <header class="article--header">
-                    <h1 class="article--title">{{ $blogs->name }}</h1>
-                    <h2 class="article--subtitle">{{ $blogs->sort_description }}</h2>
-                </header>
+        <main id="main-content">
+            @yield('content')
 
-                <div class="article--meta">
-                    <div class="article--meta-item">
-                        <span>Created By:</span>
-                        <a class="l1"
-                            href="{{ asset('/author') }}/{{ str_replace(' ', '_', $author->url_name ?? '-') }}">
-                            {{ $author->name ?? 'NMF News' }}
-                        </a>
-                    </div>
+            <div class="ad-container">
+                <p class="ad-title">Advertisement</p>
+                <amp-ad layout="responsive" width="300" height="250" type="adsense"
+                    data-ad-client="ca-pub-3986924419662120" data-ad-slot="2615238860">
+                </amp-ad>
+            </div>
+            <div class="article--main-grid">
+                <div class="article--main-content">
+                    <header class="article--header">
+                        <h1 class="article--title">{{ $blogs->name }}</h1>
+                        <h2 class="article--subtitle">{{ $blogs->sort_description }}</h2>
+                    </header>
 
-                    <div class="article--meta-item">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 640 640">
-                            <path
-                                d="M96.5 160L96.5 309.5C96.5 326.5 103.2 342.8 115.2 354.8L307.2 546.8C332.2 571.8 372.7 571.8 397.7 546.8L547.2 397.3C572.2 372.3 572.2 331.8 547.2 306.8L355.2 114.8C343.2 102.7 327 96 310 96L160.5 96C125.2 96 96.5 124.7 96.5 160zM208.5 176C226.2 176 240.5 190.3 240.5 208C240.5 225.7 226.2 240 208.5 240C190.8 240 176.5 225.7 176.5 208C176.5 190.3 190.8 176 208.5 176z" />
-                        </svg>
-                        <a class="l2" href="/{{ $category->site_url ?? '' }}">
-                            {{ $category->name }}
-                        </a>
-                    </div>
+                    <div class="article--meta">
+                        <div class="article--meta-item">
+                            <span>Created By:</span>
+                            <a class="l1"
+                                href="{{ asset('/author') }}/{{ str_replace(' ', '_', $author->url_name ?? '-') }}">
+                                {{ $author->name ?? 'NMF News' }}
+                            </a>
+                        </div>
 
-                    <div class="article--meta-item">
-                        <span>{{ $blogs->created_at->format('d M, Y') }}</span>
-                    </div>
-                </div>
-
-                <div class="article--actions">
-                    <div class="article--share-container">
-                        <button class="article--share-button" on="tap:article-share-dropdown.toggleVisibility">
-                            <svg viewBox="0 0 512 512" width="16" height="16">
-                                <path fill="currentColor"
-                                    d="M307 34.8c-11.5 5.1-19 16.6-19 29.2v64H176C78.8 128 0 206.8 0 304C0 417.3 81.5 467.9 100.2 478.1c2.5 1.4 5.3 1.9 8.1 1.9c10.9 0 19.7-8.9 19.7-19.7c0-7.5-4.3-14.4-9.8-19.5C108.8 431.9 96 414.4 96 384c0-53 43-96 96-96h96v64c0 12.6 7.4 24.1 19 29.2s25 3 34.4-5.4l160-144c6.7-6.1 10.6-14.7 10.6-23.8s-3.8-17.7-10.6-23.8l-160-144c-9.4-8.5-22.9-10.6-34.4-5.4z" />
+                        <div class="article--meta-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 640 640">
+                                <path
+                                    d="M96.5 160L96.5 309.5C96.5 326.5 103.2 342.8 115.2 354.8L307.2 546.8C332.2 571.8 372.7 571.8 397.7 546.8L547.2 397.3C572.2 372.3 572.2 331.8 547.2 306.8L355.2 114.8C343.2 102.7 327 96 310 96L160.5 96C125.2 96 96.5 124.7 96.5 160zM208.5 176C226.2 176 240.5 190.3 240.5 208C240.5 225.7 226.2 240 208.5 240C190.8 240 176.5 225.7 176.5 208C176.5 190.3 190.8 176 208.5 176z" />
                             </svg>
-                            <span>Share</span>
-                        </button>
-                        <div id="article-share-dropdown" class="article--share-dropdown" hidden>
-                            <ul class="article--social-links">
-                                @php
-                                    $catname = $category->site_url ?? '';
-                                    $slug = $blogs->site_url;
-                                    $shareUrl = url("live/$catname/$slug");
-                                @endphp
-                                <li class="article--social-link">
-                                    <a href="http://www.facebook.com/sharer.php?u={{ $shareUrl }}"
-                                        target="_blank">
-                                        <svg fill="black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"
-                                            width="20" height="20">
-                                            <path fill="currentColor"
-                                                d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z" />
-                                        </svg>
-                                    </a>
-                                </li>
-                                <li class="article--social-link">
-                                    <a href="https://twitter.com/intent/tweet?url={{ $shareUrl }}&text={{ urlencode($blogs->name) }}"
-                                        target="_blank">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20"
-                                            height="20">
-                                            <path fill="currentColor"
-                                                d="M389.2 48H470L305.1 232.3 500 464H345.5L233.7 325.3 106.8 464H26.1L200.6 268.7 10 48H169.7L269.4 175.4 389.2 48ZM362.8 424H403.1L153.9 84H111.1L362.8 424Z" />
-                                        </svg>
-                                    </a>
-                                </li>
-                                <li class="article--social-link">
-                                    <a href="https://api.whatsapp.com/send?text={{ $shareUrl }}" target="_blank">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20"
-                                            height="20">
-                                            <path fill="currentColor"
-                                                d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
-                                        </svg>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="article--media">
-                    <div class="article--image-wrapper">
-
-                        @if ($youtubeVideoId)
-                            {{-- This is the logic for YouTube --}}
-                            <amp-youtube data-videoid="{{ $youtubeVideoId }}" layout="responsive" width="480"
-                                height="270">
-                            </amp-youtube>
-                        @elseif (!empty($blogs->link) && str_contains($blogs->link, '.mp4'))
-                            {{-- This handles non-youtube .mp4 files --}}
-                            <amp-video width="480" height="270" layout="responsive" controls>
-                                <source src="{{ $blogs->link }}" type="video/mp4">
-                            </amp-video>
-                        @else
-                            {{-- This is the fallback image --}}
-                            @if ($imageUrl)
-                                <amp-img src="{{ $imageUrl }}" alt="{{ $blogs->name }}" layout="responsive"
-                                    width="800" height="450">
-                                </amp-img>
-                            @endif
-                        @endif
-
-                    </div>
-                </div>
-
-                <div class="follow_us">
-                    <div class="follow_us_bar"></div>
-                    <div class="flw_wrap">
-                        <div>Follow Us: </div>
-                        <div class="follow_us_socials">
-                            <a href="https://www.facebook.com/officialnmfnews" target="_blank" rel="noopener"
-                                title="Facebook" class="socials-item">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                    viewBox="0 0 320 512" class="facebook">
-                                    <path fill="currentColor"
-                                        d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z" />
-                                </svg>
-                            </a>
-                            <a href="https://x.com/NMFNewsOfficial" target="_blank" rel="noopener" title="Twitter"
-                                class="socials-item">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                    viewBox="0 0 512 512" class="fa-x-twitter">
-                                    <path fill="black"
-                                        d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" />
-                                </svg>
-                            </a>
-                            <a href="https://instagram.com/nmfnewsofficial" target="_blank" rel="noopener"
-                                title="Instagram" class="socials-item">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                    viewBox="0 0 448 512" class="instagram">
-                                    <path fill="currentColor"
-                                        d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
-                                </svg>
-                            </a>
-                            <a href="https://www.youtube.com/c/NMFNews/featured" target="_blank" rel="noopener"
-                                title="YouTube" class="socials-item">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                    viewBox="0 0 576 512" class="youtube">
-                                    <path fill="currentColor"
-                                        d="M549.7 124.1c-6.3-23.7-24.8-42.3-48.3-48.6C458.8 64 288 64 288 64S117.2 64 74.6 75.5c-23.5 6.3-42 24.9-48.3 48.6-11.4 42.9-11.4 132.3-11.4 132.3s0 89.4 11.4 132.3c6.3 23.7 24.8 41.5 48.3 47.8C117.2 448 288 448 288 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zm-317.5 213.5V175.2l142.7 81.2-142.7 81.2z" />
-                                </svg>
-                            </a>
-                            <a href="https://whatsapp.com/channel/0029VajdZqv9xVJbRYtSFM3C" target="_blank"
-                                rel="noopener" title="WhatsApp" class="socials-item">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                    viewBox="0 0 448 512" class="whatsapp">
-                                    <path fill="currentColor"
-                                        d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
-                                </svg>
+                            <a class="l2" href="/{{ $category->site_url ?? '' }}">
+                                {{ $category->name }}
                             </a>
                         </div>
+
+                        <div class="article--meta-item">
+                            <span>{{ $blogs->created_at->format('d M, Y') }}</span>
+                        </div>
                     </div>
-                    <div class="follow_us_bar"></div>
-                </div>
 
-                <div class="article--content">
-                    {!! $blogs->description !!}
-                </div>
-
-                <div class="news-feed-wrapper">
-                    @foreach ($liveBlogs as $liveBlog)
-                        @php
-                            $get_liveBlogs_author = App\Models\User::find($liveBlog->author);
-                            $sanitized_content = config('global.sanitize_amp_content')($liveBlog->update_content);
-                        @endphp
-                        <div class="news-card">
-                            <div class="news-time">
-                                <span
-                                    class="time">{{ \Carbon\Carbon::parse($liveBlog->created_at)->format('h:i A') }}</span>
-                                <span
-                                    class="ago">({{ \Carbon\Carbon::parse($liveBlog->created_at)->diffForHumans(null, true, 'hi') }}
-                                    पहले)</span>
+                    <div class="article--actions">
+                        <div class="article--share-container">
+                            <button class="article--share-button" on="tap:article-share-dropdown.toggleVisibility">
+                                <svg viewBox="0 0 512 512" width="16" height="16">
+                                    <path fill="currentColor"
+                                        d="M307 34.8c-11.5 5.1-19 16.6-19 29.2v64H176C78.8 128 0 206.8 0 304C0 417.3 81.5 467.9 100.2 478.1c2.5 1.4 5.3 1.9 8.1 1.9c10.9 0 19.7-8.9 19.7-19.7c0-7.5-4.3-14.4-9.8-19.5C108.8 431.9 96 414.4 96 384c0-53 43-96 96-96h96v64c0 12.6 7.4 24.1 19 29.2s25 3 34.4-5.4l160-144c6.7-6.1 10.6-14.7 10.6-23.8s-3.8-17.7-10.6-23.8l-160-144c-9.4-8.5-22.9-10.6-34.4-5.4z" />
+                                </svg>
+                                <span>Share</span>
+                            </button>
+                            <div id="article-share-dropdown" class="article--share-dropdown" hidden>
+                                <ul class="article--social-links">
+                                    @php
+                                        $catname = $category->site_url ?? '';
+                                        $slug = $blogs->site_url;
+                                        $shareUrl = url("live/$catname/$slug");
+                                    @endphp
+                                    <li class="article--social-link">
+                                        <a href="http://www.facebook.com/sharer.php?u={{ $shareUrl }}"
+                                            target="_blank">
+                                            <svg fill="black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"
+                                                width="20" height="20">
+                                                <path fill="currentColor"
+                                                    d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z" />
+                                            </svg>
+                                        </a>
+                                    </li>
+                                    <li class="article--social-link">
+                                        <a href="https://twitter.com/intent/tweet?url={{ $shareUrl }}&text={{ urlencode($blogs->name) }}"
+                                            target="_blank">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20"
+                                                height="20">
+                                                <path fill="currentColor"
+                                                    d="M389.2 48H470L305.1 232.3 500 464H345.5L233.7 325.3 106.8 464H26.1L200.6 268.7 10 48H169.7L269.4 175.4 389.2 48ZM362.8 424H403.1L153.9 84H111.1L362.8 424Z" />
+                                            </svg>
+                                        </a>
+                                    </li>
+                                    <li class="article--social-link">
+                                        <a href="https://api.whatsapp.com/send?text={{ $shareUrl }}"
+                                            target="_blank">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20"
+                                                height="20">
+                                                <path fill="currentColor"
+                                                    d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
+                                            </svg>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
-                            <div class="news-content">
-                                <h4 class="news-title">
-                                    {{ $liveBlog->update_title }}
-                                </h4>
-                                <p class="news-meta"><strong>Posted by:</strong>
-                                    {{ $get_liveBlogs_author->name }}</p>
-                                <div class="news-body">
-                                    {{-- 
+                        </div>
+                    </div>
+
+                    <div class="article--media">
+                        <div class="article--image-wrapper">
+
+                            @if ($youtubeVideoId)
+                                {{-- This is the logic for YouTube --}}
+                                <amp-youtube data-videoid="{{ $youtubeVideoId }}" layout="responsive" width="480"
+                                    height="270">
+                                </amp-youtube>
+                            @elseif (!empty($blogs->link) && str_contains($blogs->link, '.mp4'))
+                                {{-- This handles non-youtube .mp4 files --}}
+                                <amp-video width="480" height="270" layout="responsive" controls>
+                                    <source src="{{ $blogs->link }}" type="video/mp4">
+                                </amp-video>
+                            @else
+                                {{-- This is the fallback image --}}
+                                @if ($imageUrl)
+                                    <amp-img src="{{ $imageUrl }}" alt="{{ $blogs->name }}"
+                                        layout="responsive" width="800" height="450">
+                                    </amp-img>
+                                @endif
+                            @endif
+
+                        </div>
+                    </div>
+
+                    <div class="follow_us">
+                        <div class="follow_us_bar"></div>
+                        <div class="flw_wrap">
+                            <div>Follow Us: </div>
+                            <div class="follow_us_socials">
+                                <a href="https://www.facebook.com/officialnmfnews" target="_blank" rel="noopener"
+                                    title="Facebook" class="socials-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                        viewBox="0 0 320 512" class="facebook">
+                                        <path fill="currentColor"
+                                            d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z" />
+                                    </svg>
+                                </a>
+                                <a href="https://x.com/NMFNewsOfficial" target="_blank" rel="noopener"
+                                    title="Twitter" class="socials-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                        viewBox="0 0 512 512" class="fa-x-twitter">
+                                        <path fill="black"
+                                            d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" />
+                                    </svg>
+                                </a>
+                                <a href="https://instagram.com/nmfnewsofficial" target="_blank" rel="noopener"
+                                    title="Instagram" class="socials-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                        viewBox="0 0 448 512" class="instagram">
+                                        <path fill="currentColor"
+                                            d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
+                                    </svg>
+                                </a>
+                                <a href="https://www.youtube.com/c/NMFNews/featured" target="_blank" rel="noopener"
+                                    title="YouTube" class="socials-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                        viewBox="0 0 576 512" class="youtube">
+                                        <path fill="currentColor"
+                                            d="M549.7 124.1c-6.3-23.7-24.8-42.3-48.3-48.6C458.8 64 288 64 288 64S117.2 64 74.6 75.5c-23.5 6.3-42 24.9-48.3 48.6-11.4 42.9-11.4 132.3-11.4 132.3s0 89.4 11.4 132.3c6.3 23.7 24.8 41.5 48.3 47.8C117.2 448 288 448 288 448s170.8 0 213.4-11.5c23.5-6.3 42-24.2 48.3-47.8 11.4-42.9 11.4-132.3 11.4-132.3s0-89.4-11.4-132.3zm-317.5 213.5V175.2l142.7 81.2-142.7 81.2z" />
+                                    </svg>
+                                </a>
+                                <a href="https://whatsapp.com/channel/0029VajdZqv9xVJbRYtSFM3C" target="_blank"
+                                    rel="noopener" title="WhatsApp" class="socials-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                        viewBox="0 0 448 512" class="whatsapp">
+                                        <path fill="currentColor"
+                                            d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="follow_us_bar"></div>
+                    </div>
+
+                    <div class="article--content">
+                        {!! $blogs->description !!}
+                    </div>
+
+                    <div class="news-feed-wrapper">
+                        @foreach ($liveBlogs as $liveBlog)
+                            @php
+                                $get_liveBlogs_author = App\Models\User::find($liveBlog->author);
+                                $sanitized_content = config('global.sanitize_amp_content')($liveBlog->update_content);
+                            @endphp
+                            <div class="news-card">
+                                <div class="news-time">
+                                    <span
+                                        class="time">{{ \Carbon\Carbon::parse($liveBlog->created_at)->format('h:i A') }}</span>
+                                    <span
+                                        class="ago">({{ \Carbon\Carbon::parse($liveBlog->created_at)->diffForHumans(null, true, 'hi') }}
+                                        पहले)</span>
+                                </div>
+                                <div class="news-content">
+                                    <h4 class="news-title">
+                                        {{ $liveBlog->update_title }}
+                                    </h4>
+                                    <p class="news-meta"><strong>Posted by:</strong>
+                                        {{ $get_liveBlogs_author->name }}</p>
+                                    <div class="news-body">
+                                        {{-- 
                                         WARNING: This is a potential AMP validation error.
                                         Any <img>, <video>, <audio>, <iframe>, or <style> tags
                                         inside $liveBlog->update_content will BREAK the page.
                                         This content MUST be sanitized server-side to convert
                                         standard tags to <amp-img>, <amp-video>, etc.
                                     --}}
-                                    {!! $sanitized_content !!}
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-
-                <div class="ad-container">
-                    <p class="ad-title">Advertisement</p>
-                    <amp-ad layout="responsive" width="300" height="300" type="adsense"
-                        data-ad-client="ca-pub-3986924419662120" data-ad-slot="3774348576">
-                    </amp-ad>
-                </div>
-                @if (!empty($latests) && $latests->isNotEmpty())
-                    <div style="margin: 20px 0;">
-                        <h3 class="rel_heading">यह भी पढ़ें</h3>
-
-                        @foreach ($latests as $article)
-                            @php
-                                $articleImage = config('global.blog_images_everywhere')($article);
-                                $articleUrl = url(($article->category->site_url ?? '#') . '/' . $article->site_url);
-                            @endphp
-
-                            <div class="rel_article">
-                                <div class="rel_top">
-                                    <a href="{{ $articleUrl }}">
-                                        <amp-img
-                                            src="{{ !empty($articleImage) ? asset($articleImage) : asset('asset/images/NMF_BreakingNews.png') }}"
-                                            alt="{{ $article->name }}" width="125" height="70"
-                                            layout="responsive">
-                                        </amp-img>
-                                    </a>
-                                </div>
-                                <div class="rel_bottom">
-                                    <a href="{{ $articleUrl }}">
-                                        {{ $article->name }}
-                                    </a>
+                                        {!! $sanitized_content !!}
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
-                @endif
 
-                <div class="ad-container">
-                    <p class="ad-title">Advertisement</p>
-                    <amp-ad layout="responsive" width="300" height="300" type="adsense"
-                        data-ad-client="ca-pub-3986924419662120" data-ad-slot="3774348576">
-                    </amp-ad>
-                </div>
-                <div style="margin-top: 20px;">
-                    {{-- - 10 latest articles displayed - --}}
-                    @include('components.latestStories-amp')
+                    <div class="ad-container">
+                        <p class="ad-title">Advertisement</p>
+                        <amp-ad layout="responsive" width="300" height="300" type="adsense"
+                            data-ad-client="ca-pub-3986924419662120" data-ad-slot="3774348576">
+                        </amp-ad>
+                    </div>
+                    @if (!empty($latests) && $latests->isNotEmpty())
+                        <div style="margin: 20px 0;">
+                            <h3 class="rel_heading">यह भी पढ़ें</h3>
+
+                            @foreach ($latests as $article)
+                                @php
+                                    $articleImage = config('global.blog_images_everywhere')($article);
+                                    $articleUrl = url(($article->category->site_url ?? '#') . '/' . $article->site_url);
+                                @endphp
+
+                                <div class="rel_article">
+                                    <div class="rel_top">
+                                        <a href="{{ $articleUrl }}">
+                                            <amp-img
+                                                src="{{ !empty($articleImage) ? asset($articleImage) : asset('asset/images/NMF_BreakingNews.png') }}"
+                                                alt="{{ $article->name }}" width="125" height="70"
+                                                layout="responsive">
+                                            </amp-img>
+                                        </a>
+                                    </div>
+                                    <div class="rel_bottom">
+                                        <a href="{{ $articleUrl }}">
+                                            {{ $article->name }}
+                                        </a>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <div class="ad-container">
+                        <p class="ad-title">Advertisement</p>
+                        <amp-ad layout="responsive" width="300" height="300" type="adsense"
+                            data-ad-client="ca-pub-3986924419662120" data-ad-slot="3774348576">
+                        </amp-ad>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        {{-- - 10 latest articles displayed - --}}
+                        @include('components.latestStories-amp')
 
 
-                    {{-- Vertical-Small-1 Advertise --}}
-                    {{-- <x-vertical-sm-ad :ad="$data['detailsAds']['detail_sidebar_vertical_ad1'] ?? null" /> --}}
+                        {{-- Vertical-Small-1 Advertise --}}
+                        {{-- <x-vertical-sm-ad :ad="$data['detailsAds']['detail_sidebar_vertical_ad1'] ?? null" /> --}}
 
-                    @php
-                        $categories = [
-                            ['name' => 'ट्रेंडिंग न्यूज़', 'limit' => 5],
-                            ['name' => 'पॉडकास्ट', 'limit' => 1],
-                            ['name' => 'टेक्नोलॉजी', 'limit' => 5],
-                            ['name' => 'स्पेशल्स', 'limit' => 5],
-                        ];
-                    @endphp
-
-                    @foreach ($categories as $cat)
                         @php
-                            // --- Server-side logic ---
-                            // Find the category
-                            $category = App\Models\Category::where('name', $cat['name'])->first();
-
-                            // Safely get the current blog ID to exclude it
-                            // Check if $blogs is passed in as the *current* blog (a single model)
-                            $currentBlogId = null;
-                            if (isset($blogs) && method_exists($blogs, 'getKey')) {
-                                // $blogs is a single Eloquent model
-                                $currentBlogId = $blogs->id;
-                            } elseif (isset($blog) && isset($blog->id)) {
-                                // Second check, just in case
-                                $currentBlogId = $blog->id;
-                            } elseif (isset($data) && isset($data['blog']) && isset($data['blog']->id)) {
-                                // Third check, from original
-                                $currentBlogId = $data['blog']->id;
-                            }
-
-                            // Build the query
-                            $query = App\Models\Blog::where('status', 1)->where('categories_ids', $category->id ?? 0);
-
-                            // Only add the 'where not equal' clause if we have a current blog ID
-                            if ($currentBlogId) {
-                                $query->where('id', '!=', $currentBlogId); // EXCLUDE CURRENT BLOG
-                            }
-
-                            // Fetch the blogs into a NEW variable to avoid conflicts
-                            $relatedBlogs = $query->orderBy('updated_at', 'desc')->limit($cat['limit'])->get();
+                            $categories = [
+                                ['name' => 'ट्रेंडिंग न्यूज़', 'limit' => 5],
+                                ['name' => 'पॉडकास्ट', 'limit' => 1],
+                                ['name' => 'टेक्नोलॉजी', 'limit' => 5],
+                                ['name' => 'स्पेशल्स', 'limit' => 5],
+                            ];
                         @endphp
 
-                        {{-- The original logic remains unchanged --}}
-                        @if ($relatedBlogs->isNotEmpty())
-                            @include('components.side-widgets-amp', [
-                                'categoryName' => $cat['name'],
-                                'category' => $category,
-                                'blogs' => $relatedBlogs, // Pass the new variable to the component
-                            ])
-                        @endif
-                    @endforeach
+                        @foreach ($categories as $cat)
+                            @php
+                                // --- Server-side logic ---
+                                // Find the category
+                                $category = App\Models\Category::where('name', $cat['name'])->first();
 
-                    {{-- Vertical-Small-2 Advertise --}}
-                    {{-- <x-vertical-sm-ad :ad="$data['detailsAds']['detail_sidebar_vertical_ad2'] ?? null" /> --}}
+                                // Safely get the current blog ID to exclude it
+                                // Check if $blogs is passed in as the *current* blog (a single model)
+                                $currentBlogId = null;
+                                if (isset($blogs) && method_exists($blogs, 'getKey')) {
+                                    // $blogs is a single Eloquent model
+                                    $currentBlogId = $blogs->id;
+                                } elseif (isset($blog) && isset($blog->id)) {
+                                    // Second check, just in case
+                                    $currentBlogId = $blog->id;
+                                } elseif (isset($data) && isset($data['blog']) && isset($data['blog']->id)) {
+                                    // Third check, from original
+                                    $currentBlogId = $data['blog']->id;
+                                }
 
+                                // Build the query
+                                $query = App\Models\Blog::where('status', 1)->where(
+                                    'categories_ids',
+                                    $category->id ?? 0,
+                                );
+
+                                // Only add the 'where not equal' clause if we have a current blog ID
+                                if ($currentBlogId) {
+                                    $query->where('id', '!=', $currentBlogId); // EXCLUDE CURRENT BLOG
+                                }
+
+                                // Fetch the blogs into a NEW variable to avoid conflicts
+                                $relatedBlogs = $query->orderBy('updated_at', 'desc')->limit($cat['limit'])->get();
+                            @endphp
+
+                            {{-- The original logic remains unchanged --}}
+                            @if ($relatedBlogs->isNotEmpty())
+                                @include('components.side-widgets-amp', [
+                                    'categoryName' => $cat['name'],
+                                    'category' => $category,
+                                    'blogs' => $relatedBlogs, // Pass the new variable to the component
+                                ])
+                            @endif
+                        @endforeach
+
+                        {{-- Vertical-Small-2 Advertise --}}
+                        {{-- <x-vertical-sm-ad :ad="$data['detailsAds']['detail_sidebar_vertical_ad2'] ?? null" /> --}}
+
+                    </div>
                 </div>
-            </div>
-            {{-- 
+                {{-- 
                 Sidebar from liveBlogs.blade.php is omitted as the controller
                 does not pass the required data ($categories, latestStories)
                 and the detail-amp template is single-column.
             --}}
-        </div>
+            </div>
+        </main>
 
     </div>
-@include('layouts.footer-amp')
+    @include('layouts.footer-amp')
 </body>
 
 </html>

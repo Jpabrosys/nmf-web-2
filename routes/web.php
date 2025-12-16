@@ -505,5 +505,5 @@ Route::post('/', [HomeController::class, 'handlePost']);
 Route::post('/increase-webhitcount', [StoryController::class, 'increaseWebHitCount']);
 Route::post('/submit-vote/{id}', [HomeController::class, 'savedVote'])->name('vote.submit');
 Route::get('/api/vote/results/{id}', [HomeController::class, 'getVoteResults']);
-
+Route::get('/load-home-section/{index}', [HomeController::class, 'loadSection']);
 

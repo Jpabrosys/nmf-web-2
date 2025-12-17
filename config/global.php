@@ -500,9 +500,9 @@ $html = preg_replace_callback(
 
      /* NL1031:20Sept:2025:Added:base path for asset and frontend */
 
-    'base_url_asset' => 'http://127.0.0.1:8000/',
-    'base_url_frontend' => 'http://127.0.0.1:8000/',
-    'base_url' => 'http://127.0.0.1:8000/',
+    'base_url_asset' => 'http://nmf.test/',
+    'base_url_frontend' => 'http://nmf.test/',
+    'base_url' => 'http://nmf.test/',
 
 
      /* NL1025:15Sept:2025:Added:Google Tag Manager */

@@ -13,7 +13,6 @@
     font-size: 16px;
 }
 
-
 html {
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
@@ -9226,7 +9225,7 @@ swiper-slide img {
 }
 
 .swiper-slide {
-    width: 100%;
+    width: auto;
     text-align: center;
     font-size: 18px;
     display: flex;

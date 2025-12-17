@@ -1,4 +1,6 @@
 import './bootstrap';
+import './rashifal.js';
+import './main.js';
 
 // 1. Import jQuery and make it global (Crucial for OwlCarousel & legacy scripts)
 import $ from 'jquery';
@@ -12,7 +14,5 @@ import Swiper from 'swiper/bundle';
 // If you need Swiper globally available in inline scripts:
 window.Swiper = Swiper; 
 
-// 4. Import Main Custom JS
-import './main.js';
 
 console.log('App.js loaded with localized dependencies');

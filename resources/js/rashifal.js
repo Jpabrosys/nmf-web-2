@@ -1,5 +1,3 @@
-// resources/js/rashifal.js
-
 // 1. Listen for clicks on the entire document (Works for Lazy Loaded content)
 document.addEventListener('click', function(e) {
     

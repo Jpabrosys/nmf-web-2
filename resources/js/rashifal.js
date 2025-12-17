@@ -115,3 +115,40 @@ document.addEventListener("click", function (e) {
     }
 });
 
+function initWebStoriesSwiper() {
+  if (!window.Swiper) {
+    console.warn('Swiper not found');
+    return;
+  }
+
+  const el = document.querySelector('.web_s_all_slider');
+  if (!el) return;
+  if (el.classList.contains('swiper-initialized')) return;
+
+  new window.Swiper(el, {
+    slidesPerView: 'auto',
+    spaceBetween: 10,
+    speed: 500,
+    grabCursor: true,
+
+    navigation: {
+      nextEl: '.web_s_all_next',
+      prevEl: '.web_s_all_prev',
+    },
+
+    keyboard: {
+      enabled: true,
+      onlyInViewport: true,
+    },
+
+    breakpoints: {
+      320: { spaceBetween: 10 },
+      480: { spaceBetween: 10 },
+      1024: { spaceBetween: 15 },
+      1300: { spaceBetween: 20 },
+    },
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initWebStoriesSwiper);
+window.addEventListener('load', initWebStoriesSwiper);

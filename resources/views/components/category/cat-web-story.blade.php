@@ -38,36 +38,3 @@
 
     </div>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var webSAllSwiper = new Swiper('.web_s_all_slider', {
-            slidesPerView: 5.2,
-            spaceBetween: 10,
-            navigation: {
-                nextEl: '.web_s_all_next',
-                prevEl: '.web_s_all_prev',
-            },
-            keyboard: {
-                enabled: true,
-                onlyInViewport: true,
-            },
-            breakpoints: {
-                1300: {
-                    slidesPerView: 5.2,
-                    spaceBetween: 20 
-                },
-                1024: {
-                    slidesPerView: 5.2,
-                    spaceBetween: 15 
-                },
-
-                480: {
-                    slidesPerView: 2.35
-                },
-                320: {
-                    slidesPerView: 2.35
-                }
-            }
-        });
-    });
-</script>

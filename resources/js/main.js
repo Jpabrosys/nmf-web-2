@@ -1,3 +1,29 @@
+function initWebStoriesSwiper() {
+  if (!window.Swiper) {
+    console.warn('Swiper not found');
+    return;
+  }
+
+  const el = document.querySelector('.web_s_all_slider');
+  if (!el) return;
+  if (el.classList.contains('swiper-initialized')) return;
+
+new window.Swiper(el, {
+  slidesPerView: 'auto',
+  spaceBetween: 10,
+  grabCursor: true,
+  navigation: {
+    nextEl: '.web_s_all_next',
+    prevEl: '.web_s_all_prev',
+  },
+});
+}
+
+document.addEventListener('DOMContentLoaded', initWebStoriesSwiper);
+window.addEventListener('load', initWebStoriesSwiper);
+new Swiper('.web_s_all_slider', { slidesPerView: 'auto' })
+
+// rashifal
 function initRashifal() {
     const slider = document.querySelector(".rashifal-slider");
     if (!slider) return;

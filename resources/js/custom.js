@@ -1,6 +1,6 @@
 import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
-
+import { Navigation } from 'swiper/modules';
 window.Swiper = Swiper;
 
 document.addEventListener('click', function(e) {
@@ -281,7 +281,63 @@ function initWebStoriesSlider() {
         }
     });
 }
+// reels/shorts================================================
+document.addEventListener("DOMContentLoaded", function () {
 
+    const track = document.querySelector(".swp-unique-shorts");
+    const prevBtn = document.querySelector(".nav-unique-prev");
+    const nextBtn = document.querySelector(".nav-unique-next");
+
+    if (!track) return;
+
+    const scrollStep = 240;
+
+    /* Arrow scroll */
+    nextBtn.addEventListener("click", () => {
+        track.scrollLeft += scrollStep;
+    });
+
+    prevBtn.addEventListener("click", () => {
+        track.scrollLeft -= scrollStep;
+    });
+
+    /* Mouse drag */
+    let isDragging = false;
+    let startX = 0;
+    let startScroll = 0;
+
+    track.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        startX = e.pageX;
+        startScroll = track.scrollLeft;
+    });
+
+    document.addEventListener("mouseup", () => {
+        isDragging = false;
+    });
+
+    document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const move = e.pageX - startX;
+        track.scrollLeft = startScroll - move;
+    });
+
+    /* Touch support (mobile) */
+    let touchStartX = 0;
+    let touchScroll = 0;
+
+    track.addEventListener("touchstart", (e) => {
+        touchStartX = e.touches[0].pageX;
+        touchScroll = track.scrollLeft;
+    }, { passive: true });
+
+    track.addEventListener("touchmove", (e) => {
+        const move = e.touches[0].pageX - touchStartX;
+        track.scrollLeft = touchScroll - move;
+    }, { passive: true });
+
+});
 // Run the function when page loads
 document.addEventListener('DOMContentLoaded', initWebStoriesSlider);
 

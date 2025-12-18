@@ -1622,11 +1622,133 @@ a.trendingtopic_container {
     0 0.2em 0 0 #dcdcdc, 0 0.225em 0 0 #cacaca, 0 0.225em 0.375em 0 #cecece;
 }
 
+/* ======================== */
+/* shots */
+/* ======================== */
+.swiper-wrapper-outer {
+  position: relative;
+  width: 100%;
+}
+
+.reels-swiper {
+  width: 100%;
+  overflow: hidden;
+}
+
+.reels-swiper .swiper-wrapper {
+  display: flex;
+}
+
+.reels-swiper .swiper-slide {
+  flex-shrink: 0;
+}
+
+/* Navigation buttons */
+.nav-unique-prev,
+.nav-unique-next {
+  display:none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 35px;
+  height: 35px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  z-index: 50;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.nav-unique-prev {
+  left: 0px;
+}
+
+.nav-unique-next {
+  right: 0px;
+}
+
+.nav-unique-prev:hover,
+.nav-unique-next:hover {
+  background: #000;
+  color: #fff;
+}
+
+/* Card */
+.shorts-card-unique {
+  display: block;
+  position: relative;
+  width: 189px;
+  margin-right: 10px;
+  padding-top: 152.77%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+}
+
+.shorts-card-unique img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s ease;
+}
+
+.shorts-card-unique:hover img {
+  transform: scale(1.05);
+  opacity: .85;
+}
+
+/* Play icon */
+.play-icon-unique {
+  position: absolute;
+  inset: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, .6);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  z-index: 5;
+}
+
+/* Title */
+.title-overlay-unique {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 20px 10px 10px;
+  background: linear-gradient(to top, rgba(0, 0, 0, .9), transparent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* IMPORTANT: Swiper math fix */
+.swp-unique-shorts .swiper-slide {
+  width: auto;
+}
+
+/* Hide arrows on mobile */
+
 /* ========================== */
 /* Media Queries */
 /* For mobile phones: */
 /* ========================== */
 @media (max-width: 1360px) {
+  .shorts-card-unique {
+    width: 192px;
+  }
+
   .nws_card_top {
     height: 208px;
   }
@@ -1696,6 +1818,14 @@ a.trendingtopic_container {
 /* For mobile phones: */
 /* ========================== */
 @media (max-width: 600px) {
+  .shorts-card-unique {
+    width: 177px;
+  }
+
+  .nav-unique-prev,
+  .nav-unique-next {
+    display: none;
+  }
 
   /* NL1021- 16sep 2025 - addeed */
   .election-image {

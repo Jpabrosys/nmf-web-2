@@ -23,7 +23,7 @@
                         @endif
 
                         @if (!empty($sectionCategories[11]))
-                            @include('components.photo-slider', [
+                            @include('components.slider-one-news-5', [
                                 'cat_id' => $sectionCategories[11]['catid'],
                                 'cat_name' => $sectionCategories[11]['name'],
                                 'cat_site_url' => $sectionCategories[11]['site_url'],

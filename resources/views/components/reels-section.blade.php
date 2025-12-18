@@ -66,7 +66,7 @@ use Illuminate\Support\Str;
                                     @endphp
 
                                     <div class="swiper-slide web_s " id="reels_s">
-                                        <a href="{{ $videoUrl }}" target="_blank" class="story-card">
+                                        <a href="{{ $videoUrl }}" target="_blank" class="r-story-card">
                                             <div class="story-thumb">
                                                 <img src="{{ $thumbUrl }}" alt="{{ $video->title }}" loading="lazy">
                                                 <span class="story-play" aria-hidden="true"></span>

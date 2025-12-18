@@ -1,4 +1,8 @@
-// 1. Listen for clicks on the entire document (Works for Lazy Loaded content)
+import Swiper from 'swiper/bundle';
+import 'swiper/css/bundle';
+
+window.Swiper = Swiper;
+
 document.addEventListener('click', function(e) {
     
     // CASE A: User clicked a Zodiac Icon (Image)
@@ -114,44 +118,35 @@ document.addEventListener("click", function (e) {
         activeContent.classList.add("active");
     }
 });
-
+// ======================================================================
+// swiper (category)
 function initWebStoriesSwiper() {
-  if (!window.Swiper) {
-    console.warn('Swiper not found');
-    return;
-  }
-
   const el = document.querySelector('.web_s_all_slider');
   if (!el) return;
   if (el.classList.contains('swiper-initialized')) return;
 
-  new window.Swiper(el, {
+  const nextBtn = el.querySelector('.web_s_all_next');
+  const prevBtn = el.querySelector('.web_s_all_prev');
+
+  new Swiper(el, {
     slidesPerView: 'auto',
     spaceBetween: 10,
-    speed: 500,
     grabCursor: true,
+    allowTouchMove: true,
 
     navigation: {
-      nextEl: '.web_s_all_next',
-      prevEl: '.web_s_all_prev',
+      nextEl: nextBtn,
+      prevEl: prevBtn,
     },
 
-    keyboard: {
-      enabled: true,
-      onlyInViewport: true,
-    },
-
-    breakpoints: {
-      320: { spaceBetween: 10 },
-      480: { spaceBetween: 10 },
-      1024: { spaceBetween: 15 },
-      1300: { spaceBetween: 20 },
-    },
+    observer: true,
+    observeParents: true,
   });
 }
 
 document.addEventListener('DOMContentLoaded', initWebStoriesSwiper);
-window.addEventListener('load', initWebStoriesSwiper);
+
+
 // ================ rashifal(dharmgyan)
 document.addEventListener("click", function (e) {
     const nav = e.target.closest("#vertical_tab_nav > ul");
@@ -242,4 +237,82 @@ modalOverlay.addEventListener("click", (e) => {
     if (e.target === modalOverlay) {
         modalOverlay.classList.remove("active");
     }
+});
+// ===========================
+// main webstory
+// Function to initialize this specific slider
+function initWebStoriesSlider() {
+    const el = document.querySelector('.swp-main');
+
+    // Prevent re-initialization or error if element missing
+    if (!el || el.classList.contains('swiper-initialized')) return;
+
+    new window.Swiper(el, {
+        direction: "horizontal",
+        loop: true,
+        slidesPerView: 2.07, // Mobile view default
+        spaceBetween: 10,
+        allowTouchMove: true,
+
+        // ✅ Connect to the new Unique Button Names
+        navigation: {
+            nextEl: ".ws-nav-next",
+            prevEl: ".ws-nav-prev",
+        },
+
+        breakpoints: {
+            0: {
+                slidesPerView: 2.2, 
+                spaceBetween: 10,
+                navigation: false, 
+            },
+            600: {
+                slidesPerView: 4,
+                spaceBetween: 15,
+            },
+            1024: {
+                slidesPerView: 5,
+                spaceBetween: 10,
+                navigation: {
+                    nextEl: ".ws-nav-next",
+                    prevEl: ".ws-nav-prev",
+                },
+            }
+        }
+    });
+}
+
+// Run the function when page loads
+document.addEventListener('DOMContentLoaded', initWebStoriesSlider);
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    if (typeof Swiper === 'undefined') return;
+
+    const el = document.querySelector('.storySwiper');
+    if (!el || el.classList.contains('swiper-initialized')) return;
+
+    const wrapper = el.closest('.story-strip');
+    const prevBtn = wrapper.querySelector('.story-nav-prev');
+    const nextBtn = wrapper.querySelector('.story-nav-next');
+
+    const slidesCount = el.querySelectorAll('.swiper-slide').length;
+
+    new Swiper(el, {
+        slidesPerView: 'auto',
+        spaceBetween: 14,
+        grabCursor: true,
+        allowTouchMove: true,
+
+        loop: slidesCount > 4,
+        loopAdditionalSlides: 2,
+
+        navigation: {
+            prevEl: prevBtn,
+            nextEl: nextBtn,
+        },
+
+        observer: true,
+        observeParents: true,
+    });
 });

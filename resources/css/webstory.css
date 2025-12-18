@@ -388,6 +388,202 @@
 
 }
 
+/* ========================================================== */
+/* category webstory  */
+/* ========================================================== */
+
+.web_s_all_slider {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Swiper wrapper */
+.web_s_all_wrap {
+    align-items: stretch;
+}
+
+/* Each slide (CARD WIDTH FIX) */
+.swiper-slide.web_s_all {
+    width: 160px;
+    flex-shrink: 0;
+}
+
+/* Story card */
+.r-story-card {
+    max-width: 184px;
+    width: 100%;
+    text-decoration: none;
+    color: #333;
+    background-color: #fff;
+    transition: transform 0.3s ease;
+}
+
+/* Image box */
+.story_img {
+    width: 100%;
+    position: relative;
+    height: 250px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.story_img {
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.story_img img {
+    border-radius: 5px;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    display: block;
+}
+
+/* Title */
+.web_s_all p {
+    margin-top: 6px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.web_s_all_slider,
+.web_s_all_slider * {
+    pointer-events: auto;
+}
+
+.web_s_all_slider .swiper-wrapper {
+    cursor: grab;
+}
+
+.web_s_all_slider:active .swiper-wrapper {
+    cursor: grabbing;
+}
+
+.web_s_all_slider .swiper-slide {
+    touch-action: pan-y pan-x;
+}
+
+.web_s_all_next,
+.web_s_all_prev {
+    background: #18000085;
+    color: #ffffff;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    position: absolute;
+    top: 39%;
+    transform: translateY(-50%);
+    z-index: 10;
+    z-index: 5;
+    pointer-events: auto;
+}
+
+.web_s_all_next::after,
+.web_s_all_prev::after {
+    display: none;
+}
+
+.web_s_all_next {
+    right: 10px;
+}
+
+.web_s_all_prev {
+    left: 10px;
+}
+
+/* Adjust icons */
+.web_s_all_next i,
+.web_s_all_prev i {
+    font-size: 16px;
+}
+
+.swiper-slide.web_s_all {
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+}
+
+/* ==================== webstory swiper */
+/* ============================= */
+/* Web Stories Navigation Buttons */
+/* ============================= */
+
+.ws-nav-prev,
+.ws-nav-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 65%);
+    color: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    z-index: 20;
+
+    transition:
+        background 0.25s ease,
+        transform 0.2s ease,
+        box-shadow 0.25s ease;
+}
+
+
+.ws-nav-prev {
+    left: 0px;
+}
+
+.ws-nav-next {
+    right: 0px;
+}
+
+
+.ws-nav-prev i,
+.ws-nav-next i {
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.ws-nav-prev:active,
+.ws-nav-next:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.ws-nav-prev.swiper-button-disabled,
+.ws-nav-next.swiper-button-disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+/* Each reel card width */
+.storySwiper .swiper-slide {
+    width: 190px;        /* 👈 adjust if needed */
+    flex-shrink: 0;
+}
+
+/* Remove extra padding causing dark gap */
+.storySwiper {
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Optional: tighter look */
+.storySwiper .swiper-wrapper {
+    align-items: stretch;
+}
+
 @media screen and (max-width: 600px) {
     .--newsCard-row {
         display: grid;
@@ -400,7 +596,17 @@
         min-height: 100%;
     }
 
+    .web_s_all_next,
+    .web_s_all_prev {
+        display: none;
+    }
 
+    .web_s_all_slider .swiper-wrapper {
+        display: flex !important;
+    }
+    .ws-nav-prev, .ws-nav-next{
+        display: none;
+    }
 }
 
 /* @media screen and (max-width: 600px) {

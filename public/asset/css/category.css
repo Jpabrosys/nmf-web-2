@@ -651,55 +651,6 @@ a.trendingtopic_container {
   color: red;
 }
 
-/* webstory */
-/* Remove default Swiper arrows */
-.web_s_all_next::after,
-.web_s_all_prev::after {
-  display: none;
-}
-
-/* Custom arrow buttons */
-.web_s_all_next,
-.web_s_all_prev {
-  background: #18000085;
-  color: #ffffff;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  cursor: pointer;
-  position: absolute;
-  top: 42%;
-  transform: translateY(-50%);
-  z-index: 10;
-}
-
-/* Position arrows */
-.web_s_all_next {
-  right: 10px;
-}
-
-.web_s_all_prev {
-  left: 10px;
-}
-
-/* Adjust icons */
-.web_s_all_next i,
-.web_s_all_prev i {
-  font-size: 16px;
-}
-
-
-
-/* Ensure slides have no gap */
-.swiper-slide.web_s_all {
-  margin: 0 !important;
-  padding: 0 !important;
-  box-sizing: border-box;
-}
 
 .story-card {
   display: block;
@@ -724,17 +675,7 @@ a.trendingtopic_container {
   border-image-slice: 1;
 }
 
-.web_s_all_slider .swiper-slide {
-  margin-right: 10px !important;
-}
 
-.web_s_all_slider .swiper-slide:last-child {
-  margin-right: 0 !important;
-}
-
-.web_s_all_slider .swiper-wrapper {
-  margin-right: -10px;
-}
 
 /* Follow us */
 .follow_us {
@@ -1768,17 +1709,6 @@ a.trendingtopic_container {
     display: none;
   }
 
-  .web_s_all_slider .swiper-slide {
-    margin-right: 0px !important;
-  }
-
-  .web_s_all_slider .swiper-slide:last-child {
-    margin-right: 0 !important;
-  }
-
-  .web_s_all_slider .swiper-wrapper {
-    margin-right: 0px;
-  }
 
   .site-content {
     margin-top: 96px;

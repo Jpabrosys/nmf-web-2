@@ -1,28 +1,3 @@
-function initWebStoriesSwiper() {
-  if (!window.Swiper) {
-    console.warn('Swiper not found');
-    return;
-  }
-
-  const el = document.querySelector('.web_s_all_slider');
-  if (!el) return;
-  if (el.classList.contains('swiper-initialized')) return;
-
-new window.Swiper(el, {
-  slidesPerView: 'auto',
-  spaceBetween: 10,
-  grabCursor: true,
-  navigation: {
-    nextEl: '.web_s_all_next',
-    prevEl: '.web_s_all_prev',
-  },
-});
-}
-
-document.addEventListener('DOMContentLoaded', initWebStoriesSwiper);
-window.addEventListener('load', initWebStoriesSwiper);
-new Swiper('.web_s_all_slider', { slidesPerView: 'auto' })
-
 // rashifal
 function initRashifal() {
     const slider = document.querySelector(".rashifal-slider");
@@ -214,64 +189,6 @@ document.addEventListener("DOMContentLoaded", function () {
             },
         },
     });
-});
-// sort video slider
-document.addEventListener("DOMContentLoaded", () => {
-    const swiperContainer = document.querySelector(".storySwiper");
-    if (!swiperContainer) return;
-
-    // Count only original (non-duplicate) slides
-    const totalSlides = swiperContainer.querySelectorAll(
-        ".swiper-slide:not(.swiper-slide-duplicate)"
-    ).length;
-
-    // Init Swiper
-    const swiper = new Swiper(swiperContainer, {
-        slidesPerView: "6",
-        spaceBetween: 15,
-        loop: totalSlides > 7,
-        loopAdditionalSlides: 2,
-        loopFillGroupWithBlank: false,
-        navigation: {
-            nextEl: ".story-nav-next",
-            prevEl: ".story-nav-prev",
-        },
-        lazy: {
-            loadOnTransitionStart: true,
-            loadPrevNext: true,
-            loadPrevNextAmount: 2,
-        },
-        watchSlidesProgress: true,
-        breakpoints: {
-            0: { slidesPerView: 2.2, spaceBetween: 10 },
-            601: { slidesPerView: 2.2, spaceBetween: 12 },
-            768: { slidesPerView: 4, spaceBetween: 20 },
-            1024: { slidesPerView: 5, spaceBetween: 20 },
-            1280: { slidesPerView: 5, spaceBetween: 20 },
-            1440: { slidesPerView: 5, spaceBetween: 20 },
-        },
-    });
-
-    // Navigation button enable/disable logic
-    const navButtons = document.querySelectorAll(
-        ".story-nav-prev, .story-nav-next"
-    );
-
-    function updateNavigationState() {
-        const currentSlidesPerView =
-            swiper.params.slidesPerView === "auto"
-                ? swiper.slidesPerViewDynamic()
-                : swiper.params.slidesPerView;
-
-        const disableNav = totalSlides <= currentSlidesPerView;
-        navButtons.forEach((btn) =>
-            btn.classList.toggle("swiper-button-disabled", disableNav)
-        );
-    }
-
-    // Run on init and whenever Swiper resizes
-    swiper.on("resize", updateNavigationState);
-    updateNavigationState();
 });
 
 //  app download modal

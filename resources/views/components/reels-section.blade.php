@@ -64,8 +64,8 @@ use Illuminate\Support\Str;
                         </div>
                     </div>
 
-                    <div class="nav-unique-prev"><i class="fas fa-chevron-left"></i></div>
-                    <div class="nav-unique-next"><i class="fas fa-chevron-right"></i></div>
+                    {{-- <div class="nav-unique-prev"><i class="fas fa-chevron-left"></i></div>
+                    <div class="nav-unique-next"><i class="fas fa-chevron-right"></i></div> --}}
 
                 </div>
             </div>

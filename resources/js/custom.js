@@ -152,3 +152,94 @@ function initWebStoriesSwiper() {
 
 document.addEventListener('DOMContentLoaded', initWebStoriesSwiper);
 window.addEventListener('load', initWebStoriesSwiper);
+// ================ rashifal(dharmgyan)
+document.addEventListener("click", function (e) {
+    const nav = e.target.closest("#vertical_tab_nav > ul");
+    const link = e.target.closest("#vertical_tab_nav > ul > li > a");
+
+    if (!nav || !link) return;
+
+    e.preventDefault();
+
+    const tabs = nav.querySelectorAll("li > a");
+    const container = nav.closest("#vertical_tab_nav");
+    const articles = container.querySelectorAll(".vt_content > article");
+
+    const index = Array.from(tabs).indexOf(link);
+
+    // Tabs
+    tabs.forEach(t => t.classList.remove("selected"));
+    link.classList.add("selected");
+
+    // Content
+    articles.forEach(a => a.style.display = "none");
+    if (articles[index]) {
+        articles[index].style.display = "block";
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const firstTab = document.querySelector("#vertical_tab_nav > ul > li > a");
+    const firstArticle = document.querySelector(".vt_content > article");
+
+    if (firstTab) firstTab.classList.add("selected");
+    if (firstArticle) firstArticle.style.display = "block";
+});
+
+// ================================================
+// Sticky Header
+// ================================================
+const header = document.getElementById("myHeader");
+const liLogo = document.getElementById("navLogo");
+
+const STICKY_POINT = 100;
+let lastScrollY = 0;
+let ticking = false;
+
+function updateHeader(scrollY) {
+    if (scrollY > STICKY_POINT) {
+        header.classList.add("psticky");
+        liLogo.classList.add("showLogo");
+    } else {
+        header.classList.remove("psticky");
+        liLogo.classList.remove("showLogo");
+    }
+}
+
+window.addEventListener(
+    "scroll",
+    () => {
+        lastScrollY = window.scrollY || document.documentElement.scrollTop;
+
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                updateHeader(lastScrollY);
+                ticking = false;
+            });
+            ticking = true;
+        }
+    },
+    { passive: true }
+);
+// =========================================
+// toggle tab
+// =========================================
+
+// JavaScript for toggle modal Toggle Modal ----------------------------
+const toggleBtn = document.getElementById("toggle-btn");
+const modalOverlay = document.getElementById("modal-overlay");
+const closeBtn = document.getElementById("close-btn");
+
+toggleBtn.addEventListener("click", () => {
+    modalOverlay.classList.add("active");
+});
+
+closeBtn.addEventListener("click", () => {
+    modalOverlay.classList.remove("active");
+});
+
+modalOverlay.addEventListener("click", (e) => {
+    if (e.target === modalOverlay) {
+        modalOverlay.classList.remove("active");
+    }
+});

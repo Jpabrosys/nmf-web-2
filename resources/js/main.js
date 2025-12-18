@@ -146,60 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
 window.onscroll = function () {
     myFunction();
 };
-// ================================================
-// Sticky Header
-// ================================================
-const header = document.getElementById("myHeader");
-const liLogo = document.getElementById("navLogo");
 
-const STICKY_POINT = 100;
-let lastScrollY = 0;
-let ticking = false;
-
-function updateHeader(scrollY) {
-    if (scrollY > STICKY_POINT) {
-        header.classList.add("psticky");
-        liLogo.classList.add("showLogo");
-    } else {
-        header.classList.remove("psticky");
-        liLogo.classList.remove("showLogo");
-    }
-}
-
-window.addEventListener(
-    "scroll",
-    () => {
-        lastScrollY = window.scrollY || document.documentElement.scrollTop;
-
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                updateHeader(lastScrollY);
-                ticking = false;
-            });
-            ticking = true;
-        }
-    },
-    { passive: true }
-);
-
-// JavaScript for toggle modal Toggle Modal ----------------------------
-const toggleBtn = document.getElementById("toggle-btn");
-const modalOverlay = document.getElementById("modal-overlay");
-const closeBtn = document.getElementById("close-btn");
-
-toggleBtn.addEventListener("click", () => {
-    modalOverlay.classList.add("active");
-});
-
-closeBtn.addEventListener("click", () => {
-    modalOverlay.classList.remove("active");
-});
-
-modalOverlay.addEventListener("click", (e) => {
-    if (e.target === modalOverlay) {
-        modalOverlay.classList.remove("active");
-    }
-});
 
 //    for toggle tabs -----------------------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
@@ -217,42 +164,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 //    dharm gyan tab -----------------------------------------------------
-document.addEventListener("DOMContentLoaded", () => {
-    const nav = document.querySelector("#vertical_tab_nav");
-    if (!nav) return;
-
-    const activeTab = nav.querySelector("ul li a.selected");
-    if (activeTab) return; // ✅ already active → do nothing
-
-    const firstTab = nav.querySelector("ul li a");
-    const firstArticle = nav.querySelector(".vt_content > article");
-
-    if (firstTab) firstTab.classList.add("selected");
-    if (firstArticle) firstArticle.style.display = "block";
-});
-
-document.addEventListener("click", function (e) {
-    const link = e.target.closest("#vertical_tab_nav > ul > li > a");
-    if (!link) return;
-
-    e.preventDefault();
-
-    const nav = link.closest("#vertical_tab_nav");
-    const tabs = nav.querySelectorAll("ul li a");
-    const articles = nav.querySelectorAll(".vt_content > article");
-
-    const index = Array.from(tabs).indexOf(link);
-
-    // Tabs
-    tabs.forEach((t) => t.classList.remove("selected"));
-    link.classList.add("selected");
-
-    // Content
-    articles.forEach((a) => (a.style.display = "none"));
-    if (articles[index]) {
-        articles[index].style.display = "block";
-    }
-});
 
 //   tag swiper
 document.addEventListener("DOMContentLoaded", function () {
